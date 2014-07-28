@@ -4,7 +4,7 @@ from django.contrib.auth.models import (
 )
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, user_name, phone_number, organization, password):
+    def create_user(self, email, user_name, phone_number, organization, password=None):
         """
         :param email: Email Address , Unique ID
         :param user_name: Read User Name like Kim Junho
@@ -47,10 +47,10 @@ class UserManager(BaseUserManager):
             password=password,
         )
 
-        if kwargs['is_admin']:
+        if "is_admin" in kwargs["is_admin"] and kwargs['is_admin']:
             user.is_admin = True
 
-        if kwargs['is_org_admin']:
+        if "is_org_admin" in kwargs["is_org_admin"] and kwargs['is_org_admin']:
             user.is_org_admin = True
 
         user.save(using=self._db)
@@ -66,7 +66,7 @@ class User(AbstractBaseUser):
 
     user_name = models.CharField(max_length=8)
     phone_number = models.CharField(max_length=20)
-    organization = models.CharField(max_length=200)
+    organization = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_org_admin = models.BooleanField(default=False)

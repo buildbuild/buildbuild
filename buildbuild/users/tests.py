@@ -1,6 +1,8 @@
 from django.test import TestCase
 from users.models import User
+
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 
 class UserModelTest(TestCase):
     def setUp(self):
@@ -25,7 +27,12 @@ class UserModelTest(TestCase):
         self.user.save()
 
         user_with_duplicate_email = User(email = self.user.email)
+
         self.assertRaises(IntegrityError, user_with_duplicate_email.save)
+
+    def test_user_with_invalid_email_should_not_be_valid(self):
+        self.assertRaises(ValidationError, User.users.create_user, email = "INVALID_EMAIL")
+
 
     # Password
     def test_user_should_have_password_field(self):

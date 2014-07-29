@@ -50,6 +50,39 @@ class UserModelTest(TestCase):
                 email = self.valid_email,
                 password = "foo" )
 
+    # is_admin
+    def test_user_with_no_is_admin_args_shoud_not_be_admin(self):
+        user = User.users.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                )
+        self.assertFalse(user.is_admin)
+
+    def test_user_with_is_admin_args_shoud_be_admin(self):
+        user = User.users.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                is_admin = True,
+                )
+        self.assertTrue(user.is_admin)
+
+    # is_org_admin
+    def test_user_with_no_is_org_admin_args_shoud_not_be_org_admin(self):
+        user = User.users.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                )
+        self.assertFalse(user.is_org_admin)
+
+    def test_user_with_is_org_admin_args_shoud_be_org_admin(self):
+        user = User.users.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                is_org_admin = True,
+                )
+        self.assertTrue(user.is_org_admin)
+
+
     # UserManager
     def test_user_should_be_created_via_user_manager(self):
         try:

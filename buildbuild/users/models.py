@@ -6,15 +6,23 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password):
+    def create_user(self, email, password, **kwargs):
         if not email:
             raise ValueError("User must have an email address")
+
 
         validate_email(email)
         self.validate_password(password)
 
         user = self.model(email = self.normalize_email(email))
         user.set_password(password)
+
+        if "is_admin" in kwargs and kwargs["is_admin"]:
+            user.is_admin = True
+
+        if "is_org_admin" in kwargs and kwargs["is_org_admin"]:
+            user.is_org_admin = True
+
         user.save(using = self._db)
         return user
 
@@ -28,6 +36,9 @@ class User(AbstractBaseUser):
                 max_length = 50,
                 unique = True,
             )
+
+    is_admin = models.BooleanField(default=False)
+    is_org_admin = models.BooleanField(default=False)
 
     # custom UserManager
     users = UserManager()

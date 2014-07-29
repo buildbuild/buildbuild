@@ -82,6 +82,31 @@ class UserModelTest(TestCase):
                 )
         self.assertTrue(user.is_org_admin)
 
+    # is_active
+    def test_user_with_no_is_active_args_shoud_be_active(self):
+        user = User.users.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                )
+        self.assertTrue(user.is_active)
+
+    def test_user_model_should_have_deactivate_method(self):
+        active_user = User.users.create(
+                email = self.valid_email,
+                password = self.valid_password,
+                # default value for is_active is True
+                )
+        deactivated_user = active_user.deactivate()
+        self.assertFalse(deactivated_user.is_active)
+
+    def test_user_model_should_have_activate_method(self):
+        deactive_user = User.users.create(
+                email = self.valid_email,
+                password = self.valid_password,
+                is_active = False,
+                )
+        activated_user = deactive_user.activate()
+        self.assertTrue(activated_user.is_active)
 
     # UserManager
     def test_user_should_be_created_via_user_manager(self):

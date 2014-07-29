@@ -37,6 +37,7 @@ class User(AbstractBaseUser):
                 unique = True,
             )
 
+    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_org_admin = models.BooleanField(default=False)
 
@@ -45,3 +46,11 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def deactivate(self):
+        self.is_active = False
+        return self
+
+    def activate(self):
+        self.is_active = True
+        return self

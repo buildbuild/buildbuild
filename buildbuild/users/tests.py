@@ -108,6 +108,16 @@ class UserModelTest(TestCase):
         activated_user = deactive_user.activate()
         self.assertTrue(activated_user.is_active)
 
+    # name
+    def test_user_with_name_args_shoud_have_name(self):
+        valid_name = "USERNAME"
+        user = User.users.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                name = valid_name
+                )
+        self.assertEqual(valid_name, user.name)
+
     # UserManager
     def test_user_should_be_created_via_user_manager(self):
         try:

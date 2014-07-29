@@ -17,6 +17,9 @@ class UserManager(BaseUserManager):
         user = self.model(email = self.normalize_email(email))
         user.set_password(password)
 
+        if "name" in kwargs:
+            user.name = kwargs["name"]
+
         if "is_admin" in kwargs and kwargs["is_admin"]:
             user.is_admin = True
 
@@ -31,7 +34,8 @@ class UserManager(BaseUserManager):
             raise ValidationError("user password length should be at least 6")
 
 class User(AbstractBaseUser):
-    email = models.CharField(
+    name = models.CharField(max_length = 20)
+    email = models.EmailField(
                 verbose_name = "Email Address",
                 max_length = 50,
                 unique = True,

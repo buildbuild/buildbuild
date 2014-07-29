@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser
 )
+import re
 
 class UserManager(BaseUserManager):
     #Create
@@ -17,6 +18,10 @@ class UserManager(BaseUserManager):
 
         # Validation
         User.objects.validate_email(email)
+        User.objects.validate_password(password)
+        User.objects.validate_org(organization)
+        User.objects.validate_phone(phone_number)
+
 
         #Save and Return
         user = self.model(
@@ -39,6 +44,12 @@ class UserManager(BaseUserManager):
         :param **kwargs = Keyword : Check Whether System, Organization admin Fields are set.
         :return: MyUser object
         """
+
+        # Validation
+        User.objects.validate_email(email)
+        User.objects.validate_password(password)
+        User.objects.validate_org(organization)
+        User.objects.validate_phone(phone_number)
 
         user = self.create_user(
             email=email,
@@ -89,9 +100,23 @@ class UserManager(BaseUserManager):
         user = User.objects.get_user(email)
         user.is_active = False
 
+    #Validation Method
     def validate_email(self, email):
         if not email:
             raise ValueError("Email must be entered.")
+
+    def validate_password(self, password):
+        if len(password) < 6:
+            raise ValueError("Password need more than 6 length.")
+
+    def validate_org(self, organization):
+        if len(organization) < 4:
+            raise ValueError("Organization name is too short.")
+
+    def validate_phone(self, phonenumber):
+        result = re.search(r'^(\d{3}--\d{3}--\d{4})$',phonenumber)
+        if result is None:
+            raise ValueError("Phone number is invalid.")
 
 class User(AbstractBaseUser):
     email = models.EmailField(

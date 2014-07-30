@@ -59,10 +59,10 @@ class UserManager(BaseUserManager):
             password=password,
         )
 
-        if "is_admin" in kwargs["is_admin"] and kwargs['is_admin']:
+        if kwargs.has_key('is_admin') and kwargs['is_admin']:
             user.is_admin = True
 
-        if "is_org_admin" in kwargs["is_org_admin"] and kwargs['is_org_admin']:
+        if kwargs.has_key('is_org_admin') and kwargs['is_org_admin']:
             user.is_org_admin = True
 
         user.save(using=self._db)
@@ -82,19 +82,19 @@ class UserManager(BaseUserManager):
     def update_user(self, email, **kwargs):
         User.objects.validate_email(email)
         user = User.objects.get_user(email)
-        if 'user_name' in kwargs['user_name']:
+        if kwargs.has_key('user_name'):
             user.user_name = kwargs['user_name']
-        elif 'phone_number' in kwargs['phone_number']:
+        elif kwargs.has_key('phone_number'):
             user.phone_number = kwargs['phone_number']
-        elif 'organization' in kwargs['organization']:
+        elif kwargs.has_key('organization'):
             user.organization = kwargs['organization']
-        elif 'password' in kwargs['password']:
+        elif kwargs.has_key('password'):
             user.set_password(kwargs['password'])
 
         user.save(using=self._db)
 
     #Delte
-    def delete_user(self, email):
+    def inactivate_user(self, email):
         User.objects.validate_email(email)
 
         user = User.objects.get_user(email)
@@ -114,7 +114,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Organization name is too short.")
 
     def validate_phone(self, phonenumber):
-        result = re.search(r'^(\d{3}--\d{3}--\d{4})$',phonenumber)
+        result = re.search(r'^(\d{10,11})$',phonenumber)
         if result is None:
             raise ValueError("Phone number is invalid.")
 

@@ -1,0 +1,8 @@
+* group modeling
+** user_id
+** groupname
+** additional info?
+
+* user-group relation modeling
+** user_id
+** group_id

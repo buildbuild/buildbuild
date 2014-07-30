@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head lang="ko-kr">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<form action="{% url "users:login" %}" method="POST" accept-charset="utf-8">
+{% csrf_token %}
+<input type="submit" value="로그인">
+</form>
+<br/>
+<form action="{% url "users:signin" %}" method="POST" accept-charset="utf-8">
+{% csrf_token %}
+<input type="submit" value="회원가입">
+</form>
+</body>
+</html>

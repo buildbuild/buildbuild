@@ -131,3 +131,10 @@ class UserModelTest(TestCase):
     def test_user_password_should_be_encrypted(self):
         user = User.users.create_user( email = self.valid_email, password = self.valid_password )
         self.assertNotEqual(self.valid_password, user.password)
+
+    # check phone number
+    def test_user_should_have_phonenumber_field(self):
+        try:
+            self.user.phonenumber
+        except AttributeError:
+            self.fail("User should have phonenumber field")

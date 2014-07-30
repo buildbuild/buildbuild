@@ -20,6 +20,10 @@ class UserManager(BaseUserManager):
         if "name" in kwargs:
             user.name = kwargs["name"]
 
+        if "phonenumber" in kwargs:
+            self.validate_phonenumber(kwargs["phonenumber"])
+            user.phonenumber = kwargs["phonenumber"]
+
         if "is_admin" in kwargs and kwargs["is_admin"]:
             user.is_admin = True
 
@@ -32,6 +36,9 @@ class UserManager(BaseUserManager):
     def validate_password(self, password):
         if len(password) < 6:
             raise ValidationError("user password length should be at least 6")
+    def validate_phonenumber(self, phonenumber):
+        if len(phonenumber) < 8:
+            raise ValidationError("user phonenumber length should be at least 8")
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)
@@ -44,6 +51,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_org_admin = models.BooleanField(default=False)
+    phonenumber = models.CharField(max_length=18)
 
     # custom UserManager
     users = UserManager()

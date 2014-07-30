@@ -138,3 +138,15 @@ class UserModelTest(TestCase):
             self.user.phonenumber
         except AttributeError:
             self.fail("User should have phonenumber field")
+
+    def test_user_phonenumber_is_at_least_8_digit(self):
+        self.user.phonenumber = "12345678"
+        self.assertGreaterEqual(len(self.user.phonenumber),8,"phone number is less than 8")
+
+    def test_user_with_short_phonenumber_should_not_be_valid(self):
+        self.assertRaises(ValidationError, User.users.create_user,
+                email = self.valid_email,
+                password = self.valid_password,
+                phonenumber = "1234567")
+
+

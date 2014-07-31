@@ -50,7 +50,7 @@ class User(AbstractBaseUser):
     phonenumber = models.CharField(max_length=18)
 
     # custom UserManager
-    users = UserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

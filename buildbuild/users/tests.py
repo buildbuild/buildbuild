@@ -33,7 +33,7 @@ class UserModelTest(TestCase):
         self.assertRaises(IntegrityError, user_with_duplicate_email.save)
 
     def test_user_with_invalid_email_should_not_be_valid(self):
-        self.assertRaises(ValidationError, User.users.create_user,
+        self.assertRaises(ValidationError, User.objects.create_user,
                 email = "INVALID_EMAIL",
                 password = self.valid_password
                 )
@@ -46,20 +46,20 @@ class UserModelTest(TestCase):
             self.fail("User should have password field")
 
     def test_user_with_short_password_should_not_be_valid(self):
-        self.assertRaises(ValidationError, User.users.create_user,
+        self.assertRaises(ValidationError, User.objects.create_user,
                 email = self.valid_email,
                 password = "foo" )
 
     # is_admin
     def test_user_with_no_is_admin_args_shoud_not_be_admin(self):
-        user = User.users.create_user(
+        user = User.objects.create_user(
                 email = self.valid_email,
                 password = self.valid_password,
                 )
         self.assertFalse(user.is_admin)
 
     def test_user_with_is_admin_args_shoud_be_admin(self):
-        user = User.users.create_user(
+        user = User.objects.create_user(
                 email = self.valid_email,
                 password = self.valid_password,
                 is_admin = True,
@@ -68,14 +68,14 @@ class UserModelTest(TestCase):
 
     # is_active
     def test_user_with_no_is_active_args_shoud_be_active(self):
-        user = User.users.create_user(
+        user = User.objects.create_user(
                 email = self.valid_email,
                 password = self.valid_password,
                 )
         self.assertTrue(user.is_active)
 
     def test_user_model_should_have_deactivate_method(self):
-        active_user = User.users.create(
+        active_user = User.objects.create(
                 email = self.valid_email,
                 password = self.valid_password,
                 # default value for is_active is True
@@ -84,7 +84,7 @@ class UserModelTest(TestCase):
         self.assertFalse(deactivated_user.is_active)
 
     def test_user_model_should_have_activate_method(self):
-        deactive_user = User.users.create(
+        deactive_user = User.objects.create(
                 email = self.valid_email,
                 password = self.valid_password,
                 is_active = False,
@@ -95,7 +95,7 @@ class UserModelTest(TestCase):
     # name
     def test_user_with_name_args_shoud_have_name(self):
         valid_name = "USERNAME"
-        user = User.users.create_user(
+        user = User.objects.create_user(
                 email = self.valid_email,
                 password = self.valid_password,
                 name = valid_name
@@ -105,7 +105,7 @@ class UserModelTest(TestCase):
     # UserManager
     def test_user_should_be_created_via_user_manager(self):
         try:
-            user = User.users.create_user(
+            user = User.objects.create_user(
                     email = self.valid_email,
                     password = self.valid_password,
                     )
@@ -113,7 +113,7 @@ class UserModelTest(TestCase):
             self.fail("User should be created via UserManager")
 
     def test_user_password_should_be_encrypted(self):
-        user = User.users.create_user( email = self.valid_email, password = self.valid_password )
+        user = User.objects.create_user( email = self.valid_email, password = self.valid_password )
         self.assertNotEqual(self.valid_password, user.password)
 
     # check phone number
@@ -128,7 +128,7 @@ class UserModelTest(TestCase):
         self.assertGreaterEqual(len(self.user.phonenumber),8,"phone number is less than 8")
 
     def test_user_with_short_phonenumber_should_not_be_valid(self):
-        self.assertRaises(ValidationError, User.users.create_user,
+        self.assertRaises(ValidationError, User.objects.create_user,
                 email = self.valid_email,
                 password = self.valid_password,
                 phonenumber = "1234567")

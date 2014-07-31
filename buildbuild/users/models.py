@@ -27,9 +27,6 @@ class UserManager(BaseUserManager):
         if "is_admin" in kwargs and kwargs["is_admin"]:
             user.is_admin = True
 
-        if "is_org_admin" in kwargs and kwargs["is_org_admin"]:
-            user.is_org_admin = True
-
         user.save(using = self._db)
         return user
 
@@ -50,11 +47,10 @@ class User(AbstractBaseUser):
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
-    is_org_admin = models.BooleanField(default=False)
     phonenumber = models.CharField(max_length=18)
 
     # custom UserManager
-    users = UserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

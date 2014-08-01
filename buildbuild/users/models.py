@@ -32,10 +32,12 @@ class UserManager(BaseUserManager):
 
     def validate_password(self, password):
         if len(password) < 6:
-            raise ValidationError("user password length should be at least 6")
+            raise ValidationError(("user password length should be at least 6"),
+                                  code='invalid')
     def validate_phonenumber(self, phonenumber):
         if len(phonenumber) < 8:
-            raise ValidationError("user phonenumber length should be at least 8")
+            raise ValidationError(("user phonenumber length should be at least 8"),
+                                  code='invalid')
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)

@@ -29,3 +29,9 @@ class UserPhonenumberTest(TestCase):
                           email=self.valid_email,
                           password=self.valid_password,
                           phonenumber=self.invalid_short_phonenumber)
+
+    def test_user_with_digit_should_not_be_valid(self):
+        self.assertRaises(ValidationError, User.objects.create_user,
+                            email=self.valid_email,
+                            password=self.valid_password,
+                            phonenumber=self.invalid_not_digit_phonenumber)

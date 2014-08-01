@@ -3,6 +3,7 @@ from users.models import User
 
 from django.core.exceptions import ValidationError
 
+
 class UserPhonenumberTest(TestCase):
     def setUp(self):
         self.user = User()
@@ -20,10 +21,10 @@ class UserPhonenumberTest(TestCase):
 
     def test_user_phonenumber_is_at_least_8_digit(self):
         self.user.phonenumber = self.valid_phonenumber
-        self.assertGreaterEqual(len(self.user.phonenumber),8,"phone number is less than 8")
+        self.assertGreaterEqual(len(self.user.phonenumber), 8, "phone number is less than 8")
 
     def test_user_with_short_phonenumber_should_not_be_valid(self):
         self.assertRaises(ValidationError, User.objects.create_user,
-                email = self.valid_email,
-                password = self.valid_password,
-                phonenumber = self.invalid_phonenumber)
+                          email=self.valid_email,
+                          password=self.valid_password,
+                          phonenumber=self.invalid_phonenumber)

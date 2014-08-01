@@ -4,6 +4,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.core.validators import validate_email
 
 from django.core.exceptions import ValidationError
+import re
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **kwargs):
@@ -38,6 +39,8 @@ class UserManager(BaseUserManager):
         if len(phonenumber) < 8:
             raise ValidationError(("user phonenumber length should be at least 8"),
                                   code='invalid')
+        if not bool(re.match('^[0-9]$', phonenumber)):
+            raise ValidationError(("user phonenumber should not be with character"))
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)

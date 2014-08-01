@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.core.validators import validate_email
 
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 import re
 
 class UserManager(BaseUserManager):
@@ -41,6 +41,12 @@ class UserManager(BaseUserManager):
                                   code='invalid')
         if not bool(re.match('^[0-9]$', phonenumber)):
             raise ValidationError(("user phonenumber should not be with character"))
+
+    def get_user(self, email):
+        try:
+            user = User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist("User has " + email + " email does not exist")
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)

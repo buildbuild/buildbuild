@@ -11,7 +11,8 @@ class UserPhonenumberTest(TestCase):
         self.valid_password = "test_password"
 
         self.valid_phonenumber = "12345678"
-        self.invalid_phonenumber = "1234567"
+        self.invalid_short_phonenumber = "1234567"
+        self.invalid_not_digit_phonenumber = "1234567a"
 
     def test_user_should_have_phonenumber_field(self):
         try:
@@ -27,4 +28,4 @@ class UserPhonenumberTest(TestCase):
         self.assertRaises(ValidationError, User.objects.create_user,
                           email=self.valid_email,
                           password=self.valid_password,
-                          phonenumber=self.invalid_phonenumber)
+                          phonenumber=self.invalid_short_phonenumber)

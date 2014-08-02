@@ -34,3 +34,8 @@ class TestUserManager(TestCase):
         self.assertRaises(ObjectDoesNotExist, User.objects.get_user,
                           email=self.invalid_email
                         )
+
+    def test_delete_user_must_disable_is_active_via_user_manager(self):
+        self.user.delete_user()
+        self.assertEqual(False, self.user.is_active,
+                         "is_active should be False")

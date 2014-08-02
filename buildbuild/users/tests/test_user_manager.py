@@ -36,6 +36,10 @@ class TestUserManager(TestCase):
                         )
 
     def test_delete_user_must_disable_is_active_via_user_manager(self):
-        self.user.objects.delete_user()
+        _user = User()
+        _user.email = self.valid_email
+        _user.password = self.valid_password
+        _user.save()
+        User.objects.delete_user(self.valid_email)
         self.assertEqual(False, self.user.is_active,
                          "is_active should be False")

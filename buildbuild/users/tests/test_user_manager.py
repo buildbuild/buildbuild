@@ -11,6 +11,8 @@ class TestUserManager(TestCase):
         self.old_phonenumber = "0123456789"
         self.new_phonenumber = "9876543210"
         self.new_invalid_phonenumber = "a1234567"
+        self.old_name = "OldName"
+        self.new_name = "NewName"
 
     def test_user_should_be_created_via_user_manager(self):
         try:
@@ -58,7 +60,7 @@ class TestUserManager(TestCase):
                     )
         User.objects.update_user(email = user.email,
                                  phonenumber = self.new_phonenumber
-                                )
+        )
         user = User.objects.get_user(user.email)
         self.assertNotEqual(user.phonenumber, self.old_phonenumber,
                          "Updated Phonenumber should not be equal with old one.")
@@ -77,4 +79,16 @@ class TestUserManager(TestCase):
             pass
         else:
             self.fail("User phonenumber only consists of digits")
-            
+
+    def test_update_user_must_update_name_field_via_user_manager(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    name = self.old_name
+                    )
+        User.objects.update_user(email = user.email,
+                                 name = self.new_name
+        )
+        user = User.objects.get_user(user.email)
+        self.assertNotEqual(user.name, self.old_name,
+                         "Updated Name "+ user.name +" should not be equal with old one.")

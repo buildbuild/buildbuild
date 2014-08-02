@@ -61,6 +61,9 @@ class UserManager(BaseUserManager):
             self.validate_phonenumber(kwargs['phonenumber'])
             user.phonenumber = kwargs['phonenumber']
 
+        if 'name' in kwargs:
+            user.name = kwargs['name']
+
         user.save(using = self._db)
 
 

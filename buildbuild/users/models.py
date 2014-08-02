@@ -19,6 +19,7 @@ class UserManager(BaseUserManager):
         user.set_password(password)
 
         if "name" in kwargs:
+            self.validate_name(kwargs['name'])
             user.name = kwargs["name"]
 
         if "phonenumber" in kwargs:
@@ -35,12 +36,22 @@ class UserManager(BaseUserManager):
         if len(password) < 6:
             raise ValidationError(("user password length should be at least 6"),
                                   code='invalid')
+
     def validate_phonenumber(self, phonenumber):
         if len(phonenumber) < 8:
             raise ValidationError(("user phonenumber length should be at least 8"),
                                   code='invalid')
         if not bool(re.match('^\d+$', phonenumber)):
             raise ValidationError(("user phonenumber should not be with character"))
+
+    def validate_name(self, name):
+        if len(name) > 20:
+            raise ValidationError(("user name length should be at most 20"),
+                                    code = 'invalid')
+        if bool(re.match('^[ a-zA-Z_]+$', name)):
+            pass
+        else:
+            raise ValidationError(("user name cannot contain things but alphabet, white space, '_'"))
 
     def get_user(self, email):
         try:

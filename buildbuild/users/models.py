@@ -39,7 +39,7 @@ class UserManager(BaseUserManager):
         if len(phonenumber) < 8:
             raise ValidationError(("user phonenumber length should be at least 8"),
                                   code='invalid')
-        if not bool(re.match('^[0-9]$', phonenumber)):
+        if not bool(re.match('^\d+$', phonenumber)):
             raise ValidationError(("user phonenumber should not be with character"))
 
     def get_user(self, email):

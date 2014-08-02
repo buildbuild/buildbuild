@@ -49,6 +49,12 @@ class UserManager(BaseUserManager):
             raise ObjectDoesNotExist("User has " + email + " email does not exist")
         return user
 
+    def delete_user(self, email):
+        user = User.objects.get_user(email)
+        user.is_active = False
+        user.save(using = self._db)
+
+
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)
     email = models.EmailField(

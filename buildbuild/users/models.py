@@ -41,7 +41,9 @@ class UserManager(BaseUserManager):
         if len(phonenumber) < 8:
             raise ValidationError(("user phonenumber length should be at least 8"),
                                   code='invalid')
-        if not bool(re.match('^\d+$', phonenumber)):
+        if bool(re.match('^[0-9]+$', phonenumber)):
+            pass
+        else:
             raise ValidationError(("user phonenumber should not be with character"))
 
     def validate_name(self, name):
@@ -73,6 +75,7 @@ class UserManager(BaseUserManager):
             user.phonenumber = kwargs['phonenumber']
 
         if 'name' in kwargs:
+            self.validate_name(kwargs['name'])
             user.name = kwargs['name']
 
         user.save(using = self._db)

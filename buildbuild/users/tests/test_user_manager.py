@@ -8,11 +8,16 @@ class TestUserManager(TestCase):
         self.valid_email = "test@example.com"
         self.valid_password = "test_password"
         self.not_created_user_email = "nouser@example.com"
+
         self.old_phonenumber = "0123456789"
         self.new_phonenumber = "9876543210"
         self.new_invalid_phonenumber = "a1234567"
+        self.new_short_length_phonenumber = "1234"
+
         self.old_name = "OldName"
         self.new_name = "NewName"
+        self.new_invalid_name = "NewName1234"
+        self.new_over_length_name = "aaaabbbbccccddddeeeef"
 
     def test_user_should_be_created_via_user_manager(self):
         try:
@@ -71,14 +76,19 @@ class TestUserManager(TestCase):
                     password = self.valid_password,
                     phonenumber = self.old_phonenumber
                     )
-        try:
-            User.objects.update_user(email = user.email,
-                                     phonenumber = self.new_invalid_phonenumber
-                                    )
-        except:
-            pass
-        else:
-            self.fail("User phonenumber only consists of digits")
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          phonenumber = self.new_invalid_phonenumber)
+
+    def test_update_user_must_not_update_short_phonenumber_via_user_manager(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    phonenumber = self.old_phonenumber
+                    )
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          phonenumber = self.new_short_length_phonenumber)
 
     def test_update_user_must_update_name_field_via_user_manager(self):
         user = User.objects.create_user(
@@ -92,3 +102,59 @@ class TestUserManager(TestCase):
         user = User.objects.get_user(user.email)
         self.assertNotEqual(user.name, self.old_name,
                          "Updated Name "+ user.name +" should not be equal with old one.")
+
+    def test_update_user_must_not_update_invalid_name_via_user_manager(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    name = self.old_name
+                    )
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          name = self.new_invalid_name)
+
+    def test_update_user_must_not_update_over_length_name_via_user_manager(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    name = self.old_name
+                    )
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          name = self.new_over_length_name)
+
+    def test_update_user_must_not_update_all_both_one_is_wrong_phonenumber(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    name = self.old_name,
+                    phonenumber = self.old_phonenumber
+                    )
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          name = self.new_name,
+                          phonenumber = self.new_invalid_phonenumber)
+
+    def test_update_user_must_not_update_all_both_one_is_wrong_name(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    name = self.old_name,
+                    phonenumber = self.old_phonenumber
+                    )
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          name = self.new_invalid_name,
+                          phonenumber = self.new_phonenumber)
+
+    def test_update_user_must_not_update_all_both_are_wrong(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                    name = self.old_name,
+                    phonenumber = self.old_phonenumber
+                    )
+        self.assertRaises(ValidationError, User.objects.update_user,
+                          email = self.valid_email,
+                          name = self.new_invalid_name,
+                          phonenumber = self.new_invalid_phonenumber)

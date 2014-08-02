@@ -51,7 +51,7 @@ class UserManager(BaseUserManager):
 
     def delete_user(self, email):
         user = User.objects.get_user(email)
-        user.is_active = False
+        user.deactivate()
         user.save(using = self._db)
 
 

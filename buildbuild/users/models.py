@@ -54,6 +54,15 @@ class UserManager(BaseUserManager):
         user.deactivate()
         user.save(using = self._db)
 
+    def update_user(self, email, **kwargs):
+        user = User.objects.get_user(email)
+
+        if 'phonenumber' in kwargs:
+            self.validate_phonenumber(kwargs['phonenumber'])
+            user.phonenumber = kwargs['phonenumber']
+
+        user.save(using = self._db)
+
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)

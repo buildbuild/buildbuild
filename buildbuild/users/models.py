@@ -47,6 +47,7 @@ class UserManager(BaseUserManager):
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
             raise ObjectDoesNotExist("User has " + email + " email does not exist")
+        return user
 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)

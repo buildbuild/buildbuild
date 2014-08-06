@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     # url(r'^$', 'buildbuild.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    url(r'^login/', "users.views.login_page"),
     url(r'^admin/', include(admin.site.urls)),
 )

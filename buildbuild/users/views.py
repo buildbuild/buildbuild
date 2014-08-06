@@ -9,7 +9,7 @@ from users.forms import LoginForm
 from users.models import User
 
 class Login(FormView):
-    template_name = "login.html"
+    template_name = "users/login.html"
     form_class = LoginForm
 
     def form_valid(self, form):

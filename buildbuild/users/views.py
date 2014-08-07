@@ -40,4 +40,5 @@ class Login(FormView):
 class Logout(RedirectView):
     def get_redirect_url(self):
         logout(self.request)
+        messages.add_message(self.request, messages.SUCCESS, "Successfully Logout")
         return reverse("login")

@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.views.generic.edit import FormView
 from django.contrib.auth import login
 from django.contrib.auth import authenticate
 from users.models import User, UserManager
-from django.conf import settings
 from users.forms import LoginForm
 from users.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
     if request.method == 'GET':
@@ -21,13 +21,24 @@ class ListAllView(ListView):
     context_object_name = 'userList'
 
     def get_queryset(self):
-        """Return the all signed users."""
+        if User.objects.count() == 0:
+            raise Http404
+
         return User.objects.order_by('id')
 
 class ListOneView(DetailView):
     template_name = 'users/listOne.html'
     model = User
     context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        try:
+            obj = queryset.get(email=self.kwargs['email'])
+        except ObjectDoesNotExist:
+            raise Http404
+        return obj
 
 class Login(FormView):
     template_name = "users/login.html"

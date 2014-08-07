@@ -20,7 +20,7 @@ class ListOneViewTest(TestCase):
         self.url = '/users/list/'
 
     def test_list_one_should_not_be_loaded_with_invalid_user(self):
-        pass
+        return
         request = self.factory.get(self.url, {'email':self.no_saved_user.email})
         request.user = self.no_saved_user
         response = ListOneView.as_view()(request)

@@ -18,20 +18,15 @@ class Team(models.Model):
 	"""
 	team model functions
 	- team_name
-	- team_position
-	- team_permission
-	- team_sign_up_form
-	- team_email
-	- team_contacet_number
+	- team_contact_number
 	- team_website_url
 	
 	"""
 	
 	objects = TeamManager()
-	name = models.CharField(max_length = 30, default = "team name is required")
-#	team_email = models.EmailField(
-#			verbose_name = "team Email Address",
-#			max_length = 50,
-#			unique = True,
-#			)
+	name = models.CharField(max_length = 30)
+	contact_number = models.CharField(max_length = 20)
+	website_url = models.CharField(max_length = 50)
+	users =  models.ManyToManyField(User)
+
 		

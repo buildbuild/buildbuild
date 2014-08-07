@@ -10,10 +10,29 @@
   </head>
   <body>
   <header>
-    buildbuild header ( not implemented )
+    <h1>BuildBuild</h1>
   </header>
 
+  <nav>
+    {% if user.is_authenticated %}
+    <div>Welcome, {{ user.email }}</div>
+      <a href="/logout/">Logout</a>
+    {% else %}
+      <a href="/login/">Login</a>
+    {% endif %}
+  </nav>
+
   <div class="container">
+    <div class="messages">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    </div>
+
     {% block content %}
     {% endblock %}
   </div>

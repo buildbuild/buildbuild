@@ -1,8 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+
 from django.views.generic.edit import FormView
+from django.views.generic.base import RedirectView
+
 from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.contrib.auth import authenticate
+from django.contrib import messages
+
+from django.core.urlresolvers import reverse
+
 from django.conf import settings
 
 from users.forms import LoginForm
@@ -19,8 +28,16 @@ class Login(FormView):
         if user is not None:
             if user.is_active:
                 login(self.request, user)
-                return HttpResponse("Success")
+                messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
+                return HttpResponseRedirect(reverse("login"))
             else:
-                return HttpResponse("Not Active")
+                messages.add_message(self.request, messages.ERROR, "ERROR : Deativated User")
+                return HttpResponseRedirect(reverse("login"))
         else:
-            return HttpResponse("Not Valid")
+            messages.add_message(self.request, messages.ERROR, "ERROR : Invalid Email / Password")
+            return HttpResponseRedirect(reverse("login"))
+
+class Logout(RedirectView):
+    def get_redirect_url(self):
+        logout(self.request)
+        return reverse("login")

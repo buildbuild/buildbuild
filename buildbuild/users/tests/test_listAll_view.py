@@ -1,8 +1,6 @@
-from users.views import ListAllView, home
 from django.test import TestCase
-from django.test.client import RequestFactory
 from django.test import Client
-from users.models import User,UserManager
+from users.models import User
 
 class ListAllViewTest(TestCase):
     def setUp(self):

@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate
 from users.models import User, UserManager
 from users.forms import LoginForm
 from users.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
     if request.method == 'GET':
@@ -29,6 +30,15 @@ class ListOneView(DetailView):
     template_name = 'users/listOne.html'
     model = User
     context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        try:
+            obj = queryset.get(email=self.kwargs['email'])
+        except ObjectDoesNotExist:
+            raise Http404
+        return obj
 
 class Login(FormView):
     template_name = "users/login.html"

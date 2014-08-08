@@ -50,3 +50,14 @@ class LoginPageTest(TestCase):
             "password": "foobar",
             })
         self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/login/")
+
+    # POST with no user information
+    def test_post_login_page_with_no_user_information_should_have_error_message(self):
+        response = self.client.post("/login/", {})
+        self.assertContains(response, "This field is required.")
+
+    """
+    - Test must be update with eloquent way.
+        - test messages
+        - test redirect url ( response["Location"] )
+    """

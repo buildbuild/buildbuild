@@ -29,7 +29,7 @@ class Login(FormView):
             if user.is_active:
                 login(self.request, user)
                 messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
-                return HttpResponseRedirect(reverse("login"))
+                return HttpResponseRedirect(reverse("home"))
             else:
                 messages.add_message(self.request, messages.ERROR, "ERROR : Deativated User")
                 return HttpResponseRedirect(reverse("login"))
@@ -41,4 +41,4 @@ class Logout(RedirectView):
     def get_redirect_url(self):
         logout(self.request)
         messages.add_message(self.request, messages.SUCCESS, "Successfully Logout")
-        return reverse("login")
+        return reverse("home")

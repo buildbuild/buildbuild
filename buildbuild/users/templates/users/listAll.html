@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<table>
+<tr>
+    <th>id</th><th>Email</th><th>name</th><th>is_active</th><th>is_admin</th><th>phonenumber</th>
+</tr>
+{% for user in userList %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.is_active }}</td>
+        <td>{{ user.is_admin }}</td>
+        <td>{{ user.phonenumber }}</td>
+    </tr>
+{% endfor %}
+</table>
+</body>
+</html>

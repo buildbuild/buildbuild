@@ -11,7 +11,7 @@ class UserNameTest(TestCase):
         self.over_length_name = "aaaabbbbccccddddeeeef"
         self.invalid_name ="invalid_name1"
 
-    def test_user_should_have_test_field(self):
+    def test_user_should_have_name_field(self):
         try:
             self.user.name
         except AttributeError:

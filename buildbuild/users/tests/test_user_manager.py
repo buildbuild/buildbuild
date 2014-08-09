@@ -158,3 +158,31 @@ class TestUserManager(TestCase):
                           email = self.valid_email,
                           name = self.new_invalid_name,
                           phonenumber = self.new_invalid_phonenumber)
+
+    def test_superuser_should_be_created_via_user_manager(self):
+        try:
+            user = User.objects.create_superuser(
+                        email = self.valid_email,
+                        password = self.valid_password,
+                    )
+        except:
+            self.fail("Super user should be created via User  Manager")
+
+    def test_superuser_should_have_access_to_the_admin_site(self):
+        user = User.objects.create_superuser(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                )
+            
+        self.assertTrue(user.is_admin)
+        self.assertTrue(user.is_staff)
+    
+    def test_non_superuser_should_not_have_access_to_the_admin_site(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                )
+        self.assertTrue(not user.is_admin)
+        self.assertTrue(not user.is_staff)
+
+

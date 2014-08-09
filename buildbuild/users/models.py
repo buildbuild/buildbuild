@@ -26,22 +26,11 @@ class UserManager(BaseUserManager):
             self.validate_phonenumber(kwargs["phonenumber"])
             user.phonenumber = kwargs["phonenumber"]
 
-        if "is_admin" in kwargs and kwargs["is_admin"]:
-            user.is_admin = True
-
         user.save(using = self._db)
         return user
     
     def create_superuser(self, email, password, **kwargs):
         user = self.create_user(email, password = password, **kwargs)
-
-        if "name" in kwargs:
-            self.validate_name(kwargs['name'])
-            user.name = kwargs["name"]
-
-        if "phonenumber" in kwargs:
-            self.validate_phonenumber(kwargs["phonenumber"])
-            user.phonenumber = kwargs["phonenumber"]
 
         user.is_admin = True
         user.is_staff = True   
@@ -133,8 +122,14 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm, obj=None):
-        return True
+        if self.is_admin is True:
+            return True
+        else:
+            return False
+    def is_staff(self):
+        return self.is_admin
 
+    #TODO : need to check django method
     def has_module_perms(self, app_label):
         return True
 

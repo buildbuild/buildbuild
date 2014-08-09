@@ -182,20 +182,19 @@ class TestUserManager(TestCase):
                     email = self.valid_email,
                     password = self.valid_password,
                 )
-        self.assertFalse(user.is_admin)
-        self.assertFalse(user.is_staff)
+        self.assertFalse(user.is_staff())
 
     def test_get_full_name_should_be_same_as_email(self):
         user = User.objects.create_user(
                     email = self.valid_email,
                     password = self.valid_password,
                 )
-        self.assertEqual(user.email, self.get_full_name(self))
+        self.assertEqual(user.email, user.get_full_name())
 
     def test_get_short_name_should_be_same_as_email(self):
         user = User.objects.create_user(
                email = self.valid_email,
                password = self.valid_password,
                )
-        self.assertEqual(user.email, self.get_short_name(self))
+        self.assertEqual(user.email, user.get_short_name())
 

@@ -112,6 +112,7 @@ class User(AbstractBaseUser):
         self.is_active = True
         return self
 
+    #TODO : To use the functions get_full_name and get_short_name
     def get_full_name(self):
         return self.email
 
@@ -120,16 +121,17 @@ class User(AbstractBaseUser):
 
     def __unicode__(self):
         return self.email
-
+    
     def has_perm(self, perm, obj=None):
         if self.is_admin is True:
             return True
         else:
             return False
+    
     def is_staff(self):
         return self.is_admin
-
+    
     #TODO : need to check django method
     def has_module_perms(self, app_label):
         return True
-
+    

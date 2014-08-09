@@ -27,15 +27,7 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
-"""
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.messages.context_processors.messages',
-    'django.contrib.auth.context_processors.auth'
-)
-"""
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -94,13 +86,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'users.User'
-
-"""
-AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.RemoteUserBackend',
-        'django.contrib.auth.backends.ModelBackend',
-        )
-"""
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/" # Not Implemented : should have chnage to /profile or /dashboard stuff

@@ -5,13 +5,17 @@ from users import views
 admin.autodiscover()
 
 from users.views import Login
+from users.views import Logout
+
+from buildbuild.views import Home
 
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'buildbuild.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
-    url(r'^$', views.home, name='home'),
-    url(r'^login/', Login.as_view()),
+    url(r'^$', Home.as_view(), name='home'),
+    url(r'^login/', Login.as_view(), name="login"),
+    url(r'^logout/', Logout.as_view(), name="logout"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('users.urls',namespace='users')),
 )

@@ -158,3 +158,43 @@ class TestUserManager(TestCase):
                           email = self.valid_email,
                           name = self.new_invalid_name,
                           phonenumber = self.new_invalid_phonenumber)
+
+    def test_superuser_should_be_created_via_user_manager(self):
+        try:
+            user = User.objects.create_superuser(
+                        email = self.valid_email,
+                        password = self.valid_password,
+                    )
+        except:
+            self.fail("Super user should be created via User  Manager")
+
+    def test_create_superuser_should_generate_admin_user(self):
+        user = User.objects.create_superuser(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                )
+            
+        self.assertTrue(user.is_admin)
+        self.assertTrue(user.is_staff)
+    
+    def test_normal_user_should_not_be_admin_user(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                )
+        self.assertFalse(user.is_staff())
+
+    def test_get_full_name_should_be_same_as_email(self):
+        user = User.objects.create_user(
+                    email = self.valid_email,
+                    password = self.valid_password,
+                )
+        self.assertEqual(user.email, user.get_full_name())
+
+    def test_get_short_name_should_be_same_as_email(self):
+        user = User.objects.create_user(
+               email = self.valid_email,
+               password = self.valid_password,
+               )
+        self.assertEqual(user.email, user.get_short_name())
+

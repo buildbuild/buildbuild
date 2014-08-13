@@ -30,3 +30,10 @@ class TestTeamManager(TestCase):
         self.assertQuerysetEqual(teams, ["<Team: "+team.name+">",
                                           "<Team: "+second_team.name+">"],
                                  ordered=False)
+
+    def test_get_team_should_be_equal_to_proper_team(self):
+	proper_team = Team.objects.create_team(
+            name = self.valid_team_name
+	)
+	test_team = Team.objects.get_team(self.valid_team_name)
+	self.assertEqual(proper_team.name, test_team.name, "get_team should be equal to same team name")

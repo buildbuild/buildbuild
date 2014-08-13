@@ -15,6 +15,9 @@ class TeamManager(models.Manager):
     def get_all_team(self):
         return Team.objects.all()
 
+    def get_team(self, name):
+        return Team.objects.get(name = name)
+
 class Team(models.Model):
     """
     team model functions

@@ -12,6 +12,9 @@ class TeamManager(models.Manager):
         team.save(using = self._db)
         return team
 
+    def get_all_team(self):
+        return Team.objects.all()
+
 class Team(models.Model):
     """
     team model functions
@@ -25,6 +28,9 @@ class Team(models.Model):
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 50)
     users = models.ManyToManyField(User, through = 'Membership')
+
+    def __unicode__(self):
+        return self.name
 
 class Membership(models.Model):
     team = models.ForeignKey(Team)

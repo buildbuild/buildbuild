@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# No vi swapfile
+*.swp
+
 # C extensions
 *.so
 

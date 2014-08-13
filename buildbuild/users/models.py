@@ -26,9 +26,14 @@ class UserManager(BaseUserManager):
             self.validate_phonenumber(kwargs["phonenumber"])
             user.phonenumber = kwargs["phonenumber"]
 
-        if "is_admin" in kwargs and kwargs["is_admin"]:
-            user.is_admin = True
+        user.save(using = self._db)
+        return user
+    
+    def create_superuser(self, email, password, **kwargs):
+        user = self.create_user(email, password = password, **kwargs)
 
+        user.is_admin = True
+        user.is_staff = True   
         user.save(using = self._db)
         return user
 
@@ -80,7 +85,6 @@ class UserManager(BaseUserManager):
 
         user.save(using = self._db)
 
-
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)
     email = models.EmailField(
@@ -91,6 +95,7 @@ class User(AbstractBaseUser):
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
     phonenumber = models.CharField(max_length=18)
 
     # custom UserManager
@@ -106,3 +111,27 @@ class User(AbstractBaseUser):
     def activate(self):
         self.is_active = True
         return self
+
+    #TODO : To use the functions get_full_name and get_short_name
+    def get_full_name(self):
+        return self.email
+
+    def get_short_name(self):
+        return self.email
+
+    def __unicode__(self):
+        return self.email
+    
+    def has_perm(self, perm, obj=None):
+        if self.is_admin is True:
+            return True
+        else:
+            return False
+    
+    def is_staff(self):
+        return self.is_admin
+    
+    #TODO : need to check django method
+    def has_module_perms(self, app_label):
+        return True
+    

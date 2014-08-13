@@ -15,4 +15,4 @@ class team_manager_test(TestCase):
         try:
             self.membership.date_joined
         except AttributeError:
-            slef.fail("tema membership should have date_joined")
+            self.fail("team membership should have date_joined")

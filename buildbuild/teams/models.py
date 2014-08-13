@@ -24,7 +24,7 @@ class Team(models.Model):
     name = models.CharField(max_length = 30)
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 50)
-    users =  models.ManyToManyField(User, through = 'Membership')
+    users = models.ManyToManyField(User, through = 'Membership')
 
 class Membership(models.Model):
     team = models.ForeignKey(Team)

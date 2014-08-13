@@ -1,5 +1,6 @@
 from django.test import TestCase
 from teams.models import Team,TeamManager
+from django.core.exceptions import ValidationError
 
 class TestTeamManager(TestCase):
     def setUp(self):
@@ -8,6 +9,7 @@ class TestTeamManager(TestCase):
 
         self.valid_team_name = "TeamTeam"
         self.valid_second_team_name = "TeamTeam2"
+	self.invalid_long_length_name = "aaaaaaaaaabbbbbbbbbbccccccccccd"
 
     def test_team_should_be_generated_using_create_team(self):
         try:
@@ -37,3 +39,13 @@ class TestTeamManager(TestCase):
 	)
 	test_team = Team.objects.get_team(self.valid_team_name)
 	self.assertEqual(proper_team.name, test_team.name, "get_team should be equal to same team name")
+
+    def test_more_than_30_letters_team_name_must_raise_validation_error(self):
+	    try:
+	    	team = Team.objects.create_team(
+ 	        	   name = self.invalid_long_length_name
+			    )
+	    except ValidationError:
+		pass
+	    else:
+	 	self.fail("More than 30 letters name should not be accepted")

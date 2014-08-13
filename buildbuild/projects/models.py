@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from teams.models import Team
 
 class ProjectManager(models.Manager):
     def create_project(self, name):
@@ -17,4 +18,5 @@ class ProjectManager(models.Manager):
 
 class Project(models.Model):
     name = models.CharField(max_length = 255, unique = True)
+    team = models.ForeignKey(Team)
     objects = ProjectManager()

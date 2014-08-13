@@ -1,6 +1,7 @@
 from django.test import TestCase
 from projects.models import Project
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 
 class TestProject(TestCase):
     def setUp(self):
@@ -18,3 +19,10 @@ class TestProject(TestCase):
         project_with_duplicate_name = Project(name = self.project.name)
 
         self.assertRaises(IntegrityError, project_with_duplicate_name.save)
+
+    def test_project_name_is_at_most_255_characters(self):
+        self.assertRaises(
+            ValidationError,
+            Project.objects.create_project,
+            name = "a" * 256,
+        )

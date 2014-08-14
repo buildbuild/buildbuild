@@ -9,8 +9,8 @@ class TestProjectName(TestCase):
         self.project = Project()
 
         # Project should belongs to a Team
-        team = Team.objects.create_team(name = "test_team_name")
-        self.project.team = team
+        self.team = Team.objects.create_team(name = "test_team_name")
+        self.project.team = self.team
 
     def test_project_should_have_name(self):
         try:
@@ -30,4 +30,5 @@ class TestProjectName(TestCase):
             ValidationError,
             Project.objects.create_project,
             name = "a" * 256,
+            team = self.team
         )

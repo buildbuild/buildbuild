@@ -1,16 +1,19 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from teams.models import Team
+from teams.models import Team, TeamManager
 
 class ProjectManager(models.Manager):
-    def create_project(self, name):
+    def create_project(self, name, team):
         project = self.model()
+
         self.validate_name(name)
+
         project.name = name
-        project.save()
+        project.team = team
+
+        project.save(using = self.db)
 
         return project
-
 
     def validate_name(self, name):
         if len(name) > 20:

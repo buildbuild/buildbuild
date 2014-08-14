@@ -7,10 +7,22 @@ from django.core.exceptions import ValidationError
 class TeamManager(models.Manager):
     def create_team(self, name, **kwargs):
         team = self.model()
+	self.validate_name(name)
         team.name = name
 
         team.save(using = self._db)
         return team
+
+    def get_all_team(self):
+        return Team.objects.all()
+
+    def get_team(self, name):
+	self.validate_name(name)
+        return Team.objects.get(name = name)
+
+    def validate_name(self, name):
+	if len(name) > 30 :
+	    raise ValidationError("Name cannot contain more than 30 characters")
 
 class Team(models.Model):
     """
@@ -24,7 +36,10 @@ class Team(models.Model):
     name = models.CharField(max_length = 30)
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 50)
-    users =  models.ManyToManyField(User, through = 'Membership')
+    users = models.ManyToManyField(User, through = 'Membership')
+
+    def __unicode__(self):
+        return self.name
 
 class Membership(models.Model):
     team = models.ForeignKey(Team)

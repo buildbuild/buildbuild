@@ -16,10 +16,6 @@ class TestTeamManager(TestCase):
                                                 "123456789-123456789-123456789-" \
                                                 "123456789-123456789-1" \
 
-
-
-
-
     def test_team_should_be_generated_using_create_team(self):
         try:
             team = Team.objects.create_team(

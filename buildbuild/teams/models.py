@@ -65,3 +65,9 @@ class Membership(models.Model):
     user = models.ForeignKey(User)
     date_joined = models.DateField()
     is_admin = models.BooleanField(default=False)
+
+
+class WaitList(models.Model):
+    team = models.ForeignKey(Team, related_name="waiting_list")
+    user = models.ForeignKey(User, related_name="+")
+    request_date = models.DateField()

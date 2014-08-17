@@ -9,12 +9,9 @@ class TestTeamManager(TestCase):
 
         self.valid_team_name = "TeamTeam"
         self.valid_second_team_name = "TeamTeam2"
-    	self.invalid_long_length_name = "aaaaaaaaaabbbbbbbbbbccccccccccd"
-        self.invalid_long_length_contact_number = "123456789-123456789-1"
-        self.inavalid_long_length_website_url = "123456789-123456789-123456789-" \
-                                                "123456789-123456789-123456789-" \
-                                                "123456789-123456789-123456789-" \
-                                                "123456789-123456789-1" \
+        self.invalid_long_length_name = "a" * 31
+        self.invalid_long_length_contact_number = "a" * 21
+        self.invalid_long_length_website_url = "a" * 81
 
     def test_team_should_be_generated_using_create_team(self):
         try:
@@ -70,7 +67,7 @@ class TestTeamManager(TestCase):
         try:
             team = Team.objects.create_team(
                     name = self.valid_team_name,
-                    website_url = self.inavalid_long_length_website_url
+                    website_url = self.invalid_long_length_website_url
                 )
         except ValidationError:
             pass

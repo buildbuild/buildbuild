@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from teams.models import Team, TeamManager
+from teams.models import Team
 
 class ProjectManager(models.Manager):
     def create_project(self, name, team):

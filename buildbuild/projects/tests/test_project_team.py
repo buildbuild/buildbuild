@@ -1,7 +1,6 @@
 from django.test import TestCase
 from projects.models import Project
 from teams.models import Team
-from django.core.exceptions import ObjectDoesNotExist
 
 class TestProjectTeam(TestCase):
     def setUp(self):

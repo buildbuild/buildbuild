@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+from __future__ import absolute_import
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -98,8 +100,6 @@ LOGIN_REDIRECT_URL = "/" # Not Implemented : should have chnage to /profile or /
 
 
 # Celery Integration
-
-from __future__ import absolute_import
 
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

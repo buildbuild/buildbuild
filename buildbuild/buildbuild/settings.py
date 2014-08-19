@@ -38,6 +38,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Python Packages
+    'djcelery',
+
+    # Custom Apps
     'users',
     'teams',
     'projects',

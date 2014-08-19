@@ -95,3 +95,11 @@ AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/" # Not Implemented : should have chnage to /profile or /dashboard stuff
+
+
+# Celery Integration
+
+from __future__ import absolute_import
+
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

@@ -46,3 +46,14 @@ class TestWaitList(TestCase):
             ObjectDoesNotExist, WaitList.objects.get_wait_list,
             team_name = self.non_exist_team_name
         )
+
+    def test_delete_list_should_be_removed_from_list(self):
+        WaitList.objects.append_list(
+            team_name=self.team_name,
+            user_email=self.user_email
+        )
+        WaitList.objects.delete_from_list(team_name=self.team_name)
+        self.assertRaises(
+            ObjectDoesNotExist, WaitList.objects.get_wait_list,
+            team_name = self.team_name
+        )

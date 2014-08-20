@@ -81,12 +81,20 @@ class WaitListManager(models.Manager):
         return wait_list
 
     def get_wait_list(self, team_name):
+        list = self.check_in_list(team_name)
+        return list
+
+    def delete_from_list(self, team_name):
+        self.check_in_list(team_name)
+        WaitList.objects.filter(team__name__exact = team_name).delete()
+
+    def check_in_list(self, team_name):
         Team.objects.validate_name(team_name)
         return_list = WaitList.objects.filter(team__name__exact = team_name)
         if len(return_list) is 0:
             raise ObjectDoesNotExist
-        return return_list
-
+        else:
+            return return_list
 
 class WaitList(models.Model):
     team = models.ForeignKey('teams.Team', related_name="waiting_list")

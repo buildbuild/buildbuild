@@ -1,6 +1,8 @@
 from django.db import models
+from django.utils import timezone
 from users.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.validators import validate_email
 
 # Create your models here.
 
@@ -67,7 +69,28 @@ class Membership(models.Model):
     is_admin = models.BooleanField(default=False)
 
 
+class WaitListManager(models.Manager):
+    def append_list(self, team_name, user_email):
+        wait_list = self.model()
+        validate_email(user_email)
+        user = User.objects.get_user(user_email)
+        wait_list.user = user
+        team = Team.objects.get_team(team_name)
+        wait_list.team = team
+        wait_list.save(using = self._db)
+        return wait_list
+
+    def get_wait_list(self, team_name):
+        Team.objects.validate_name(team_name)
+        return_list = WaitList.objects.filter(team__name__exact = team_name)
+        if len(return_list) is 0:
+            raise ObjectDoesNotExist
+        return return_list
+
+
 class WaitList(models.Model):
-    team = models.ForeignKey(Team, related_name="waiting_list")
-    user = models.ForeignKey(User, related_name="+")
-    request_date = models.DateField()
+    team = models.ForeignKey('teams.Team', related_name="waiting_list")
+    user = models.ForeignKey('users.User', related_name="+")
+    request_date = models.DateTimeField(default=timezone.now())
+
+    objects = WaitListManager()

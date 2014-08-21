@@ -16,7 +16,9 @@ class ProjectManager(models.Manager):
         return project
 
     def validate_name(self, name):
-        if len(name) > 20:
+        if len(name) < 1:
+            raise ValidationError("project must have project name")
+        if len(name) > 255:
             raise ValidationError("project name is at most 255 chracters")
 
 class Project(models.Model):

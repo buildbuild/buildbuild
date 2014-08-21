@@ -42,7 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     # Python Packages
-    'djcelery',
+    'celery',
 
     # Custom Apps
     'users',

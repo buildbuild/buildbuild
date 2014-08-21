@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+from __future__ import absolute_import
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -38,6 +40,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Python Packages
+    'djcelery',
+
+    # Custom Apps
     'users',
     'teams',
     'projects',
@@ -90,3 +97,9 @@ AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/" # Not Implemented : should have chnage to /profile or /dashboard stuff
+
+
+# Celery Integration
+
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'

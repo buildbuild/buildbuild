@@ -4,13 +4,13 @@ from teams.models import Team
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-class TestProject(TestCase):
+class TestProjectName(TestCase):
     def setUp(self):
         self.project = Project()
 
         # Project should belongs to a Team
-        team = Team.objects.create_team(name = "test_team_name")
-        self.project.team = team
+        self.team = Team.objects.create_team(name = "test_team_name")
+        self.project.team = self.team
 
     def test_project_should_have_name(self):
         try:
@@ -30,11 +30,5 @@ class TestProject(TestCase):
             ValidationError,
             Project.objects.create_project,
             name = "a" * 256,
+            team = self.team
         )
-
-    def test_project_should_have_team_id(self):
-        try:
-            self.project.team
-        except AttributeError:
-            self.fail("Project should have team id")
-

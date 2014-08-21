@@ -3,17 +3,22 @@ from django.core.exceptions import ValidationError
 from teams.models import Team
 
 class ProjectManager(models.Manager):
-    def create_project(self, name):
+    def create_project(self, name, team):
         project = self.model()
+
         self.validate_name(name)
+
         project.name = name
-        project.save()
+        project.team = team
+
+        project.save(using = self.db)
 
         return project
 
-
     def validate_name(self, name):
-        if len(name) > 20:
+        if len(name) < 1:
+            raise ValidationError("project must have project name")
+        if len(name) > 255:
             raise ValidationError("project name is at most 255 chracters")
 
 class Project(models.Model):

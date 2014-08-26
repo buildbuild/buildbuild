@@ -6,6 +6,7 @@ admin.autodiscover()
 
 from users.views import Login
 from users.views import Logout
+from users.views import SignUp
 
 from buildbuild.views import Home
 
@@ -18,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^logout/', Logout.as_view(), name="logout"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('users.urls',namespace='users')),
+    url(r'^signup/', SignUp.as_view(), name="signup"),
 )

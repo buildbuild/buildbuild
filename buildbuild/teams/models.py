@@ -40,8 +40,8 @@ class TeamManager(models.Manager):
             raise ValidationError("Contact number cannot contain more than 20 digits")
 
     def validate_website_url(self, website_url):
-        if len(website_url) > 20:
-            raise ValidationError("Website URL cannot contain more than 80 characters")
+        if len(website_url) > 255:
+            raise ValidationError("Website URL cannot contain more than 255 characters")
 
 
 
@@ -56,7 +56,7 @@ class Team(models.Model):
     objects = TeamManager()
     name = models.CharField(max_length = 30)
     contact_number = models.CharField(max_length = 20)
-    website_url = models.URLField(max_length = 80)
+    website_url = models.URLField(max_length = 255)
     users = models.ManyToManyField(User, through = 'Membership')
 
     def __unicode__(self):

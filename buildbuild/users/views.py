@@ -14,8 +14,11 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 from users.forms import LoginForm
+from users.forms import SignUpForm
 from users.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 
 def home(request):
     if request.method == 'GET':
@@ -72,3 +75,24 @@ class Logout(RedirectView):
         logout(self.request)
         messages.add_message(self.request, messages.SUCCESS, "Successfully Logout")
         return reverse("home")
+
+class SignUp(FormView, User):
+    template_name = "users/signup.html"
+    form_class = SignUpForm
+     
+    def form_valid(self, form):
+        email = self.request.POST["email"]
+        password = self.request.POST["password"]
+
+        try:
+            User.objects.create_user(email, password = password)
+        except ValidationError:
+            messages.add_message(self.request, messages.ERROR, "ERROR : detected invalid information")
+            return HttpResponseRedirect(reverse("signup"))           
+        except IntegrityError:
+            messages.add_message(self.request, messages.ERROR, "ERROR : The account already exists")
+            return HttpResponseRedirect(reverse("signup"))
+        else: 
+            messages.add_message(self.request, messages.SUCCESS, "Successfully Signup")
+            return HttpResponseRedirect(reverse("home"))
+        

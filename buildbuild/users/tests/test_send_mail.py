@@ -9,6 +9,8 @@ from django.conf import settings
 
 from django.db.utils import OperationalError
 
+from users import tasks
+
 class SignUpPageTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -41,3 +43,6 @@ class SignUpPageTest(TestCase):
         # Verify that the subject of the first message is correct.
         self.assertEqual(mail.outbox[0].subject, settings.SUBJECT)
 
+    def test_send_mail_to_new_user_using_celery(self):
+        mail.outbox = []
+        self.assertTrue(tasks.send_mail_to_new_user_using_celery.delay())

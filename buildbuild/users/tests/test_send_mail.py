@@ -33,7 +33,7 @@ class SignUpPageTest(TestCase):
                 settings.SUBJECT,
                 settings.CONTENTS,
                 settings.EMAIL_HOST_USER,
-                    ['buidlbuild@gmail.com'],
+                    [self.valid_email],
                     fail_silently=False
                     )
  

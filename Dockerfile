@@ -1,4 +1,4 @@
-FROM ubuntu:precise
+FROM ubuntu:trusty
 MAINTAINER dobestan "dobestan@gmail.com"
 
 # Installing Depenent Packages
@@ -8,6 +8,11 @@ RUN apt-get install -y python-dev python-setuptools
 RUN apt-get install -y supervisor
 RUN apt-get install -y git-core
 RUN apt-get install -y libncurses5-dev # included for installing gnureadline installation
+RUN apt-get install -y nodejs
+RUN apt-get install -y nodejs-legacy
+RUN apt-get install -y npm
+
+RUN npm install -g bower
 
 # Installing Python Pacakges
 RUN easy_install pip
@@ -30,6 +35,8 @@ ADD .docker/run.sh /usr/local/bin/run
 RUN /opt/ve/buildbuild/bin/pip install -r /opt/apps/buildbuild/requirements.txt
 
 RUN (cd /opt/apps/buildbuild/buildbuild && /opt/ve/buildbuild/bin/python manage.py syncdb --noinput)
+
+RUN (cd /opt/apps/buildbuild/buildbuild && /opt/ve/buildbuild/bin/python manage.py bower install)
 RUN (cd /opt/apps/buildbuild/buildbuild && /opt/ve/buildbuild/bin/python manage.py collectstatic --noinput)
 
 EXPOSE 8000

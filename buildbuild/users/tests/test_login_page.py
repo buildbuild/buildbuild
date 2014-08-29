@@ -29,12 +29,12 @@ class LoginPageTest(TestCase):
             })
         self.assertEqual(response.status_code, 302)
 
-    def test_post_login_page_with_valid_user_information_should_redirect_to_home(self):
+    def test_post_login_page_with_valid_user_information_should_redirect_to_login(self):
         response = self.client.post("/login/", {
             "email": self.valid_email,
             "password": self.valid_password,
             })
-        self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/")
+        self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/login/")
 
     # POST with invalid user information
     def test_post_login_page_with_invalid_user_information_should_return_302(self):

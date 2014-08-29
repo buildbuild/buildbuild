@@ -103,3 +103,21 @@ LOGIN_REDIRECT_URL = "/" # Not Implemented : should have chnage to /profile or /
 
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+# Defalut SMTP Host Setting
+
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465  #for submission 
+EMAIL_HOST_USER = "buildbuildteam@gmail.com"
+EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']
+DEFAULT_FROM_EMAIL = "buildbuild@gmail.com"
+SERVER_EMAIL = "buildbuildteam@gmail.com"
+#DEFAULT_TO_EMAIL = 'to email'
+
+# The mailing contents for new user
+SUBJECT = " Welcome to buidlbuild team! "
+CONTENTS = "Hello~"
+
+

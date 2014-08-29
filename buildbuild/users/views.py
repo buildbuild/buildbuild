@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect
+from django.http import HttpResponse
+from django.http import HttpResponseNotFound
+from django.http import Http404
+from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic import DetailView
 from django.views.generic.edit import FormView
@@ -22,9 +25,11 @@ from django.db import IntegrityError
 from django.db import OperationalError
 from django.core.exceptions import ValidationError
 
-
+"""
 from django.core.mail import send_mail
 from django.conf import settings
+"""
+from users import tasks
 
 def home(request):
     if request.method == 'GET':
@@ -128,12 +133,7 @@ class SignUp(FormView, User):
                     "Successfully Signup"
                     )
             try:
-                send_mail(
-                    settings.SUBJECT, 
-                    settings.CONTENTS, 
-                    settings.EMAIL_HOST_USER, 
-                    ['buidlbuild@gmail.com'], fail_silently=False
-                )
+                tasks.send_mail_to_new_user_using_celery.delay()
             except OperationalError:
              messages.add_message(
                     self.request, 

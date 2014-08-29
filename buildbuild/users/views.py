@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormView
 from django.views.generic.list import ListView
+from django.views.generic import DetailView
 
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -17,8 +18,13 @@ from users.models import User
 from users.forms import LoginForm
 
 
-class UsersIndex(ListView):
+class UsersIndexView(ListView):
     template_name = 'users/index.html'
+    model = User
+
+
+class UserShowView(DetailView):
+    template_name = "users/show.html"
     model = User
 
 

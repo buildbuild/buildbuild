@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'djangobower',
 
     # Custom Apps
+    'api',
     'users',
     'teams',
     'projects',

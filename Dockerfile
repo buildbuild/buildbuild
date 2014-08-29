@@ -30,18 +30,7 @@ ADD .docker/run.sh /usr/local/bin/run
 RUN /opt/ve/buildbuild/bin/pip install -r /opt/apps/buildbuild/requirements.txt
 
 RUN (cd /opt/apps/buildbuild/buildbuild && /opt/ve/buildbuild/bin/python manage.py syncdb --noinput)
-
-# in real deployment,
-# static files should be collected via manage.py collectstatic command
-#
-# at this moment, buildbuild django project has no static files
-# so collectstatic command is intentionally excluded from Dockerfile
-#
-# before uncomment below RUN command,
-# should explicitly set STATIC_ROOT in buildbuild/settings.py
-#
-# for example,
-# RUN (cd /opt/apps/buildbuild && /opt/ve/buildbuild/bin/python manage.py collectstatic --noinput)
+RUN (cd /opt/apps/buildbuild/buildbuild && /opt/ve/buildbuild/bin/python manage.py collectstatic --noinput)
 
 EXPOSE 8000
 CMD ["/bin/sh", "-e", "/usr/local/bin/run"]

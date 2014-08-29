@@ -12,7 +12,7 @@ def send_mail_to_new_user_using_celery(self):
         settings.SUBJECT, 
         settings.CONTENTS, 
         settings.EMAIL_HOST_USER, 
-        ['buidlbuild@gmail.com'], fail_silently=False
+        [self.email], fail_silently=False
         )
     return is_send_mail_correctly
 

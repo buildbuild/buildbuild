@@ -16,9 +16,15 @@ from django.conf import settings
 from users.forms import LoginForm
 from users.forms import SignUpForm
 from users.models import User
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
+from django.db import OperationalError
 from django.core.exceptions import ValidationError
+
+
+from django.core.mail import send_mail
+from django.conf import settings
 
 def home(request):
     if request.method == 'GET':
@@ -61,25 +67,40 @@ class Login(FormView):
         if user is not None:
             if user.is_active:
                 login(self.request, user)
-                messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
+                messages.add_message(
+                        self.request, 
+                        messages.SUCCESS, 
+                        "Successfully Login"
+                        )
                 return HttpResponseRedirect(reverse("home"))
             else:
-                messages.add_message(self.request, messages.ERROR, "ERROR : Deativated User")
+                messages.add_message(
+                        self.request, 
+                        messages.ERROR, 
+                        "ERROR : Deativated User"
+                        )
                 return HttpResponseRedirect(reverse("login"))
         else:
-            messages.add_message(self.request, messages.ERROR, "ERROR : Invalid Email / Password")
+            messages.add_message(
+                    self.request, 
+                    messages.ERROR, 
+                    "ERROR : Invalid Email / Password"
+                    )
             return HttpResponseRedirect(reverse("login"))
 
 class Logout(RedirectView):
     def get_redirect_url(self):
         logout(self.request)
-        messages.add_message(self.request, messages.SUCCESS, "Successfully Logout")
+        messages.add_message(
+                self.request, 
+                messages.SUCCESS, 
+                "Successfully Logout")
         return reverse("home")
 
 class SignUp(FormView, User):
     template_name = "users/signup.html"
     form_class = SignUpForm
-     
+    
     def form_valid(self, form):
         email = self.request.POST["email"]
         password = self.request.POST["password"]
@@ -87,12 +108,39 @@ class SignUp(FormView, User):
         try:
             User.objects.create_user(email, password = password)
         except ValidationError:
-            messages.add_message(self.request, messages.ERROR, "ERROR : detected invalid information")
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : detected invalid information"
+                    )
             return HttpResponseRedirect(reverse("signup"))           
         except IntegrityError:
-            messages.add_message(self.request, messages.ERROR, "ERROR : The account already exists")
+            messages.add_message(
+                    self.request, 
+                    messages.ERROR, 
+                    "ERROR : The account already exists"
+                    )
             return HttpResponseRedirect(reverse("signup"))
         else: 
-            messages.add_message(self.request, messages.SUCCESS, "Successfully Signup")
+            messages.add_message(
+                    self.request, 
+                    messages.SUCCESS, 
+                    "Successfully Signup"
+                    )
+            try:
+                send_mail(
+                    settings.SUBJECT, 
+                    settings.CONTENTS, 
+                    settings.EMAIL_HOST_USER, 
+                    ['buidlbuild@gmail.com'], fail_silently=False
+                )
+            except OperationalError:
+             messages.add_message(
+                    self.request, 
+                    messages.ERROR, 
+                    "Sign-up email was not sended"
+                    )
+               
             return HttpResponseRedirect(reverse("home"))
+
         

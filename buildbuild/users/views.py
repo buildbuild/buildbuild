@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormView
+from django.views.generic.list import ListView
 
 from django.contrib.auth import login
 from django.contrib.auth import logout
@@ -11,8 +12,14 @@ from django.contrib import messages
 
 from django.core.urlresolvers import reverse
 
+from users.models import User
 
 from users.forms import LoginForm
+
+
+class UsersIndex(ListView):
+    template_name = 'users/index.html'
+    model = User
 
 
 class Login(FormView):

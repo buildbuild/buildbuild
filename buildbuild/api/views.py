@@ -6,6 +6,9 @@ from users.serializers import UserSerializer
 from teams.models import Team
 from teams.serializers import TeamSerializer
 
+from projects.models import Project
+from projects.serializers import ProjectSerializer
+
 
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
@@ -15,6 +18,11 @@ class UserList(generics.ListAPIView):
 class TeamList(generics.ListAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
+
+
+class ProjectList(generics.ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
 
 
 class TeamDetail(generics.RetrieveAPIView):

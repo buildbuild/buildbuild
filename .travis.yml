@@ -4,7 +4,5 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - cd ./wikibootup/
+  - cd ./buildbuild/
   - python manage.py test -v2
-env: 
-  - 'BUILDBUILD_PASSWORD'

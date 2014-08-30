@@ -51,7 +51,7 @@ class Team(models.Model):
     - team_name
     - team_contact_number
     - team_website_url
-    
+
     """
     objects = TeamManager()
     name = models.CharField(max_length = 30)
@@ -65,7 +65,7 @@ class Team(models.Model):
 class Membership(models.Model):
     team = models.ForeignKey(Team)
     user = models.ForeignKey(User)
-    date_joined = models.DateField()
+    date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
 
 

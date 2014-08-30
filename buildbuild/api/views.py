@@ -37,3 +37,11 @@ class TeamUserList(generics.ListAPIView):
     def get_queryset(self):
         teamname = self.kwargs['name']
         return Team.objects.get(name=teamname).users.all()
+
+
+class TeamProjectList(generics.ListAPIView):
+    serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        teamname = self.kwargs['name']
+        return Team.objects.get(name=teamname).project_set.all()

@@ -4,9 +4,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from celery import Celery
 
-app = Celery('users')
+users = Celery('users')
 
-@app.task(name="send_mail_to_new_user_using_celery", bind=True)
+@users.task(name="send_mail_to_new_user_using_celery", bind=True)
 def send_mail_to_new_user_using_celery(self):
     is_send_mail_correctly = send_mail(
         settings.SUBJECT, 
@@ -16,6 +16,3 @@ def send_mail_to_new_user_using_celery(self):
         )
     return is_send_mail_correctly
 
-@app.task(name='add', bind=True)
-def print_print(self):
-    print "gogo celery"

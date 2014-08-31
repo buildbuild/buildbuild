@@ -46,9 +46,6 @@ class SignUpPageTest(TestCase):
             })
         self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/")
    
-    
-    #needed to change the codes... Because create_user raises an error in case of invalid password
-
     def test_post_signup_page_with_non_available_user_information_should_return_302(self):
         response = self.client.post("/signup/", {
             "email": self.valid_email,

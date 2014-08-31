@@ -39,7 +39,7 @@ Content-Type: application/json
   {"id": 3, "name": "third_team"} ]
 ```
 
-#### /api/teams/<teamname>/
+#### /api/teams/TEAM_NAME/
 ```
 GET /api/teams/<teamname>/
 ```
@@ -60,7 +60,7 @@ Content-Type: application/json
 {"detail": "Not found"}
 ```
 
-#### /api/teams/<teamname>/users/
+#### /api/teams/TEAM_NAME/users/
 ```
 GET /api/teams/<teamname>/users/
 ```
@@ -93,7 +93,7 @@ Content-Type: application/json
 {"detail": "Not found"}
 ```
 
-#### /api/teams/<teamname>/projects/
+#### /api/teams/TEAM_NAME/projects/
 ```
 GET /api/teams/<teamname>/projects/
 ```

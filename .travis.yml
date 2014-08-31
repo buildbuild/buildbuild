@@ -8,4 +8,7 @@ script:
 - python manage.py test -v2
 env:
   global:
-    secure: M946Z6/vR7YjT/qMCZb5QcElHGDcxtuKZoPZ6KFuP5Z4l5hUcUkZ8HuGBQlfuqEH598XRiG8NHNmgE6mxiDhbWJ78XABqSrLt6BpqCA4N0Yh87LaX/JF4j9ZfPkz8D75rE0EhUXkZ8hARXbe/aH9N9UfMw1GIC8A3knvjXyd5Bw=
+    secure: qErwG8P/GP2xngHC5qtt6uYyjIlhGLccdhp1oD7q36VXrbX6jjlvY8wlOiQVXS4c5yFK/MAiaFmQR++B+W5k2pLnMtuIsdkh4LYkszEEpwpR8dER/Wlkk16pZ5pDGAWO5yW87mrv/3glrLHQwozAFeVFwS8GISE3jhMEoFg9QRc=
+
+script:
+- export BUILDBUILD_PASSWORD=[secure]

@@ -8,7 +8,7 @@ class TestAPIUserListSearch(TestCase):
     def setUp(self):
         self.test_string = "test_string"
         self.user_with_test_string = User.objects.create_user(
-            email="test_user_with_test_string@example.com",
+            email="test_user_with_" + self.test_string + "@example.com",
             password="test_password",
         )
         self.user_without_test_string = User.objects.create_user(

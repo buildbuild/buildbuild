@@ -1,8 +1,6 @@
-API
----
-
 # API Usage
 
+#### /api/users/
 ```
 GET /api/users/
 ```
@@ -15,6 +13,7 @@ Content-Type: application/json
   {"id": 3, "email": "third_user@example.com"} ]
 ```
 
+#### /api/projects/
 ```
 GET /api/projects/
 ```
@@ -27,6 +26,7 @@ Content-Type: application/json
   {"id": 3, "name": "third_project"} ]
 ```
 
+#### /api/teams/
 ```
 GET /api/teams/
 ```
@@ -39,6 +39,7 @@ Content-Type: application/json
   {"id": 3, "name": "third_team"} ]
 ```
 
+#### /api/teams/<teamname>/
 ```
 GET /api/teams/<teamname>/
 ```
@@ -50,6 +51,17 @@ Content-Type: application/json
 ```
 
 ```
+GET /api/teams/<invalid_teamname>/
+```
+```
+HTTP/1.0 404 OK
+Content-Type: application/json
+
+{"detail": "Not found"}
+```
+
+#### /api/teams/<teamname>/users/
+```
 GET /api/teams/<teamname>/users/
 ```
 ```
@@ -59,4 +71,57 @@ Content-Type: application/json
 [ {"id": 1, "email": "first_user_in_team@example.com"},
   {"id": 2, "email": "second_user_in_team@example.com"},
   {"id": 3, "email": "third_user_in_team@example.com"} ]
+```
+
+```
+GET /api/teams/<teamname_with_no_user>/users/
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[]
+```
+
+```
+GET /api/teams/<invalid_teamname>/users/
+```
+```
+HTTP/1.0 404 OK
+Content-Type: application/json
+
+{"detail": "Not found"}
+```
+
+#### /api/teams/<teamname>/projects/
+```
+GET /api/teams/<teamname>/projects/
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[ {"id": 1, "name": "first_project_in_team"},
+  {"id": 2, "name": "second_project_in_team"},
+  {"id": 3, "name": "third_project_in_team"} ]
+```
+
+```
+GET /api/teams/<teamname_with_no_project>/projects/
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[]
+```
+
+```
+GET /api/teams/<invalid_teamname>/projects/
+```
+```
+HTTP/1.0 404 OK
+Content-Type: application/json
+
+{"detail": "Not found"}
 ```

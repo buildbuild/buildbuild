@@ -7,12 +7,12 @@ from celery import Celery
 users = Celery('users')
 
 @users.task(name="send_mail_to_new_user_using_celery", bind=True)
-def send_mail_to_new_user_using_celery(self):
+def send_mail_to_new_user(self, user):
     is_send_mail_correctly = send_mail(
         settings.SUBJECT, 
         settings.CONTENTS, 
         settings.EMAIL_HOST_USER, 
-        [self.email], fail_silently=False
+        [user.email], fail_silently=False
         )
     return is_send_mail_correctly
 

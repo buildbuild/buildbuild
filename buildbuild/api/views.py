@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
+from rest_framework import filters
 
 from users.models import User
 from users.serializers import UserSerializer
@@ -14,6 +15,8 @@ from projects.serializers import ProjectSerializer
 class UserList(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('email', )
 
 
 class TeamList(generics.ListAPIView):

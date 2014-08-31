@@ -53,8 +53,15 @@ class TestAPITeamUserList(TestCase):
         self.client = Client()
         self.response = self.client.get("/api/teams/" + self.team.name + "/users/")
 
+        self.not_exist_teamname = "test_teamname_not_exist"
+        self.response_with_not_exist_teamname = \
+            self.client.get("/api/teams/" + self.not_exist_teamname + "/users/")
+
     def test_api_teamuser_list_request_should_return_200(self):
         self.assertEqual(self.response.status_code, 200)
+
+    def test_api_teamuser_list_request_with_not_exist_teamname_should_return_200(self):
+        self.assertEqual(self.response_with_not_exist_teamname.status_code, 404)
 
     def test_api_teamuser_list_request_should_return_json(self):
         self.assertEqual(self.response["Content-Type"], "application/json")

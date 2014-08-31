@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
 
 from users.models import User
@@ -36,7 +37,8 @@ class TeamUserList(generics.ListAPIView):
 
     def get_queryset(self):
         teamname = self.kwargs['name']
-        return Team.objects.get(name=teamname).users.all()
+        team = get_object_or_404(Team, name=teamname)
+        return team.users.all()
 
 
 class TeamProjectList(generics.ListAPIView):
@@ -44,4 +46,5 @@ class TeamProjectList(generics.ListAPIView):
 
     def get_queryset(self):
         teamname = self.kwargs['name']
-        return Team.objects.get(name=teamname).project_set.all()
+        team = get_object_or_404(Team, name=teamname)
+        return team.project_set.all()

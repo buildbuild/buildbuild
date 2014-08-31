@@ -27,6 +27,8 @@ class TeamList(generics.ListAPIView):
 class ProjectList(generics.ListAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('name', )
 
 
 class TeamDetail(generics.RetrieveAPIView):

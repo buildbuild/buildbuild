@@ -13,6 +13,18 @@ Content-Type: application/json
   {"id": 3, "email": "third_user@example.com"} ]
 ```
 
+#### /api/users/?search={query}
+```
+GET /api/users/?search={query}
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[ {"id": 1, "email": "first_user_with_query@example.com"},
+  {"id": 2, "email": "second_user_with_query@example.com"} ]
+```
+
 #### /api/projects/
 ```
 GET /api/projects/

@@ -38,6 +38,18 @@ Content-Type: application/json
   {"id": 3, "name": "third_project"} ]
 ```
 
+#### /api/projects/?search={query}
+```
+GET /api/projects/?search={query}
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[ {"id": 1, "name": "first_project_with_query"},
+  {"id": 2, "name": "second_project_with_query"} ]
+```
+
 #### /api/teams/
 ```
 GET /api/teams/

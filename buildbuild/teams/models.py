@@ -99,6 +99,6 @@ class WaitListManager(models.Manager):
 class WaitList(models.Model):
     team = models.ForeignKey('teams.Team', related_name="waiting_list")
     user = models.ForeignKey('users.User', related_name="+")
-    request_date = models.DateTimeField(default=timezone.now())
+    request_date = models.DateTimeField(auto_now_add=True)
 
     objects = WaitListManager()

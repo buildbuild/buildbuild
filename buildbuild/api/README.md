@@ -129,6 +129,18 @@ Content-Type: application/json
 {"detail": "Not found"}
 ```
 
+#### /api/teams/TEAM_NAME/users/?search={query}
+```
+GET /api/teams/<teamname>/users/?search={query}
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[ {"id": 1, "email": "first_user_with_query_in_team@example.com"},
+  {"id": 2, "email": "second_user_with_query_in_team@example.com"} ]
+```
+
 #### /api/teams/TEAM_NAME/projects/
 ```
 GET /api/teams/<teamname>/projects/

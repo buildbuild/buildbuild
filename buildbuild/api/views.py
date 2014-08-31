@@ -41,6 +41,8 @@ class TeamDetail(generics.RetrieveAPIView):
 
 class TeamUserList(generics.ListAPIView):
     serializer_class = UserSerializer
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('email', )
 
     def get_queryset(self):
         teamname = self.kwargs['name']

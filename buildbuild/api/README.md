@@ -173,3 +173,15 @@ Content-Type: application/json
 
 {"detail": "Not found"}
 ```
+
+#### /api/teams/TEAM_NAME/projects/?search={query}
+```
+GET /api/teams/<teamname>/projects/?search={query}
+```
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+
+[ {"id": 1, "name": "first_project_with_query_in_team"},
+  {"id": 2, "name": "second_project_with_query_in_team"} ]
+```

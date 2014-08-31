@@ -70,6 +70,6 @@ class TestAPITeamUserListSearch(TestCase):
         self.response = self.client.get("/api/teams/" + self.first_team.name + "/users/?search=" + self.test_string)
 
     def test_api_teamuser_list_search_should_return_valid_result(self):
-        self.assertContains(self.response, self.user_in_first_team_with_test_string)
-        self.assertNotContains(self.response, self.user_in_first_team_without_test_string)
-        self.assertNotContains(self.response, self.user_in_second_team_with_test_string)
+        self.assertContains(self.response, self.user_in_first_team_with_test_string.email)
+        self.assertNotContains(self.response, self.user_in_first_team_without_test_string.email)
+        self.assertNotContains(self.response, self.user_in_second_team_with_test_string.email)

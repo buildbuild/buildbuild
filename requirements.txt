@@ -3,6 +3,7 @@ amqp==1.4.6
 anyjson==0.3.3
 billiard==3.3.0.18
 celery==3.1.13
+django-bower==5.0.1
 django-celery==3.1.10
 django-smtp-ssl==1.0
 gnureadline==6.3.3
@@ -10,4 +11,5 @@ ipython==2.1.0
 kombu==3.0.21
 pep8==1.5.7
 pytz==2014.4
+six==1.7.3
 wsgiref==0.1.2

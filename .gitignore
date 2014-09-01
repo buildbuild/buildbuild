@@ -56,3 +56,9 @@ docs/_build/
 
 # Database
 db.sqlite3
+
+# Bower Components ( Staticfiles )
+components/
+
+# staticfiles ( result of ./manage.py collectstatic --noinput )
+static/

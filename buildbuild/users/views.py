@@ -111,7 +111,7 @@ class SignUp(FormView, User):
         password = self.request.POST["password"]
 
         try:
-            User.objects.create_user(email, password = password)
+            new_user = User.objects.create_user(email, password = password)
         except ValidationError:
             messages.add_message(
                     self.request,
@@ -133,7 +133,7 @@ class SignUp(FormView, User):
                     "Successfully Signup"
                     )
             try:
-                tasks.send_mail_to_new_user_using_celery.delay()
+                tasks.send_mail_to_new_user.delay(new_user)
             except OperationalError:
              messages.add_message(
                     self.request, 

@@ -11,7 +11,7 @@ from django.db.utils import OperationalError
 
 from users import tasks
 
-class SignUpPageTest(TestCase):
+class Send_Email_Test(TestCase):
     def setUp(self):
         self.client = Client()
         self.valid_email = "test@example.com"
@@ -33,9 +33,9 @@ class SignUpPageTest(TestCase):
                 settings.SUBJECT,
                 settings.CONTENTS,
                 settings.EMAIL_HOST_USER,
-                    [self.valid_email],
-                    fail_silently=False
-                    )
+                [self.valid_email],
+                fail_silently=False
+                )
  
         # Test that one message has been sent.
         self.assertEqual(len(mail.outbox), 1)
@@ -43,6 +43,20 @@ class SignUpPageTest(TestCase):
         # Verify that the subject of the first message is correct.
         self.assertEqual(mail.outbox[0].subject, settings.SUBJECT)
 
+    def test_inavalid_host_user_name_cannot_send_mail(self):
+        mail.outbox = []
+        mail.send_mail(
+                settings.SUBJECT,
+                settings.CONTENTS,
+                self.invalid_host_user,
+                [self.valid_email],
+                fail_silently=False
+                )
+                
+        # Test that one message has been sent.
+        self.assertEqual(len(mail.outbox), 1)
+
     def test_send_mail_to_new_user_using_celery(self):
         mail.outbox = []
-        self.assertTrue(tasks.send_mail_to_new_user_using_celery.delay())
+        self.assertTrue(tasks.send_mail_to_new_user.delay())
+

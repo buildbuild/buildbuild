@@ -41,6 +41,7 @@ class Login(FormView):
             if user.is_active:
                 login(self.request, user)
                 messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
+                self.request.session['email'] = email
                 return HttpResponseRedirect(reverse("account"))
             else:
                 messages.add_message(self.request, messages.ERROR, "ERROR : Deactivated User")
@@ -65,4 +66,4 @@ class AccountView(DetailView):
     context_object_name = "user_account"
 
     def get_object(self, queryset=None):
-        return User.objects.get(pk=1)
+        return User.objects.get(email = self.request.session['email'])

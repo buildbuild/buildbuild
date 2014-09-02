@@ -42,7 +42,7 @@ class Login(FormView):
                 login(self.request, user)
                 messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
                 self.request.session['email'] = email
-                return HttpResponseRedirect(reverse("account"))
+                return HttpResponseRedirect(reverse("login"))
             else:
                 messages.add_message(self.request, messages.ERROR, "ERROR : Deactivated User")
                 return HttpResponseRedirect(reverse("login"))

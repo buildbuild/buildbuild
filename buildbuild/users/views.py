@@ -72,3 +72,7 @@ class Logout(RedirectView):
         logout(self.request)
         messages.add_message(self.request, messages.SUCCESS, "Successfully Logout")
         return reverse("home")
+
+class AccountView(DetailView):
+    model = User
+    template_name = 'users/account.html'

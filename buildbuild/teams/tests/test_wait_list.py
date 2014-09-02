@@ -15,7 +15,7 @@ class TestWaitList(TestCase):
         self.team = Team()
 
         self.non_exist_team_name = "NoTeam"
-
+        
         User.objects.create_user(
             email = self.user_email,
             password = self.user_password
@@ -57,3 +57,4 @@ class TestWaitList(TestCase):
             ObjectDoesNotExist, WaitList.objects.get_wait_list,
             team_name = self.team_name
         )
+

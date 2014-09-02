@@ -51,7 +51,6 @@ class Team(models.Model):
     - team_name
     - team_contact_number
     - team_website_url
-    
     """
     objects = TeamManager()
     name = models.CharField(max_length = 30)

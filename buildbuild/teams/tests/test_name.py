@@ -23,8 +23,8 @@ class team_composition_test(TestCase):
         self.team.save()
         
         try:
-            self.team.users
+            self.team.members
         except AttributeError:
-            self.fail("team must have users after save")
+            self.fail("team must have members after save")
 
             

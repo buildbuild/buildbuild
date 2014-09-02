@@ -8,6 +8,7 @@ from django.views.generic import DetailView
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
 
@@ -62,7 +63,6 @@ class AccountView(DetailView):
     template_name = 'users/account.html'
 
     slug_field = "email"
-    print(slug_field)
     context_object_name = "user_account"
 
     def get_object(self, queryset=None):

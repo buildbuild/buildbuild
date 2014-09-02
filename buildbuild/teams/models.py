@@ -43,8 +43,6 @@ class TeamManager(models.Manager):
         if len(website_url) > 255:
             raise ValidationError("Website URL cannot contain more than 255 characters")
 
-
-
 class Team(models.Model):
     """
     team model functions
@@ -57,48 +55,29 @@ class Team(models.Model):
     name = models.CharField(max_length = 30)
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 255)
-    users = models.ManyToManyField(User, through = 'Membership')
+    wait_members = models.ManyToManyField(
+            User, 
+            through = 'WaitList',
+            related_name="wait_list"
+            )
+    
+    members = models.ManyToManyField(
+            User, 
+            through = 'Membership',
+            related_name="membership"
+            )
 
     def __unicode__(self):
         return self.name
 
 class Membership(models.Model):
-    team = models.ForeignKey(Team)
-    user = models.ForeignKey(User)
+    team = models.ForeignKey(Team, related_name="membership_team")
+    user = models.ForeignKey(User, related_name="membership_member")
     date_joined = models.DateField()
     is_admin = models.BooleanField(default=False)
 
-
-class WaitListManager(models.Manager):
-    def append_list(self, team_name, user_email):
-        wait_list = self.model()
-        validate_email(user_email)
-        user = User.objects.get_user(user_email)
-        wait_list.user = user
-        team = Team.objects.get_team(team_name)
-        wait_list.team = team
-        wait_list.save(using = self._db)
-        return wait_list
-
-    def get_wait_list(self, team_name):
-        list = self.check_in_list(team_name)
-        return list
-
-    def delete_from_list(self, team_name):
-        self.check_in_list(team_name)
-        WaitList.objects.filter(team__name__exact = team_name).delete()
-
-    def check_in_list(self, team_name):
-        Team.objects.validate_name(team_name)
-        return_list = WaitList.objects.filter(team__name__exact = team_name)
-        if len(return_list) is 0:
-            raise ObjectDoesNotExist
-        else:
-            return return_list
-
 class WaitList(models.Model):
-    team = models.ForeignKey('teams.Team', related_name="waiting_list")
-    user = models.ForeignKey('users.User', related_name="+")
-    request_date = models.DateTimeField(default=timezone.now())
+    team = models.ForeignKey(Team, related_name="wait_list_team")
+    user = models.ForeignKey(User, related_name="wait_list_user")
+    date_requested = models.DateTimeField(default=timezone.now())
 
-    objects = WaitListManager()

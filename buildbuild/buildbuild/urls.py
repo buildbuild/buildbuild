@@ -6,6 +6,7 @@ admin.autodiscover()
 
 from users.views import Login
 from users.views import Logout
+from users.views import AccountView
 
 from buildbuild.views import Home
 
@@ -16,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^$', Home.as_view(), name='home'),
     url(r'^login/', Login.as_view(), name="login"),
     url(r'^logout/', Logout.as_view(), name="logout"),
+    url(r'^account/', AccountView.as_view(), name="account"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('users.urls',namespace='users')),
 )

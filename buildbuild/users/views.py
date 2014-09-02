@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,request
 
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormView
@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate
 from django.contrib import messages
 
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 
 from users.models import User
 
@@ -40,9 +41,9 @@ class Login(FormView):
             if user.is_active:
                 login(self.request, user)
                 messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
-                return HttpResponseRedirect(reverse("login"))
+                return HttpResponseRedirect(reverse("account"))
             else:
-                messages.add_message(self.request, messages.ERROR, "ERROR : Deativated User")
+                messages.add_message(self.request, messages.ERROR, "ERROR : Deactivated User")
                 return HttpResponseRedirect(reverse("login"))
         else:
             messages.add_message(self.request, messages.ERROR, "ERROR : Invalid Email / Password")
@@ -58,3 +59,10 @@ class Logout(RedirectView):
 class AccountView(DetailView):
     model = User
     template_name = 'users/account.html'
+
+    slug_field = "email"
+    print(slug_field)
+    context_object_name = "user_account"
+
+    def get_object(self, queryset=None):
+        return User.objects.get(pk=1)

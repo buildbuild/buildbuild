@@ -62,6 +62,7 @@ class UserManager(BaseUserManager):
 
     def get_user(self, email):
         try:
+            validate_email(email)
             user = User.objects.get(email=email)
         except ObjectDoesNotExist:
             raise ObjectDoesNotExist("User has " + email + " email does not exist")

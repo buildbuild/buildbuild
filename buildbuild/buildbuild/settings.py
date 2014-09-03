@@ -10,9 +10,6 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 from __future__ import absolute_import
 
-#for celery always eager in settings
-CELERY_ALWAYS_EAGER = True
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -48,6 +45,9 @@ INSTALLED_APPS = (
     'djcelery',
     'djangobower',
     'rest_framework',
+
+    # Kombu transport using the Django database as a message store.
+#    'kombu.transport.django',
 
     # Custom Apps
     'api',
@@ -136,10 +136,13 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  #for submission 
 EMAIL_HOST_USER = "buildbuildteam@gmail.com"
 
+CELERY_ALWAYS_EAGER = True
+
 if "BUILDBUILD_PASSWORD" in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']
 else:
     EMAIL_HOST_PASSWORD = ""
+
 DEFAULT_FROM_EMAIL = "buildbuild@gmail.com"
 SERVER_EMAIL = "buildbuildteam@gmail.com"
 #DEFAULT_TO_EMAIL = 'to email'

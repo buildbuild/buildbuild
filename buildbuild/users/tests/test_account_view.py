@@ -47,3 +47,15 @@ class TestAccountView(TestCase):
         self.assertContains(response, self.user_email)
         self.assertContains(response, self.user_name)
         self.assertContains(response, self.user_phone_number)
+
+    def test_non_login_user_should_get_result_next_parameter(self):
+        response = self.client.get("/account/")
+        self.assertEqual(str(response.url), "http://testserver/login/?next=/account/")
+
+    def test_after_login_user_should_redirect_to_account_page(self):
+        response = self.client.post("/login/?next=/account/", {
+            "email": self.user_email,
+            "password": self.user_password,
+            })
+        self.assertEqual(str(response.url), "http://testserver/account/")
+

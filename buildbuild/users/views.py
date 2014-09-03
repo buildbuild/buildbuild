@@ -38,12 +38,21 @@ class Login(FormView):
         email = self.request.POST["email"]
         password = self.request.POST["password"]
         user = authenticate(email=email, password=password)
+
+        next = ""
+
+        if self.request.GET:
+            next = self.request.GET['next']
+
         if user is not None:
             if user.is_active:
                 login(self.request, user)
                 messages.add_message(self.request, messages.SUCCESS, "Successfully Login")
                 self.request.session['email'] = email
-                return HttpResponseRedirect(reverse("login"))
+                if next == "":
+                    return HttpResponseRedirect(reverse("home"))
+                else:
+                    return HttpResponseRedirect(next)
             else:
                 messages.add_message(self.request, messages.ERROR, "ERROR : Deactivated User")
                 return HttpResponseRedirect(reverse("login"))

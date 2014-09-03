@@ -66,18 +66,30 @@ class Team(models.Model):
             through = 'Membership',
             related_name="membership"
             )
-
+  
     def __unicode__(self):
         return self.name
 
 class Membership(models.Model):
-    team = models.ForeignKey(Team, related_name="membership_team")
-    user = models.ForeignKey(User, related_name="membership_member")
-    date_joined = models.DateField()
+    team = models.ForeignKey(
+            Team, 
+            related_name="membership_team",
+            )
+    member = models.ForeignKey(
+            User, 
+            related_name="membership_member",
+            )
+    date_joined = models.DateField(default=timezone.now())
     is_admin = models.BooleanField(default=False)
-
+ 
 class WaitList(models.Model):
-    team = models.ForeignKey(Team, related_name="wait_list_team")
-    user = models.ForeignKey(User, related_name="wait_list_user")
+    team = models.ForeignKey(
+            Team, 
+            related_name="wait_list_team",
+            )
+    wait_member = models.ForeignKey(
+            User, 
+            related_name="wait_list_user",
+            )
     date_requested = models.DateTimeField(default=timezone.now())
 

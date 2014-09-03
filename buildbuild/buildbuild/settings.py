@@ -44,8 +44,10 @@ INSTALLED_APPS = (
     # Python Packages
     'djcelery',
     'djangobower',
+    'rest_framework',
 
     # Custom Apps
+    'api',
     'users',
     'teams',
     'projects',

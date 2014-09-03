@@ -49,7 +49,7 @@ class Team(models.Model):
     - team_name
     - team_contact_number
     - team_website_url
-    
+
     """
     objects = TeamManager()
     name = models.CharField(max_length = 30)
@@ -91,5 +91,4 @@ class WaitList(models.Model):
             User, 
             related_name="wait_list_user",
             )
-    date_requested = models.DateTimeField(default=timezone.now())
-
+    date_requested = models.DateTimeField(auto_now_add=True)

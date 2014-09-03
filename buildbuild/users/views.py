@@ -62,7 +62,6 @@ class AccountView(DetailView):
     model = User
     template_name = 'users/account.html'
 
-    slug_field = "email"
     context_object_name = "user_account"
 
     def get_object(self, queryset=None):

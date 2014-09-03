@@ -42,12 +42,12 @@ class TestAPITeamUserList(TestCase):
 
         self.first_membership = Membership()
         self.first_membership.team = self.team
-        self.first_membership.user = self.first_user_belongs_to_team
+        self.first_membership.member = self.first_user_belongs_to_team
         self.first_membership.save()
 
         self.second_membership = Membership()
         self.second_membership.team = self.team
-        self.second_membership.user = self.second_user_belongs_to_team
+        self.second_membership.member = self.second_user_belongs_to_team
         self.second_membership.save()
 
         self.client = Client()

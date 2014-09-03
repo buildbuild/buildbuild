@@ -52,17 +52,17 @@ class TestAPITeamUserListSearch(TestCase):
         # Generate Membership
         self.first_membership = Membership()
         self.first_membership.team = self.first_team
-        self.first_membership.user = self.user_in_first_team_with_test_string
+        self.first_membership.member = self.user_in_first_team_with_test_string
         self.first_membership.save()
 
         self.second_membership = Membership()
         self.second_membership.team = self.first_team
-        self.second_membership.user = self.user_in_first_team_without_test_string
+        self.second_membership.member = self.user_in_first_team_without_test_string
         self.second_membership.save()
 
         self.third_membership = Membership()
         self.third_membership.team = self.second_team
-        self.third_membership.user = self.user_in_second_team_with_test_string
+        self.third_membership.member = self.user_in_second_team_with_test_string
         self.third_membership.save()
 
         # Get Response

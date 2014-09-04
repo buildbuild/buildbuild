@@ -8,6 +8,7 @@ class LoginPageTest(TestCase):
         self.client = Client()
         self.valid_email = "test@example.com"
         self.valid_password = "test_password"
+        self.invalid_password = "a"*5
 
         self.user = User.objects.create_user(
                 email = self.valid_email,
@@ -33,14 +34,14 @@ class LoginPageTest(TestCase):
     def test_post_login_page_with_invalid_user_information_should_return_302(self):
         response = self.client.post("/login/", {
             "email": self.valid_email,
-            "password": "foobar",
+            "password": self.invalid_password,
             })
         self.assertEqual(response.status_code, 302)
 
     def test_post_login_page_with_invalid_user_information_should_redirect_to_login(self):
         response = self.client.post("/login/", {
             "email": self.valid_email,
-            "password": "foobar",
+            "password": self.invalid_password,
             })
         self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/login/")
 
@@ -49,8 +50,3 @@ class LoginPageTest(TestCase):
         response = self.client.post("/login/", {})
         self.assertContains(response, "This field is required.")
 
-    """
-    - Test must be update with eloquent way.
-        - test messages
-        - test redirect url ( response["Location"] )
-    """

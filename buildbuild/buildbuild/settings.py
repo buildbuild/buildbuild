@@ -44,8 +44,13 @@ INSTALLED_APPS = (
     # Python Packages
     'djcelery',
     'djangobower',
+    'rest_framework',
+
+    # Kombu transport using the Django database as a message store.
+#    'kombu.transport.django',
 
     # Custom Apps
+    'api',
     'users',
     'teams',
     'projects',
@@ -122,3 +127,28 @@ LOGIN_REDIRECT_URL = "/account/" # Not Implemented : should have chnage to /prof
 
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+# Defalut SMTP Host Setting
+
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465  #for submission 
+EMAIL_HOST_USER = "buildbuildteam@gmail.com"
+
+CELERY_ALWAYS_EAGER = True
+
+if "BUILDBUILD_PASSWORD" in os.environ:
+    EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']
+else:
+    EMAIL_HOST_PASSWORD = ""
+
+DEFAULT_FROM_EMAIL = "buildbuild@gmail.com"
+SERVER_EMAIL = "buildbuildteam@gmail.com"
+#DEFAULT_TO_EMAIL = 'to email'
+
+# The mailing contents for new user
+SUBJECT = " Welcome to buidlbuild team! "
+CONTENTS = "Hello~"
+
+

@@ -1,9 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from users.models import User
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.core.validators import validate_email
-
+from django.core.exceptions import ValidationError
 # Create your models here.
 
 class TeamManager(models.Manager):
@@ -49,7 +47,6 @@ class Team(models.Model):
     - team_name
     - team_contact_number
     - team_website_url
-
     """
     objects = TeamManager()
     name = models.CharField(max_length = 30)

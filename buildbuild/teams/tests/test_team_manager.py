@@ -11,7 +11,7 @@ class TestTeamManager(TestCase):
         self.valid_second_team_name = "TeamTeam2"
         self.invalid_long_length_name = "a" * 31
         self.invalid_long_length_contact_number = "a" * 21
-        self.invalid_long_length_website_url = "a" * 81
+        self.invalid_long_length_website_url = "a" * 256
 
     def test_team_should_be_generated_using_create_team(self):
         try:
@@ -63,7 +63,7 @@ class TestTeamManager(TestCase):
         else:
             self.fail("More than 20 digits phonenumber should raise ValidationError")
 
-    def test_more_than_80_letters_team_website_url_must_raise_validation_error(self):
+    def test_more_than_255_letters_team_website_url_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
                     name = self.valid_team_name,
@@ -72,6 +72,6 @@ class TestTeamManager(TestCase):
         except ValidationError:
             pass
         else:
-            self.fail("More than 80 letters website_url should raise ValidationError")
+            self.fail("More than 255 letters website_url should raise ValidationError")
 
 

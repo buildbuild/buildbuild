@@ -43,8 +43,14 @@ INSTALLED_APPS = (
 
     # Python Packages
     'djcelery',
+    'djangobower',
+    'rest_framework',
+
+    # Kombu transport using the Django database as a message store.
+#    'kombu.transport.django',
 
     # Custom Apps
+    'api',
     'users',
     'teams',
     'projects',
@@ -92,14 +98,57 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+)
+
+BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
+
+BOWER_INSTALLED_APPS = (
+    'angular#1.2.23',
+)
+
 
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/" # Not Implemented : should have chnage to /profile or /dashboard stuff
+LOGIN_REDIRECT_URL = "/account/" # Not Implemented : should have chnage to /profile or /dashboard stuff
 
 
 # Celery Integration
 
 CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
 CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+# Defalut SMTP Host Setting
+
+EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465  #for submission 
+EMAIL_HOST_USER = "buildbuildteam@gmail.com"
+
+CELERY_ALWAYS_EAGER = True
+
+if "BUILDBUILD_PASSWORD" in os.environ:
+    EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']
+else:
+    EMAIL_HOST_PASSWORD = ""
+
+DEFAULT_FROM_EMAIL = "buildbuild@gmail.com"
+SERVER_EMAIL = "buildbuildteam@gmail.com"
+#DEFAULT_TO_EMAIL = 'to email'
+
+# The mailing contents for new user
+SUBJECT = " Welcome to buidlbuild team! "
+CONTENTS = "Hello~"
+
+

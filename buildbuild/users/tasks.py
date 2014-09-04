@@ -1,0 +1,18 @@
+from __future__ import absolute_import
+
+from django.core.mail import send_mail
+from django.core import mail
+from django.conf import settings
+from celery import Celery
+from celery import shared_task
+
+@shared_task
+def send_mail_to_new_user(user):
+    mail.send_mail(
+        settings.SUBJECT, 
+        settings.CONTENTS, 
+        settings.EMAIL_HOST_USER, 
+        [user.email], fail_silently=False
+        )
+    return mail
+

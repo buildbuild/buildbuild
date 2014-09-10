@@ -1,10 +1,6 @@
 from django.test import TestCase
-from teams.models import Team,TeamManager,WaitList
-from users.models import User,UserManager
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
-from django.db import OperationalError, IntegrityError
-
+from teams.models import Team,WaitList
+from users.models import User
 class TestWaitList(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
@@ -92,5 +88,4 @@ class TestWaitList(TestCase):
                     )
         except:
             pass 
-
 

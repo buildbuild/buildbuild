@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,request
 
 from django.views.generic.base import RedirectView
 from django.views.generic.edit import FormView
@@ -18,7 +18,6 @@ from users.models import User
 from users.forms import LoginForm
 from users.forms import SignUpForm
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.db import OperationalError
 from django.core.exceptions import ValidationError
@@ -43,21 +42,27 @@ class Login(FormView):
         email = self.request.POST["email"]
         password = self.request.POST["password"]
         user = authenticate(email=email, password=password)
+
+        next = ""
+
+        if self.request.GET:
+            next = self.request.GET['next']
+
         if user is not None:
             if user.is_active:
                 login(self.request, user)
-                messages.add_message(
-                    self.request, 
-                    messages.SUCCESS, 
-                    "Successfully Login"
-                )
-                return HttpResponseRedirect(reverse("login"))
+                messages.add_message(self.request,
+                                     messages.SUCCESS,
+                                     "Successfully Login")
+                self.request.session['email'] = email
+                if next == "":
+                    return HttpResponseRedirect(reverse("home"))
+                else:
+                    return HttpResponseRedirect(next)
             else:
-                messages.add_message(
-                    self.request, 
-                    messages.ERROR, 
-                    "ERROR : Deativated User"
-                )
+                messages.add_message(self.request,
+                                     messages.ERROR,
+                                     "ERROR : Deactivated User")
                 return HttpResponseRedirect(reverse("login"))
         else:
             messages.add_message(
@@ -77,6 +82,17 @@ class Logout(RedirectView):
             "Successfully Logout"
         )
         return reverse("home")
+
+
+class AccountView(DetailView):
+    model = User
+    template_name = 'users/account.html'
+
+    context_object_name = "user_account"
+
+    def get_object(self, queryset=None):
+        return User.objects.get(email = self.request.session['email'])
+
 
 class SignUp(FormView, User):
     template_name = "users/signup.html"
@@ -118,5 +134,3 @@ class SignUp(FormView, User):
                     )
                
             return HttpResponseRedirect(reverse("home"))
-
-        

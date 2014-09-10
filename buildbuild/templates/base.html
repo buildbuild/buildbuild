@@ -24,6 +24,7 @@
     {% if user.is_authenticated %}
     <div>Welcome, {{ user.email }}</div>
       <a href="/logout/">Logout</a>
+      <a href="/account/">Account info</a>
     {% else %}
       <a href="/login/">Login</a>
 	  <a href="/signup/">SignUp</a>

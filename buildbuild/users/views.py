@@ -94,7 +94,7 @@ class AccountView(DetailView):
         return User.objects.get(email = self.request.session['email'])
 
 
-class SignUp(FormView, User):
+class SignUp(FormView):
     template_name = "users/signup.html"
     form_class = SignUpForm
     

@@ -5,6 +5,7 @@ from django.db import IntegrityError
 
 from teams.views import MakeTeamView
 from teams.models import Team
+from users.models import User
 
 class MakeTeamPageTest(TestCase):
     def setUp(self):
@@ -14,6 +15,20 @@ class MakeTeamPageTest(TestCase):
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
 
+        self.valid_email = "test@example.com"
+        self.valid_password = "test_password"
+        self.invalid_password = "a"*5
+
+        self.user = User.objects.create_user(
+                email = self.valid_email,
+                password = self.valid_password,
+                )
+
+        self.client.post("/login/", {
+            "email": self.valid_email,
+            "password": self.valid_password,
+            })
+ 
     def test_get_make_team_page_request_should_return_200(self):
         response = self.client.get("/maketeam/")
         self.assertEqual(response.status_code, 200)

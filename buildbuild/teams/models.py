@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from users.models import User
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 # Create your models here.
 
 class TeamManager(models.Manager):
@@ -18,8 +19,8 @@ class TeamManager(models.Manager):
             self.validate_website_url(kwargs["website_url"])
             team.website_url = kwargs["website_url"]
 
-
         team.save(using = self._db)
+
         return team
 
     def get_all_team(self):
@@ -49,7 +50,7 @@ class Team(models.Model):
     - team_website_url
     """
     objects = TeamManager()
-    name = models.CharField(max_length = 30)
+    name = models.CharField(max_length = 30, unique=True)
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 255)
     wait_members = models.ManyToManyField(

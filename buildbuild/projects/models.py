@@ -16,12 +16,13 @@ class ProjectManager(models.Manager):
         return project
 
     def validate_name(self, name):
-        if len(name) < 1:
-            raise ValidationError("project must have project name")
-        if len(name) > 255:
-            raise ValidationError("project name is at most 255 chracters")
+        if len(name) > 64:
+            raise ValidationError("project name is at most 64 chracters")
+
+    def get_project(self, name):
+        return Project.objects.get(name = name)
 
 class Project(models.Model):
-    name = models.CharField(max_length = 255, unique = True)
+    name = models.CharField(max_length = 64, unique = True)
     team = models.ForeignKey(Team)
     objects = ProjectManager()

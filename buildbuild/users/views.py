@@ -108,7 +108,7 @@ class SignUp(FormView):
             messages.add_message(
                     self.request,
                     messages.ERROR,
-                    "ERROR : detected invalid information"
+                    "ERROR : invalid information detected"
                     )
             return HttpResponseRedirect(reverse("signup"))           
         except IntegrityError:

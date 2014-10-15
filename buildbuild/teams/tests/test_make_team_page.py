@@ -40,7 +40,7 @@ class MakeTeamPageTest(TestCase):
             respanse = self.client.post("/maketeam/", {
                 "name":self.valid_name,
                 })
-        except:
+        except ValidationError:
             pass
 
     def test_post_available_team_information_return_302(self):

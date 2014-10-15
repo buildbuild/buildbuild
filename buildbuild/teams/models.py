@@ -23,9 +23,6 @@ class TeamManager(models.Manager):
 
         return team
 
-    def get_all_team(self):
-        return Team.objects.all()
-
     def get_team(self, name):
         self.validate_name(name)
         return Team.objects.get(name = name)

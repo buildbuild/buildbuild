@@ -3,20 +3,14 @@ from teams.models import Team, Membership
 from users.models import User
 from django.utils import timezone
 
-"""
-get specific member(s) from membership (mtom) should get
-from Membership module. Because team instance could find
-all members even if a member belonged not to that team.
-"""
-
 class team_manager_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"
-        self.no_user_email = "no@example.com"
+        self.user_email_2 = "test2@example.com"
 
         self.team_name = "Team1"
-        self.no_team_name = "NoTeam"
+        self.team_name_2 = "Team2"
 
         self.user = User.objects.create_user(
             email = self.user_email,
@@ -27,86 +21,36 @@ class team_manager_test(TestCase):
             name = self.team_name
         )
 
-        self.no_user = User.objects.create_user(
-            email = self.no_user_email,
+        self.user_2 = User.objects.create_user(
+            email = self.user_email_2,
             password = self.user_password
         )
 
-        self.no_team = Team.objects.create_team(
-            name = self.no_team_name
+        self.team_2 = Team.objects.create_team(
+            name = self.team_name_2
         )
 
-    def test_operation_of_membership(self):
-        try:
-            Membership.objects.create(
-                    team = self.team,
-                    member = self.user,
-                    )
-        except:
-            self.fail("test operation of membership failed")
+        self.membership = Membership.objects.create(
+            team = self.team,
+            member = self.user,
+        )
+        self.membership.save()
 
-    def test_get_all_members_from_team_instance(self):
-        Membership.objects.create(
-                team = self.team,
-                member = self.user,
-                )
+    def test_team_could_get_all_members(self):
         try:
             self.team.members.all()
         except:
-            self.fail("getting all member failed from team instance")
+            self.fail("getting all members failed")
 
-    def test_get_member_from_membership_module(self):
-        Membership.objects.create(
-                team = self.team,
-                member = self.user,
-                )
+    def test_team_could_get_member(self):
         try:
-            Membership.objects.get(
-                    team=self.team,
-                    member = self.user,
-                    )
+            self.team.members.get_user(self.user_email)
         except:
-            self.fail("getting member failed from membership module")
- 
+            self.fail("getting a member failed")
 
-    def test_team_should_have_is_admin(self):
-        membership = Membership.objects.create(
-            team = self.team,
-            member = self.user,
-            )
-        
+    def test_membership_must_have_date_joined(self):
         try:
-            membership.is_admin
-        except AttributeError:
-            self.fail("team membership should have is_admin")
-
-    def test_should_have_date_joined(self):
-        membership = Membership.objects.create(
-            team = self.team,
-            member = self.user,
-            )
- 
-        try:
-            membership.date_joined
+            self.membership.date_joined
         except AttributeError:
             self.fail("team membership should have date_joined")
-
-    def test_get_member_from_non_exist_team(self):
-       try:
-            Membership.objects.getr(
-                    team=self.no_team,
-                    member = self.user
-                    )
-        except:
-            pass 
-
-    def test_get_member_from_non_exist_user(self):
-       try:
-            Membership.objects.getr(
-                    team=self.team,
-                    member = self.no_user
-                    )
-        except:
-            pass 
-
 

@@ -27,6 +27,11 @@ class TeamManager(models.Manager):
         self.validate_name(name)
         return Team.objects.get(name = name)
 
+    def delete_team(self, name):
+        team = Team.objects.get_team(name)
+        team.deactivate()
+        team.save(using = self._db)
+
     def validate_name(self, name):
         if len(name) > 30 :
             raise ValidationError("Name cannot contain more than 30 characters")
@@ -40,16 +45,12 @@ class TeamManager(models.Manager):
             raise ValidationError("Website URL cannot contain more than 255 characters")
 
 class Team(models.Model):
-    """
-    team model functions
-    - team_name
-    - team_contact_number
-    - team_website_url
-    """
-    objects = TeamManager()
     name = models.CharField(max_length = 30, unique=True)
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 255)
+
+    objects = TeamManager()
+ 
     wait_members = models.ManyToManyField(
             User, 
             through = 'WaitList',

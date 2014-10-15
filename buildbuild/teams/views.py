@@ -52,7 +52,7 @@ class MakeTeamView(FormView):
                     )
             email = self.request.user
             member = User.objects.get_user(email)
-            member = Membership(team = team, member = member)
+            member = Membership(team = team, member = member, is_admin = True)
             member.save()
             return HttpResponseRedirect(reverse("home"))
 

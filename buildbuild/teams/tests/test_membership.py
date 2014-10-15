@@ -92,11 +92,7 @@ class team_manager_test(TestCase):
             self.fail("team membership should have date_joined")
 
     def test_get_member_from_non_exist_team(self):
-        Membership.objects.create(
-                team = self.team,
-                member = self.user,
-                )
-        try:
+       try:
             Membership.objects.getr(
                     team=self.no_team,
                     member = self.user
@@ -105,11 +101,7 @@ class team_manager_test(TestCase):
             pass 
 
     def test_get_member_from_non_exist_user(self):
-        Membership.objects.create(
-                team = self.team,
-                member = self.user,
-                )
-        try:
+       try:
             Membership.objects.getr(
                     team=self.team,
                     member = self.no_user

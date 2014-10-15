@@ -1,6 +1,6 @@
 from django.test import TestCase
 from teams.models import Team,TeamManager
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 class TestTeamManager(TestCase):
     def setUp(self):
@@ -21,7 +21,7 @@ class TestTeamManager(TestCase):
         except:
             self.fail("Create Team must create team object successfully")
 
-    def test_teams_should_be_get_using_get_all_teams(self):
+    def test_teams_could_get_using_get_all_teams(self):
         team = Team.objects.create_team(
             name = self.valid_team_name
         )
@@ -29,7 +29,7 @@ class TestTeamManager(TestCase):
             name = self.valid_second_team_name
         )
 
-        teams = Team.objects.get_all_team()
+        teams = Team.objects.all()
 
         self.assertQuerysetEqual(teams, ["<Team: "+team.name+">",
                                           "<Team: "+second_team.name+">"],
@@ -55,9 +55,9 @@ class TestTeamManager(TestCase):
     def test_more_than_20_digits_team_contact_number_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
-                    name = self.valid_team_name,
-                    contact_number = self.invalid_long_length_contact_number
-                )
+                name = self.valid_team_name,
+                contact_number = self.invalid_long_length_contact_number
+            )
         except ValidationError:
             pass
         else:
@@ -66,12 +66,21 @@ class TestTeamManager(TestCase):
     def test_more_than_255_letters_team_website_url_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
-                    name = self.valid_team_name,
-                    website_url = self.invalid_long_length_website_url
-                )
+                name = self.valid_team_name,
+                website_url = self.invalid_long_length_website_url
+            )
         except ValidationError:
             pass
         else:
             self.fail("More than 255 letters website_url should raise ValidationError")
 
-
+    def test_team_manager_could_delete_team(self):
+        team = Team.objects.create_team(
+           name = self.valid_team_name,
+        )
+        team.delete()
+        try:
+            Team.objects.get_team(name = self.valid_team_name), 
+        except ObjectDoesNotExist:
+            pass 
+    

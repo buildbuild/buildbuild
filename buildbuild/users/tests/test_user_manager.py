@@ -54,8 +54,7 @@ class TestUserManager(TestCase):
         user = User.objects.get_user(
                     email = self.valid_email
                 )
-        self.assertEqual(False, user.is_active,
-                         "is_active should be False")
+        self.assertEqual(False, user.is_active, "is_active should be False")
 
     def test_update_user_must_update_phonenumber_field_via_user_manager(self):
         user = User.objects.create_user(

@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from teams.models import Team
-from projects.models import Project
+from projects.models import Project, ProjectMembership
 
 
 class TestAPITeamUserListSearch(TestCase):
@@ -36,23 +36,37 @@ class TestAPITeamUserListSearch(TestCase):
 
         # Generate Projects
         self.project_in_first_team_with_test_string = Project.objects.create_project(
-            team=self.first_team,
             name="in_team_with" + self.test_string,
         )
         self.project_in_first_team_without_test_string = Project.objects.create_project(
-            team=self.first_team,
             name="in_team_without",
         )
         self.project_in_second_team_with_test_string = Project.objects.create_project(
-            team=self.second_team,
             name="not_in_team_with" + self.test_string,
         )
 
+        # Generate Project Membership
+        self.first_project_membership = ProjectMembership()
+        self.first_project_membership.team = self.first_team
+        self.first_project_membership.project = self.project_in_first_team_with_test_string
+        self.first_project_membership.save()
+
+        self.second_project_membership = ProjectMembership()
+        self.second_project_membership.team = self.first_team
+        self.second_project_membership.project = self.project_in_first_team_without_test_string
+        self.second_project_membership.save()
+
+        self.third_project_membership = ProjectMembership()
+        self.third_project_membership.team = self.second_team
+        self.third_project_membership.project = self.project_in_second_team_with_test_string
+        self.third_project_membership.save()
+
         # Get Response
         self.client = Client()
-        self.response = self.client.get("/api/teams/" + self.first_team.name + "/projects/?search=" + self.test_string)
 
-    def test_api_teamuser_list_search_should_return_valid_result(self):
+    def test_api_teamproject_list_search_should_return_valid_result(self):
+        self.response = self.client.get("/api/teams/" + self.first_team.name + "/projects/?search=" + self.test_string)
         self.assertContains(self.response, self.project_in_first_team_with_test_string.name)
         self.assertNotContains(self.response, self.project_in_first_team_without_test_string.name)
         self.assertNotContains(self.response, self.project_in_second_team_with_test_string.name)
+        

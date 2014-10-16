@@ -30,21 +30,27 @@ class TestWaitList(TestCase):
             name = self.team_name_2
         )
 
-        wait_list = WaitList.objects.create(
+        self.waitlist = WaitList.objects.create(
             team = self.team,
             wait_member = self.user,
         )
-        wait_list.save()
+        self.waitlist.save()
 
-    def test_team_could_get_all_wait_lists(self):
+    def test_team_could_get_all_waitlists(self):
         try:
             self.team.wait_members.all()
         except: 
-            self.fail("getting all wait_lists failed")
+            self.fail("getting all waitlists failed")
 
     def test_team_could_get_wait_member(self):
         try:
             self.team.wait_members.get_user(self.user_email)
         except: 
             self.fail("getting a wait_user failed")
+
+    def test_waitlist_must_have_date_requested(self):
+        try:
+            self.waitlist.date_requested
+        except:
+            self.fail("team waitlist must have date_requested")
 

@@ -27,40 +27,40 @@ class Project(models.Model):
     
     team_wait_list = models.ManyToManyField(
             Team, 
-            through = 'ProjectTeamWaitList',
+            through = 'ProjectWaitList',
             through_fields = ('project', 'wait_team'),
-            related_name="project_team_wait_list"
+            related_name="project_wait_list"
             )
     
     team_list = models.ManyToManyField(
             Team, 
-            through = 'ProjectTeamList',
+            through = 'ProjectMembership',
             through_fields = ('project', 'team'),
-            related_name="project_team_list"
+            related_name="project_membership"
             )
     
     def __unicode__(self):
         return self.name
 
-class ProjectTeamWaitList(models.Model):
+class ProjectWaitList(models.Model):
     project = models.ForeignKey(
             Project, 
-            related_name="project_team_wait_list_project",
+            related_name="project_wait_list_project",
             )
     wait_team = models.ForeignKey(
             Team, 
-            related_name="project_team_wait_list_team",
+            related_name="project_wait_list_team",
             )
     date_requested = models.DateTimeField(auto_now_add=True)
 
-class ProjectTeamList(models.Model):
+class ProjectMembership(models.Model):
     project = models.ForeignKey(
             Project, 
-            related_name="project_team_list_project",
+            related_name="project_membership_project",
             )
     team = models.ForeignKey(
             Team, 
-            related_name="project_team_list_team",
+            related_name="project_membership_team",
             )
     date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)

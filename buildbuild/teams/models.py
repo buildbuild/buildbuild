@@ -3,6 +3,7 @@ from django.utils import timezone
 from users.models import User
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.core.exceptions import ObjectDoesNotExist
 # Create your models here.
 
 class TeamManager(models.Manager):
@@ -23,9 +24,27 @@ class TeamManager(models.Manager):
 
         return team
 
+    def validate_name(self, name):
+        if len(name) > 30:
+            raise ValidationError(
+                ("team name length should be at most 30"),
+                code = 'invalid'
+            )
+        if bool(re.match('^[ a-zA-Z_]+$', name)):
+            pass
+        else:
+            raise ValidationError(
+                "team name cannot contain things but alphabet, white space, '_'"
+            )
+
     def get_team(self, name):
-        self.validate_name(name)
-        return Team.objects.get(name = name)
+        try:
+            self.validate_name(name)
+            team = Team.objects.get(name = name)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist("The team name does not exist")
+        else:
+            return team
 
     def delete_team(self, name):
         team = Team.objects.get_team(name)
@@ -54,18 +73,20 @@ class Team(models.Model):
     wait_members = models.ManyToManyField(
             User, 
             through = 'WaitList',
-            related_name="wait_list"
+            through_fields = ('team', 'wait_member'),
+            related_name="wait_list",
             )
     
     members = models.ManyToManyField(
             User, 
             through = 'Membership',
-            related_name="membership"
+            through_fields = ('team', 'member'),
+            related_name="membership",
             )
   
     def __unicode__(self):
         return self.name
-
+ 
 class Membership(models.Model):
     team = models.ForeignKey(
             Team, 
@@ -77,7 +98,7 @@ class Membership(models.Model):
             )
     date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
- 
+
 class WaitList(models.Model):
     team = models.ForeignKey(
             Team, 

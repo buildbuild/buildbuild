@@ -6,29 +6,16 @@ from django.core.exceptions import ValidationError
 
 class TestProjectName(TestCase):
     def setUp(self):
-        self.project = Project()
-        self.valid_team_name = "test_team_name"
-        self.valid_project_name = "test_project_name"
-        self.team = Team.objects.create_team(name = self.valid_team_name)
-        self.project.team = self.team
+        self.project_name = "test_project_name"
 
-    def test_project_manager_could_create_project(self):
-        self.assertTrue(
-                Project.objects.create_project(
-                    name = self.valid_project_name, 
-                    team = self.team
-                )
+        self.project = Project.objects.create_project(
+            name = self.project_name,
         )
 
     def test_project_should_have_unique_name(self):
         try:
-            Project.objects.create_project(
-                name = self.valid_project_name, 
-                team = self.team
-            )
-            Project.objects.create_project(
-                name = self.valid_project_name, 
-                team = self.team
+           Project.objects.create_project(
+                name = self.project_name, 
             )
         except IntegrityError:
             pass
@@ -36,7 +23,6 @@ class TestProjectName(TestCase):
         try:        
             Project.objects.create_project(
                 name = "a" * 65,
-                team = self.team,
             )
         except ValidationError:
             pass

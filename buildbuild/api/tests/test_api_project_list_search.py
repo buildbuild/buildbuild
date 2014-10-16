@@ -13,13 +13,11 @@ class TestAPIProjectListSearch(TestCase):
         )
         self.project_with_test_string = Project.objects.create_project(
             name="test_project_name_with" + self.test_string,
-            team=self.team,
         )
         self.project_without_test_string = Project.objects.create_project(
             name="test_project_name_without",   # +self.test_string
                                                 # intentionally excluded
                                                 # for valid search result
-            team=self.team,
         )
 
         self.client = Client()

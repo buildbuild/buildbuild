@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='Membership',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('date_joined', models.DateField()),
+                ('date_joined', models.DateField(auto_now_add=True)),
                 ('is_admin', models.BooleanField(default=False)),
                 ('member', models.ForeignKey(related_name=b'membership_member', to=settings.AUTH_USER_MODEL)),
             ],
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             name='Team',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=30)),
+                ('name', models.CharField(unique=True, max_length=30)),
                 ('contact_number', models.CharField(max_length=20)),
                 ('website_url', models.URLField(max_length=255)),
                 ('members', models.ManyToManyField(related_name=b'membership', through='teams.Membership', to=settings.AUTH_USER_MODEL)),

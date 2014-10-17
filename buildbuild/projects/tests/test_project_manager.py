@@ -8,7 +8,7 @@ class TestProjectName(TestCase):
     def setUp(self):
         self.project_name = "test_project_name"
         self.second_project_name = "test_second_project_name"
-        self.invalid_long_length_name = "a" * 31
+        self.invalid_long_length_name = "a" * 65
  
         self.project = Project.objects.create_project(
             name = self.project_name,
@@ -27,7 +27,7 @@ class TestProjectName(TestCase):
             pass
 
 # Validation
-    def test_project_name_is_restricted_30_characters(self):
+    def test_project_name_is_restricted_to_64_characters(self):
         try:        
             Project.objects.create_project(
                 name = self.invalid_long_length_name,

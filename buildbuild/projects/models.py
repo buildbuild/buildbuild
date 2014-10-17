@@ -2,6 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from teams.models import Team
 from jsonfield import JSONField
+import re
 
 class ProjectManager(models.Manager):
     def create_project(self, name, **kwargs):
@@ -19,16 +20,10 @@ class ProjectManager(models.Manager):
         return project
 
     def validate_name(self, name):
-        if len(name) > 30:
+        if len(name) > 64:
             raise ValidationError(
-                ("project name length should be at most 30"),
+                ("project name length should be at most 64"),
                 code = 'invalid'
-            )
-        if bool(re.match('^[ a-zA-Z_]+$', name)):
-            pass
-        else:
-            raise ValidationError(
-                "project name cannot contain things but alphabet, white space, '_'"
             )
 
     def get_project(self, name):
@@ -48,7 +43,7 @@ class ProjectManager(models.Manager):
 
 
 class Project(models.Model):
-    name = models.CharField(max_length = 30, unique = True)
+    name = models.CharField(max_length = 64, unique = True)
     properties = JSONField()
     docker_text = models.TextField(default = "none")
     objects = ProjectManager()

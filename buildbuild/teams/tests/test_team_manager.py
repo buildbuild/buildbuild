@@ -5,11 +5,11 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 class TestTeamManager(TestCase):
     def setUp(self):
         self.team = Team()
-        self.team.name = "Team1"
+        self.team.name = "firstTeam"
 
         self.valid_team_name = "TeamTeam"
-        self.valid_second_team_name = "TeamTeam2"
-        self.invalid_long_length_name = "a" * 31
+        self.valid_second_team_name = "SecondTeam"
+        self.invalid_long_length_name = "a" * 65
         self.invalid_long_length_contact_number = "a" * 21
         self.invalid_long_length_website_url = "a" * 256
             
@@ -27,10 +27,10 @@ class TestTeamManager(TestCase):
             team = Team.objects.create_team(
                 name = ""
             )
-        except AttributeError:
+        except ValidationError:
             pass
 # Validation
-    def test_team_name_is_restricted_to_30_characters(self):
+    def test_team_name_is_restricted_to_64_characters(self):
         try:
             team = Team.objects.create_team(
                 name = self.invalid_long_length_name
@@ -48,7 +48,7 @@ class TestTeamManager(TestCase):
             ordered=False,
         )
 
-    def test_more_than_30_letters_team_name_must_raise_validation_error(self):
+    def test_more_than_64_letters_team_name_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
                    name = self.invalid_long_length_name
@@ -56,7 +56,7 @@ class TestTeamManager(TestCase):
         except ValidationError:
             pass
         else:
-            self.fail("More than 30 letters name should raise ValidationError")
+            self.fail("More than 64 letters name should raise ValidationError")
 
     def test_more_than_20_digits_team_contact_number_must_raise_validation_error(self):
         try:

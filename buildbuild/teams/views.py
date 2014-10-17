@@ -26,17 +26,29 @@ class MakeTeamView(FormView):
     form_class = MakeTeamForm
 
     def form_valid(self, form):
-        name = self.request.POST["name"]
- 
+        # name field required 
         try:
+            self.request.POST["teams_team_name"]
+        except ObjectDoesNotExist:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : team name form empty"
+                    )
+            return HttpResponseRedirect(reverse("maketeam"))           
+        else:
+            name = self.request.POST["teams_team_name"]
+
+        # valid and unique team name test
+        try:        
             team = Team.objects.create_team(name)
         except ValidationError:
             messages.add_message(
                     self.request,
                     messages.ERROR,
-                    "ERROR : invalid information detected"
+                    "ERROR : invalid team name"
                     )
-            return HttpResponseRedirect(reverse("maketeam"))           
+            return HttpResponseRedirect(reverse("maketeam"))          
         except IntegrityError:
             messages.add_message(
                     self.request, 
@@ -44,15 +56,18 @@ class MakeTeamView(FormView):
                     "ERROR : The team name already exists"
                     )
             return HttpResponseRedirect(reverse("maketeam"))
-        else: 
+        else:
+            # link user to team using Membership  
+            email = self.request.user
+            user = User.objects.get_user(email)
+            membership = Membership()
+            membership = Membership(team = team, member = user, is_admin = True)
+            membership.save()
+ 
             messages.add_message(
                     self.request, 
                     messages.SUCCESS, 
                     "Team created successfully"
                     )
-            email = self.request.user
-            member = User.objects.get_user(email)
-            member = Membership(team = team, member = member, is_admin = True)
-            member.save()
             return HttpResponseRedirect(reverse("home"))
 

@@ -23,6 +23,7 @@ from django.db import OperationalError
 from django.core.exceptions import ValidationError
 
 from users import tasks
+from django.core.validators import validate_email
 
 class UsersIndexView(ListView):
     template_name = 'users/index.html'
@@ -39,50 +40,84 @@ class Login(FormView):
     form_class = LoginForm
 
     def form_valid(self, form):
-        email = self.request.POST["email"]
-        password = self.request.POST["password"]
-        user = authenticate(email=email, password=password)
+        # Email field required
+        try:
+            email = self.request.POST["email"]
+        except:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : user email form empty"
+                    )
+            return HttpResponseRedirect(reverse("login"))       
 
-        next = ""
+        # Password field required
+        try:
+            password = self.request.POST["password"]
+        except:
+            messages.add_message(
+                    self.request,
+                    "ERROR : user password form empty"
+                    )
+            return HttpResponseRedirect(reverse("login"))       
 
-        if self.request.GET:
-            next = self.request.GET['next']
-
-        if user is not None:
-            if user.is_active:
-                login(self.request, user)
-                messages.add_message(self.request,
-                                     messages.SUCCESS,
-                                     "Successfully Login")
-                self.request.session['email'] = email
-                if next == "":
-                    return HttpResponseRedirect(reverse("home"))
+        # User authentication
+        try:
+            user = authenticate(email=email, password=password)
+        except:
+            messages.add_message(
+                    self.request,
+                    "ERROR : the user email not exist"
+                    )
+            return HttpResponseRedirect(reverse("login"))       
+        else:
+            next = ""
+             
+            if self.request.GET:
+                next = self.request.GET['next']
+                
+            if user is not None:
+                if user.is_active:
+                    login(self.request, user)
+                    messages.add_message(self.request,
+                                         messages.SUCCESS,
+                                         "Successfully Login")
+                    self.request.session['email'] = email
+                    if next == "":
+                        return HttpResponseRedirect(reverse("home"))
+                    else:
+                        return HttpResponseRedirect(next)
                 else:
-                    return HttpResponseRedirect(next)
+                    messages.add_message(self.request,
+                                         messages.ERROR,
+                                         "ERROR : Deactivated User")
+                    return HttpResponseRedirect(reverse("login"))
             else:
-                messages.add_message(self.request,
-                                     messages.ERROR,
-                                     "ERROR : Deactivated User")
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : invalid email or password"
+                )
                 return HttpResponseRedirect(reverse("login"))
+ 
+class Logout(RedirectView):
+    def get_redirect_url(self):
+        try:
+            logout(self.request)
+        except:
+           messages.add_message(
+               self.request,
+               messages.ERROR,
+               "ERROR : logout failed"
+           )
+           return HttpResponseRedirect(reverse("home"))
         else:
             messages.add_message(
                 self.request, 
-                messages.ERROR, 
-                "ERROR : Invalid Email / Password"
+                messages.SUCCESS, 
+                "Successfully Logout"
             )
-            return HttpResponseRedirect(reverse("login"))
-
-
-class Logout(RedirectView):
-    def get_redirect_url(self):
-        logout(self.request)
-        messages.add_message(
-            self.request, 
-            messages.SUCCESS, 
-            "Successfully Logout"
-        )
-        return reverse("home")
-
+            return reverse("home")
 
 class AccountView(DetailView):
     model = User
@@ -99,8 +134,49 @@ class SignUp(FormView):
     form_class = SignUpForm
     
     def form_valid(self, form):
-        email = self.request.POST["email"]
-        password = self.request.POST["password"]
+        # Email field required
+        try:
+            email = self.request.POST["email"]
+        except:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : user email form empty"
+                    )
+            return HttpResponseRedirect(reverse("signup"))       
+
+        # Valid email test
+        try:
+            validate_email(email)
+        except:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : invalid email"
+                    )
+            return HttpResponseRedirect(reverse("signup"))       
+
+        # Password field required
+        try:
+            password = self.request.POST["password"]
+        except:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : user password form empty"
+                    )
+            return HttpResponseRedirect(reverse("signup"))
+
+        # Valid Password test
+        try:
+            User.objects.validate_password(password)
+        except:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : invalid user password"
+                    )
+            return HttpResponseRedirect(reverse("signup"))       
 
         try:
             new_user = User.objects.create_user(email, password = password)
@@ -124,13 +200,17 @@ class SignUp(FormView):
                     messages.SUCCESS, 
                     "Successfully Signup"
                     )
+
+            # send Email test
             try:
                 tasks.send_mail_to_new_user.delay(new_user)
             except OperationalError:
-             messages.add_message(
+                messages.add_message(
                     self.request, 
                     messages.ERROR, 
                     "Sign-up email was not sended"
-                    )
-               
-            return HttpResponseRedirect(reverse("home"))
+                )
+                return HttpResponseRedirect(reverse("login"))
+            else:
+                return HttpResponseRedirect(reverse("login"))
+

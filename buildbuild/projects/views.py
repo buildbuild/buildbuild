@@ -20,37 +20,49 @@ from django.core.exceptions import ValidationError
 from projects.forms import MakeProjectForm
 from projects.models import Project
 
-from teams.models import Team
+from projects.models import Project
 
 class MakeProjectView(FormView):
     template_name = "projects/makeproject.html"
     form_class = MakeProjectForm
 
     def form_valid(self, form):
-        name = self.request.POST["name"]
-        return HttpResponseRedirect(reverse("home"))
-        """
+        # name field required
         try:
-            team = Team.objects.create_team(name)
+            self.request.POST["projects_project_name"]
         except ValidationError:
             messages.add_message(
                     self.request,
                     messages.ERROR,
-                    "ERROR : invalid information detected"
+                    "ERROR : project name form empty"
                     )
-            return HttpResponseRedirect(reverse("maketeam"))           
+            return HttpResponseRedirect(reverse("makeproject"))           
+        else:
+            name = self.request.POST["projects_project_name"]
+
+        # valid and unique team name test
+        try:        
+            project = Project.objects.create_project(name)
+        except ValidationError:
+            messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    "ERROR : invalid project name"
+                    )
+            return HttpResponseRedirect(reverse("makeproject"))          
         except IntegrityError:
             messages.add_message(
                     self.request, 
                     messages.ERROR, 
-                    "ERROR : The team name already exists"
+                    "ERROR : The project name already exists"
                     )
-            return HttpResponseRedirect(reverse("maketeam"))
+            return HttpResponseRedirect(reverse("makeproject"))
         else: 
+            # needed to add to link project to team using Project Memberhip 
             messages.add_message(
                     self.request, 
                     messages.SUCCESS, 
-                    "Team created successfully"
+                    "Project created successfully"
                     )
             return HttpResponseRedirect(reverse("home")) 
-        """
+

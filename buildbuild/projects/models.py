@@ -10,6 +10,8 @@ class ProjectManager(models.Manager):
         self.validate_name(name)
         project.name = name
 
+        if "team_name" in kwargs:
+            project.team_name = kwargs['team_name']
         if "properties" in kwargs:
             project.properties = kwargs['properties']
         if "docker_text" in kwargs:
@@ -22,7 +24,7 @@ class ProjectManager(models.Manager):
     def validate_name(self, name):
         if len(name) > 64:
             raise ValidationError(
-                ("project name length should be at most 64"),
+                ("project.name length should be at most 64"),
                 code = 'invalid'
             )
 
@@ -31,21 +33,30 @@ class ProjectManager(models.Manager):
             self.validate_name(name)
             project = Project.objects.get(name = name)
         except ObjectDoesNotExist:
-            raise ObjectDoesNotExist("The project name does not exist")
+            raise ObjectDoesNotExist("The project.name does not exist")
         else:
             return project
+
+    # Update project needed to add functions, and test code
+    def update_project(self, name, **kwargs):
+        project = Project.objects.get_project(name)
+        if "properties" in kwargs:
+            project.properties = kwargs['properties']
+        if "docker_text" in kwargs:
+            project.docker_text = kwargs['docker_text']
+
+        project.save(using = self.db)
+
 
     def delete_project(self, name):
         project = Project.objects.get_project(name)
         project.deactivate()
         project.save(using = self._db)
 
-
-
 class Project(models.Model):
     name = models.CharField(max_length = 64, unique = True)
-    properties = JSONField()
-    docker_text = models.TextField(default = "none")
+    properties = JSONField(default = ('','') )
+    docker_text = models.TextField(default = '')
     objects = ProjectManager()
     
     team_wait_list = models.ManyToManyField(

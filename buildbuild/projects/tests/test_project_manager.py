@@ -6,15 +6,18 @@ from django.core.exceptions import ValidationError
 
 class TestProjectName(TestCase):
     def setUp(self):
-        self.project_name = "test_project_name"
-        self.second_project_name = "test_second_project_name"
+        self.name = "test_project_name"
+        self.second_name = "test_second_project_name"
         self.invalid_long_length_name = "a" * 65
- 
+        self.team_name = "test_team_name"
+        self.lang = "python"
+        self.ver = "2.7.8"
+
         self.project = Project.objects.create_project(
-            name = self.project_name,
+            name = self.name,
         )
         self.second_project = Project.objects.create_project(
-            name = self.second_project_name,
+            name = self.second_name,
         )
 
 # Attribute
@@ -27,7 +30,7 @@ class TestProjectName(TestCase):
             pass
 
 # Validation
-    def test_project_name_is_restricted_to_64_characters(self):
+    def test_name_is_restricted_to_64_characters(self):
         try:        
             Project.objects.create_project(
                 name = self.invalid_long_length_name,
@@ -49,14 +52,14 @@ class TestProjectName(TestCase):
     def test_project_should_have_unique_name(self):
         try:
            Project.objects.create_project(
-                name = self.project_name, 
+                name = self.name, 
             )
         except IntegrityError:
             pass
 
 # Assert
     def test_get_project_equal_to_project_targetted(self):
-        get_project = Project.objects.get_project(self.project_name)
+        get_project = Project.objects.get_project(self.name)
         self.assertEqual(
                 self.project, 
                 get_project, 

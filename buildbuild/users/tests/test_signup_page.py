@@ -17,9 +17,9 @@ class SignUpPageTest(TestCase):
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
 
-    def test_get_signup_page_request_should_return_200(self):
-        response = self.client.get("/signup/")
-        self.assertEqual(response.status_code, 200)
+    def test_get_response_to_signup_page(self):
+        response = self.client.get("/signup/", follow = True)
+        self.assertEqual(response.wsgi_request.path, "/signup/")
     
     def test_check_uniqueness_of_new_user_information_from_signup_page(self):
         User.objects.create_user(self.valid_email, self.valid_password)
@@ -29,36 +29,26 @@ class SignUpPageTest(TestCase):
                 "email":self.valid_email,
                 "password":self.valid_password,
                 })
-        except:
+        except IntegrityError:
             pass
     
-    def test_post_signup_page_with_available_new_user_information_should_return_302(self):
+    def test_post_available_new_user_information_redirect_to_login_page(self):
         response = self.client.post("/signup/", {
             "email": self.valid_email,
             "password": self.valid_password,
-            })
-        self.assertEqual(response.status_code, 302)
-    
-    def test_post_signup_page_with_available_user_information_should_redirect_to_home(self):
-        response = self.client.post("/signup/", {
-            "email": self.valid_email,
-            "password": self.valid_password,
-            })
-        self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/")
-   
-    def test_post_signup_page_with_non_available_user_information_should_return_302(self):
+            },
+            follow = True
+        )
+        self.assertEqual(response._request.path, "/login/")
+  
+    def test_post_invalid_user_information_return_signup(self):
         response = self.client.post("/signup/", {
             "email": self.valid_email,
             "password": self.invalid_password,
-            })
-        self.assertEqual(response.status_code, 302)
-    
-    def test_post_signup_page_with_non_available_user_information_should_redirect_to_signup(self):
-        response = self.client.post("/signup/", {
-            "email": self.valid_email,
-            "password": self.invalid_password,
-            })
-        self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/signup/")
+            },
+            follow = True
+        )
+        self.assertEqual(response._request.path, "/signup/")
     
     # POST with no user information
     def test_post_signup_page_with_no_user_information_should_have_error_message(self):

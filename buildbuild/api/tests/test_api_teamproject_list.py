@@ -2,8 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from teams.models import Team
-from projects.models import Project
-
+from projects.models import Project, ProjectMembership
 
 class TestAPITeamProjectList(TestCase):
     def setUp(self):
@@ -26,15 +25,12 @@ class TestAPITeamProjectList(TestCase):
 
         self.first_project_belongs_to_team = Project.objects.create_project(
             name="test_project_name_first",
-            team=self.team,
         )
         self.second_project_belongs_to_team = Project.objects.create_project(
             name="test_project_name_second",
-            team=self.team,
         )
         self.project_not_belongs_to_team = Project.objects.create_project(
             name="test_project_name_third",
-            team=self.other_team,
         )
 
         """
@@ -42,6 +38,16 @@ class TestAPITeamProjectList(TestCase):
         there is no method for make relation between user and team
         in this test case, going to use Membership Model directly.
         """
+        self.first_project_membership = ProjectMembership()
+        self.first_project_membership.team = self.team
+        self.first_project_membership.project = self.first_project_belongs_to_team
+        self.first_project_membership.save()
+
+        self.second_project_membership = ProjectMembership()
+        self.second_project_membership.team = self.team
+        self.second_project_membership.project = self.second_project_belongs_to_team
+        self.second_project_membership.save()
+ 
 
         self.client = Client()
         self.response = self.client.get("/api/teams/" + self.team.name + "/projects/")
@@ -65,3 +71,5 @@ class TestAPITeamProjectList(TestCase):
 
     def test_api_teamproject_list_request_should_not_contain_user_not_belong_to_team(self):
         self.assertNotContains(self.response, self.project_not_belongs_to_team.name)
+
+

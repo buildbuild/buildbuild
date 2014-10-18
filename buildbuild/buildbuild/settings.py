@@ -47,7 +47,7 @@ INSTALLED_APPS = (
     'rest_framework',
 
     # Kombu transport using the Django database as a message store.
-#    'kombu.transport.django',
+    'kombu.transport.django',
 
     # Custom Apps
     'api',

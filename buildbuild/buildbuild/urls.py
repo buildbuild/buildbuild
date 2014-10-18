@@ -8,8 +8,10 @@ from users.views import Login
 from users.views import Logout
 from users.views import AccountView
 from users.views import SignUp
-
 from buildbuild.views import Home
+from teams.views import MakeTeamView
+from projects.views import MakeProjectView
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
     # Examples:
@@ -23,4 +25,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('users.urls',namespace='users')),
     url(r'^signup/', SignUp.as_view(), name="signup"),
+    url(r'^maketeam/', login_required(MakeTeamView.as_view()), name="maketeam"),
+    url(r'^makeproject/', login_required(MakeProjectView.as_view()), name="makeproject"),
 )

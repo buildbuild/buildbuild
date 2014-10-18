@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('teams', '0001_initial'),
+        ('projects', '0003_auto_20141017_0559'),
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='membership',
-            name='date_joined',
-            field=models.DateField(auto_now_add=True),
+        migrations.RenameField(
+            model_name='project',
+            old_name='name',
+            new_name='project_name',
         ),
     ]

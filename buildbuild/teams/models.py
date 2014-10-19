@@ -68,19 +68,55 @@ class Team(models.Model):
             User, 
             through = 'WaitList',
             through_fields = ('team', 'wait_member'),
-            related_name="wait_list",
+            related_name="wait_member",
             )
     
     members = models.ManyToManyField(
             User, 
             through = 'Membership',
             through_fields = ('team', 'member'),
-            related_name="membership",
+            related_name="member",
             )
   
     def __unicode__(self):
         return self.name
- 
+
+class MembershipManager(models.Manager):
+    def create_membership(self, team, member):
+        if member.__class__.__name__ is not "User":
+            raise ValidationError("member argument must be User object")
+        if team.__class__.__name__ is not "Team":
+            raise ValidationError("team argument must be Team object")
+
+        # Does the member already exist? 
+        try:
+            team.members.get_member(email = member.email)
+        except ObjectDoesNotExist:
+            membership = self.model(
+                team = team, 
+                member = member,
+            )
+            membership.save(using = self._db)
+            return membership
+        else:
+            raise ValidationError(member.email + " is already the team member")
+    
+    # User -> membership_member -> leave_team
+    def leave_team(self, team):
+        try:
+            membership = self.get(team = team)
+        except ValidationError:
+            raise ValidationError("The team is not a member's belonged team")
+        membership.delete()
+
+    # Team -> membership_team -> exclude_member
+    def exclude_member(self, member):
+        try:
+            membership = self.get(member = member)
+        except ValidationError:
+            raise ValidationError("The member is not a team member")
+        membership.delete()
+    
 class Membership(models.Model):
     team = models.ForeignKey(
             Team, 
@@ -90,6 +126,8 @@ class Membership(models.Model):
             User, 
             related_name="membership_member",
             )
+    objects = MembershipManager()
+    
     date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
 

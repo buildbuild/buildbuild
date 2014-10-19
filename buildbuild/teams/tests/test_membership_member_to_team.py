@@ -42,12 +42,6 @@ class Membership_member_to_team_test(TestCase):
         except:
             self.fail("getting all team belonged failed")
    
-    def test_member_could_get_belonged_team(self):
-        try:
-            self.user.member.get_belonged_team(self.team.name)
-        except:
-            self.fail("getting belonged team failed")
-    
     # Attribute
     def test_membership_must_have_date_joined(self):
         try:

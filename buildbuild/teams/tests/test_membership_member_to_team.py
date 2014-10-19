@@ -2,6 +2,7 @@ from django.test import TestCase
 from teams.models import Team, Membership
 from users.models import User
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 class Membership_member_to_team_test(TestCase):
     def setUp(self):
@@ -31,10 +32,9 @@ class Membership_member_to_team_test(TestCase):
         )
 
         self.membership = Membership.objects.create_membership(
-            team_name = self.team.name,
-            member_email = self.user.email,
+            self.team,
+            self.user,
         )
-        self.user = User.objects.get_user(self.user_email)
         
     def test_member_could_get_all_belonged_team(self):
         try:
@@ -42,10 +42,8 @@ class Membership_member_to_team_test(TestCase):
         except:
             self.fail("getting all team belonged failed")
    
-    # Attribute
-    def test_membership_must_have_date_joined(self):
+    def test_member_could_leave_belonged_team(self):
         try:
-            self.membership.date_joined
-        except AttributeError:
-            self.fail("team membership should have date_joined")
-
+            self.user.membership_member.leave_team(self.team)
+        except ValidationError:
+            self.fail("leave_team has occured an error")

@@ -56,6 +56,17 @@ class TeamManager(models.Manager):
     def validate_website_url(self, website_url):
         if len(website_url) > 255:
             raise ValidationError("Website URL cannot contain more than 255 characters")
+  
+    # Get belonged team from related name of Membership
+    def get_belonged_team(self, name):
+        query = self.filter(name = name)
+        try:
+            team = query.get()
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(name + "is not the team member")
+        else:
+            return team
+
 
 class Team(models.Model):
     name = models.CharField(max_length = 64, unique=True)
@@ -68,19 +79,37 @@ class Team(models.Model):
             User, 
             through = 'WaitList',
             through_fields = ('team', 'wait_member'),
-            related_name="wait_list",
+            related_name="wait_member",
             )
     
     members = models.ManyToManyField(
             User, 
             through = 'Membership',
             through_fields = ('team', 'member'),
-            related_name="membership",
+            related_name="member",
             )
   
     def __unicode__(self):
         return self.name
- 
+
+class MembershipManager(models.Manager):
+    def create_membership(self, team_name, member_email):
+        # Does our DB contain the team & user?
+        team = Team.objects.get_team(team_name)
+        user = User.objects.get_user(member_email)
+
+        # Does the member already exist? 
+        try:
+            team.members.get_member(email = member_email)
+        except ObjectDoesNotExist:
+            membership = self.create(
+                team = team,            
+                member = user,
+            )
+            membership.save(using = self._db)
+            return membership
+        else:
+            raise ValidationError(user.email + " is already the team member")
 class Membership(models.Model):
     team = models.ForeignKey(
             Team, 
@@ -90,6 +119,8 @@ class Membership(models.Model):
             User, 
             related_name="membership_member",
             )
+    objects = MembershipManager()
+    
     date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
 

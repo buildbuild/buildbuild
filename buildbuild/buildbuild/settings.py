@@ -54,6 +54,7 @@ INSTALLED_APPS = (
     'users',
     'teams',
     'projects',
+    'deploys',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -133,7 +134,7 @@ CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465  #for submission 
+EMAIL_PORT = 465  #for submission
 EMAIL_HOST_USER = "buildbuildteam@gmail.com"
 
 CELERY_ALWAYS_EAGER = True

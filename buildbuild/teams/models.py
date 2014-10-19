@@ -56,17 +56,6 @@ class TeamManager(models.Manager):
     def validate_website_url(self, website_url):
         if len(website_url) > 255:
             raise ValidationError("Website URL cannot contain more than 255 characters")
-  
-    # Get belonged team from related name of Membership
-    def get_belonged_team(self, name):
-        query = self.filter(name = name)
-        try:
-            team = query.get()
-        except ObjectDoesNotExist:
-            raise ObjectDoesNotExist(name + "is not the team member")
-        else:
-            return team
-
 
 class Team(models.Model):
     name = models.CharField(max_length = 64, unique=True)

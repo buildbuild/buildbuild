@@ -86,6 +86,16 @@ class UserManager(BaseUserManager):
 
         user.save(using = self._db)
 
+    # get member from foreign key of MtoM
+    def get_member(self, email):
+        query = self.filter(email = email)
+        try:
+            member = query.get()
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(email + "is not team member")
+        else:
+            return member
+ 
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)
     email = models.EmailField(

@@ -2,6 +2,7 @@ from django.test import TestCase
 from teams.models import Team, Membership
 from users.models import User
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 
 class Membership_team_to_member_test(TestCase):
     def setUp(self):
@@ -30,11 +31,10 @@ class Membership_team_to_member_test(TestCase):
             name = self.team_name_2
         )
 
-        self.membership = Membership.objects.create(
-            team = self.team,
-            member = self.user,
+        self.membership = Membership.objects.create_membership(
+            self.team,
+            self.user,
         )
-        self.membership.save()
 
     def test_team_could_get_all_members(self):
         try:
@@ -49,10 +49,8 @@ class Membership_team_to_member_test(TestCase):
         except:
             self.fail("getting team member failed")
 
-# Attribute
-    def test_membership_must_have_date_joined(self):
+    def test_team_could_exclude_team_member(self):
         try:
-            self.membership.date_joined
-        except AttributeError:
-            self.fail("team membership should have date_joined")
-
+            self.team.membership_team.exclude_member(self.user)
+        except ValidationError:
+            self.fail("exclude_member has occured an error")

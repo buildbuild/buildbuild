@@ -4,7 +4,7 @@ from users.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
-class Membership_member_to_team_test(TestCase):
+class Membership_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"

@@ -1,10 +1,10 @@
 from django.test import TestCase
-from teams.models import Team, Membership
+from teams.models import Team, WaitList
 from users.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
-class Membership_test(TestCase):
+class WaitList_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"
@@ -30,43 +30,34 @@ class Membership_test(TestCase):
         self.team_2 = Team.objects.create_team(
             name = self.team_name_2
         )
-
-        self.membership = Membership.objects.create_membership(
+        self.wait_list = WaitList.objects.create_wait_list(
             self.team,
             self.user,
         )
 
 # Attribute
-    def test_membership_must_have_date_joined(self):
+    def test_wait_list_must_have_date_requested(self):
         try:
-            self.membership.date_joined
+            self.wait_list.date_requested
         except AttributeError:
-            self.fail("team membership should have date_joined")
+            self.fail("team wait_list should have date_requested")
 
 # Validation
-    def test_create_membership_member_argument_should_be_User_object(self):
+    def test_create_wait_list_member_argument_should_be_User_object(self):
         try:
-            self.membership = Membership.objects.create_membership(
+            self.wait_list = WaitList.objects.create_wait_list(
                 self.team,
                 self.team,
             )
         except ValidationError:
             pass
 
-    def test_create_membership_team_argument_should_be_Team_object(self):
+    def test_create_wait_list_team_argument_should_be_Team_object(self):
         try:
-            self.membership = Membership.objects.create_membership(
+            self.wait_list = WaitList.objects.create_wait_list(
                 self.user,
                 self.user,
             )
         except ValidationError:
             pass
-
-
-
-
-
-
-       
-
 

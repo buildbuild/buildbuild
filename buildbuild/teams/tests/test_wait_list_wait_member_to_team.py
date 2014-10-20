@@ -1,10 +1,10 @@
 from django.test import TestCase
-from teams.models import Team, Membership
+from teams.models import Team, WaitList
 from users.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
-class Membership_test(TestCase):
+class WaitList_wait_member_to_team_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"
@@ -31,42 +31,19 @@ class Membership_test(TestCase):
             name = self.team_name_2
         )
 
-        self.membership = Membership.objects.create_membership(
+        self.wait_list = WaitList.objects.create_wait_list(
             self.team,
             self.user,
         )
-
-# Attribute
-    def test_membership_must_have_date_joined(self):
+        
+    def test_wait_member_could_get_all_belonged_team(self):
         try:
-            self.membership.date_joined
-        except AttributeError:
-            self.fail("team membership should have date_joined")
-
-# Validation
-    def test_create_membership_member_argument_should_be_User_object(self):
+            self.user.wait_member.all()
+        except:
+            self.fail("getting all team belonged failed")
+   
+    def test_wait_member_could_cancel_to_request_to_join_team(self):
         try:
-            self.membership = Membership.objects.create_membership(
-                self.team,
-                self.team,
-            )
+            self.user.wait_list_wait_member.cancel_to_request_to_team(self.team)
         except ValidationError:
-            pass
-
-    def test_create_membership_team_argument_should_be_Team_object(self):
-        try:
-            self.membership = Membership.objects.create_membership(
-                self.user,
-                self.user,
-            )
-        except ValidationError:
-            pass
-
-
-
-
-
-
-       
-
-
+            self.fail("cancel to request to team has occured an error")

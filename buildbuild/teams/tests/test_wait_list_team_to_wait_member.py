@@ -1,10 +1,10 @@
 from django.test import TestCase
-from teams.models import Team, Membership
+from teams.models import Team, WaitList
 from users.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 
-class Membership_test(TestCase):
+class WaitList_team_to_wait_member_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"
@@ -31,42 +31,26 @@ class Membership_test(TestCase):
             name = self.team_name_2
         )
 
-        self.membership = Membership.objects.create_membership(
+        self.wait_list = WaitList.objects.create_wait_list(
             self.team,
             self.user,
         )
 
-# Attribute
-    def test_membership_must_have_date_joined(self):
+    def test_team_could_get_all_wait_members(self):
         try:
-            self.membership.date_joined
-        except AttributeError:
-            self.fail("team membership should have date_joined")
+            self.team.wait_members.all()
+        except:
+            self.fail("getting all wait_members failed")
 
-# Validation
-    def test_create_membership_member_argument_should_be_User_object(self):
+# ObjectDoesNotExist
+    def test_team_could_get_wait_member(self):
         try:
-            self.membership = Membership.objects.create_membership(
-                self.team,
-                self.team,
-            )
+            self.team.wait_members.get_wait_member(self.user_email)
+        except:
+            self.fail("getting team wait_member failed")
+
+    def test_team_could_reject_to_join_team(self):
+        try:
+            self.team.wait_list_team.reject_to_join_team(self.user)
         except ValidationError:
-            pass
-
-    def test_create_membership_team_argument_should_be_Team_object(self):
-        try:
-            self.membership = Membership.objects.create_membership(
-                self.user,
-                self.user,
-            )
-        except ValidationError:
-            pass
-
-
-
-
-
-
-       
-
-
+            self.fail("reject_to_join_to_team has occured an error")

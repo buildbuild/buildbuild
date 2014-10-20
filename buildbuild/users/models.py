@@ -95,6 +95,17 @@ class UserManager(BaseUserManager):
             raise ObjectDoesNotExist(email + "is not team member")
         else:
             return member
+
+    # get wait_member from foreign key of MtoM
+    def get_wait_member(self, email):
+        query = self.filter(email = email)
+        try:
+            wait_member = query.get()
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(email + "is not team wait_member")
+        else:
+            return wait_member
+
  
 class User(AbstractBaseUser):
     name = models.CharField(max_length = 20)

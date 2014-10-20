@@ -131,6 +131,42 @@ class Membership(models.Model):
     date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
 
+class WaitListManager(models.Manager):
+    def create_wait_list(self, team, wait_member):
+        if wait_member.__class__.__name__ is not "User":
+            raise ValidationError("wait_member argument must be User object")
+        if team.__class__.__name__ is not "Team":
+            raise ValidationError("team argument must be Team object")
+
+        # Does the wait_member already exist? 
+        try:
+            team.wait_members.get_member(email = wait_member.email)
+        except ObjectDoesNotExist:
+            wait_list = self.model(
+                team = team, 
+                wait_member = wait_member,
+            )
+            wait_list.save(using = self._db)
+            return wait_list
+        else:
+            raise ValidationError(wait_member.email + " is already the team member")
+
+    # User -> wait_list_user -> cancel_to_request_to_team
+    def cancel_to_request_to_team(self, team):
+        try:
+            wait_list = self.get(team = team)
+        except ValidationError:
+            raise ValidationError("The team is not a member's requested team")
+        wait_list.delete()
+
+    # Team -> wait_list_team -> reject_to_join_team
+    def reject_to_join_team(self, wait_member):
+        try:
+            wait_list = self.get(wait_member = wait_member)
+        except ValidationError:
+            raise ValidationError("The wait_wait_member is not a team member")
+        wait_list.delete()
+
 class WaitList(models.Model):
     team = models.ForeignKey(
             Team, 
@@ -138,6 +174,8 @@ class WaitList(models.Model):
             )
     wait_member = models.ForeignKey(
             User, 
-            related_name="wait_list_user",
+            related_name="wait_list_wait_member",
             )
     date_requested = models.DateTimeField(auto_now_add=True)
+
+    objects = WaitListManager()

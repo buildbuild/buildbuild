@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from teams.models import Team
 from jsonfield import JSONField
 import re
@@ -33,7 +33,7 @@ class ProjectManager(models.Manager):
 
     def get_project(self, id):
         try:
-            project = Project.objects.get(name = name)
+            project = Project.objects.get(id = id)
         except ObjectDoesNotExist:
             raise ObjectDoesNotExist("The id not exist in project DB")
         else:
@@ -79,18 +79,59 @@ class Project(models.Model):
             related_name="project_teams"
             )
     
+class ProjectMembershipManager(models.Manager):
+    def create_project_membership(self, project, team):
+        if team.__class__.__name__ is not "Team":
+            raise ValidationError("team argument must be Team object")
+        if project.__class__.__name__ is not "Project":
+            raise ValidationError("project argument must be Project object")
+
+        # Does the member already exist? 
+        try:
+            project.project_teams.get_project_team(id = team.id)
+        except ObjectDoesNotExist:
+            project_membership = self.model(
+                project = project, 
+                project_team = team,
+            )
+            project_membership.save(using = self._db)
+            return project_membership
+        else:
+            raise ValidationError(team.name + "is already the project member")
+            
 class ProjectMembership(models.Model):
     project = models.ForeignKey(
             Project, 
-            related_name="membership_project",
+            related_name="project_membership_project",
             )
     project_team = models.ForeignKey(
             Team, 
-            related_name="membership_project_team",
+            related_name="project_membership_project_team",
             default = None,
             )
     date_joined = models.DateField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
+    objects = ProjectMembershipManager()
+
+class ProjectWaitListManager(models.Manager):
+    def create_project_wait_list(self, project, team):
+        if team.__class__.__name__ is not "Team":
+            raise ValidationError("team argument must be Team object")
+        if project.__class__.__name__ is not "Project":
+            raise ValidationError("project argument must be Project object")
+
+        # Does the project_wait_project already exist? 
+        try:
+            project.project_wait_teams.get_project_team(id = team.id)
+        except ObjectDoesNotExist:
+            project_wait_list = self.model(
+                project = project, 
+                project_wait_team = team,
+            )
+            project_wait_list.save(using = self._db)
+            return project_wait_list
+        else:
+            raise ValidationError("The project wait team name is already the project wait team")
 
 class ProjectWaitList(models.Model):
     project = models.ForeignKey(
@@ -103,4 +144,4 @@ class ProjectWaitList(models.Model):
             default = None,
             )
     date_requested = models.DateTimeField(auto_now_add=True)
-
+    objects = ProjectWaitListManager()

@@ -21,14 +21,18 @@ class TestTeamManager(TestCase):
             name = self.valid_second_team_name
         )
 
-# Attribute
     def test_create_team_must_contain_name(self):
-        try:
-            team = Team.objects.create_team(
-                name = ""
-            )
-        except ValidationError:
-            pass
+        self.assertraises(
+            ValidationError,
+            team = team.objects.create_team,
+        )
+
+    def test_create_team_must_contain_name(self):
+        self.assertRaises(
+            ValidationError,
+            Team.objects.create_team,
+            name = "",
+        )
 # Validation
     def test_team_name_is_restricted_to_64_characters(self):
         try:
@@ -84,13 +88,17 @@ class TestTeamManager(TestCase):
     def test_team_manager_could_delete_team(self):
         self.team.delete()
         try:
-            Team.objects.get_team(name = self.valid_team_name), 
+            Team.objects.get_team(id = self.team.id), 
         except ObjectDoesNotExist:
             pass 
 
-# Assert
+    def test_get_team(self):
+        self.assertIsNotNone(
+            Team.objects.get_team(self.team.id),
+        )
+
     def test_get_team_equal_to_team_targetted(self):
-        get_team = Team.objects.get_team(self.valid_team_name)
+        get_team = Team.objects.get_team(self.team.id)
         self.assertEqual(
                 self.team, 
                 get_team, 

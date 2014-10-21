@@ -62,6 +62,28 @@ class TeamManager(models.Manager):
     def validate_website_url(self, website_url):
         if len(website_url) > 255:
             raise ValidationError("Website URL cannot contain more than 255 characters")
+    
+    # get team from foreign key of MtoM
+    def get_project_team(self, id):
+        try:
+            team = self.get(id = id)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                str(id) + "is not contained in project team DB"
+            )
+        else:
+            return team
+
+    # get wait_team from foreign key of MtoM
+    def get_project_wait_team(self, id):
+        try:
+            wait_team = self.get(id = id)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                str(id) + "is not contained in project wait team DB"
+            )
+        else:
+            return wait_team
 
 class Team(models.Model):
     name = models.CharField(

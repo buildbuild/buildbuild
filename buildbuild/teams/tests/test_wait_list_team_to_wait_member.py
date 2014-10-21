@@ -45,12 +45,12 @@ class WaitList_team_to_wait_member_test(TestCase):
 # ObjectDoesNotExist
     def test_team_could_get_wait_member(self):
         try:
-            self.team.wait_members.get_wait_member(self.user_email)
+            self.team.wait_members.get_wait_member(self.user.id)
         except:
             self.fail("getting team wait_member failed")
 
     def test_team_could_reject_to_join_team(self):
         try:
-            self.team.wait_list_team.reject_to_join_team(self.user)
+            self.team.wait_list_team.reject_to_join_team(self.user.id)
         except ValidationError:
             self.fail("reject_to_join_to_team has occured an error")

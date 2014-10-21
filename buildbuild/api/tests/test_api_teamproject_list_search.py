@@ -47,17 +47,17 @@ class TestAPITeamUserListSearch(TestCase):
 
         # Generate Project Membership
         self.first_project_membership = ProjectMembership()
-        self.first_project_membership.team = self.first_team
+        self.first_project_membership.project_team = self.first_team
         self.first_project_membership.project = self.project_in_first_team_with_test_string
         self.first_project_membership.save()
 
         self.second_project_membership = ProjectMembership()
-        self.second_project_membership.team = self.first_team
+        self.second_project_membership.project_team = self.first_team
         self.second_project_membership.project = self.project_in_first_team_without_test_string
         self.second_project_membership.save()
 
         self.third_project_membership = ProjectMembership()
-        self.third_project_membership.team = self.second_team
+        self.third_project_membership.project_team = self.second_team
         self.third_project_membership.project = self.project_in_second_team_with_test_string
         self.third_project_membership.save()
 

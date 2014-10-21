@@ -8,10 +8,10 @@ class Membership_member_to_team_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"
-        self.user_email_2 = "test2@example.com"
+        self.second_user_email = "test2@example.com"
 
         self.team_name = "Team1"
-        self.team_name_2 = "Team2"
+        self.second_team_name = "Team2"
 
         self.user = User.objects.create_user(
             email = self.user_email,
@@ -22,28 +22,41 @@ class Membership_member_to_team_test(TestCase):
             name = self.team_name
         )
 
-        self.user_2 = User.objects.create_user(
-            email = self.user_email_2,
+        self.second_user = User.objects.create_user(
+            email = self.second_user_email,
             password = self.user_password
         )
 
-        self.team_2 = Team.objects.create_team(
-            name = self.team_name_2
+        self.second_team = Team.objects.create_team(
+            name = self.second_team_name
         )
 
         self.membership = Membership.objects.create_membership(
             self.team,
             self.user,
         )
-        
+        self.membership = Membership.objects.create_membership(
+            self.second_team,
+            self.user,
+        )
+      
+
+    def test_get_all_belonged_team(self):
+        self.assertIsNotNone(self.user.member.all())
+ 
     def test_member_could_get_all_belonged_team(self):
-        try:
-            self.user.member.all()
-        except:
-            self.fail("getting all team belonged failed")
+        belonged_team = self.user.member.all()
+        self.assertEqual(belonged_team[0], self.team)
+        self.assertEqual(belonged_team[1], self.second_team)
    
     def test_member_could_leave_belonged_team(self):
         try:
             self.user.membership_member.leave_team(self.team)
         except ValidationError:
             self.fail("leave_team has occured an error")
+
+    def test_leaved_user_cannot_belong_team(self):
+        self.user.membership_member.leave_team(self.team)
+        belonged_team = self.user.member.all()
+        self.assertNotIn(self.team, belonged_team)
+

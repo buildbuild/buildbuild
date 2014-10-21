@@ -44,13 +44,8 @@ class TestTeamManager(TestCase):
 
     def test_get_all_teams(self):
         teams = Team.objects.all()
-
-        self.assertQuerysetEqual(
-            teams, 
-            ["<Team: "+self.team.name+">",
-            "<Team: "+self.second_team.name+">"],
-            ordered=False,
-        )
+        self.assertEqual(teams[0].name, self.team.name)
+        self.assertEqual(teams[1].name, self.second_team.name)
 
     def test_more_than_64_letters_team_name_must_raise_validation_error(self):
         try:

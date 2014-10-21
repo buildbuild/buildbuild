@@ -18,19 +18,26 @@ class TestProjectName(TestCase):
         )
         self.second_project = Project.objects.create_project(
             name = self.second_name,
+    
         )
 
-# Attribute
     def test_create_project_must_contain_name(self):
+        try:
+            project = Project.objects.create_project(
+                properties = ('python','2.7.8')
+            )
+        except TypeError:
+            pass
+
+    def test_create_project_name_min_length_1(self):
         try:
             project = Project.objects.create_project(
                 name = ""
             )
-        except AttributeError:
+        except ValidationError:
             pass
 
-# Validation
-    def test_name_is_restricted_to_64_characters(self):
+    def test_project_name_max_length_64(self):
         try:        
             Project.objects.create_project(
                 name = self.invalid_long_length_name,
@@ -40,13 +47,8 @@ class TestProjectName(TestCase):
 
     def test_get_all_projects(self):
         projects = Project.objects.all()
-
-        self.assertQuerysetEqual(
-            projects, 
-            ["<Project: "+self.project.name+">",
-            "<Project: "+self.second_project.name+">"],
-            ordered=False
-        )
+        self.assertEqual(projects[0].name, self.project.name)
+        self.assertEqual(projects[1].name, self.second_project.name)
 
 # Integrity
     def test_project_should_have_unique_name(self):
@@ -59,7 +61,7 @@ class TestProjectName(TestCase):
 
 # Assert
     def test_get_project_equal_to_project_targetted(self):
-        get_project = Project.objects.get_project(self.name)
+        get_project = Project.objects.get_project(self.project.id)
         self.assertEqual(
                 self.project, 
                 get_project, 

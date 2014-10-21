@@ -39,12 +39,12 @@ class TestAPITeamProjectList(TestCase):
         in this test case, going to use Membership Model directly.
         """
         self.first_project_membership = ProjectMembership()
-        self.first_project_membership.team = self.team
+        self.first_project_membership.project_team = self.team
         self.first_project_membership.project = self.first_project_belongs_to_team
         self.first_project_membership.save()
 
         self.second_project_membership = ProjectMembership()
-        self.second_project_membership.team = self.team
+        self.second_project_membership.project_team = self.team
         self.second_project_membership.project = self.second_project_belongs_to_team
         self.second_project_membership.save()
  

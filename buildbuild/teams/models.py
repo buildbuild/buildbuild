@@ -25,25 +25,31 @@ class TeamManager(models.Manager):
         return team
 
     def validate_name(self, name):
-        if len(name) > 64:
+        if len(name) < 1:
             raise ValidationError(
-                ("team name length should be at most 64"),
-                code = 'invalid'
+                "team name length should be at most 64",
+            )
+        elif len(name) > 64:
+            raise ValidationError(
+                "team name length should be at most 64",
             )
 
-    def get_team(self, name):
+    def get_team(self, id):
         try:
-            self.validate_name(name)
-            team = Team.objects.get(name = name)
+            team = Team.objects.get(id = id)
         except ObjectDoesNotExist:
-            raise ObjectDoesNotExist("The team name does not exist")
+            raise ObjectDoesNotExist("The id is not contained in team DB")
         else:
             return team
 
-    def delete_team(self, name):
-        team = Team.objects.get_team(name)
-        team.deactivate()
-        team.save(using = self._db)
+    def delete_team(self, id):
+        team = Team.objects.get_team(id)
+        team.delete()
+
+        if team.id is None:
+            return True
+        else:
+            raise OperationalError("delete team failed")
 
     def validate_contact_number(self, contact_number):
         if len(contact_number) > 20:
@@ -56,9 +62,34 @@ class TeamManager(models.Manager):
     def validate_website_url(self, website_url):
         if len(website_url) > 255:
             raise ValidationError("Website URL cannot contain more than 255 characters")
+    
+    # get team from foreign key of MtoM
+    def get_project_team(self, id):
+        try:
+            team = self.get(id = id)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                str(id) + "is not contained in project team DB"
+            )
+        else:
+            return team
+
+    # get wait_team from foreign key of MtoM
+    def get_project_wait_team(self, id):
+        try:
+            wait_team = self.get(id = id)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                str(id) + "is not contained in project wait team DB"
+            )
+        else:
+            return wait_team
 
 class Team(models.Model):
-    name = models.CharField(max_length = 64, unique=True)
+    name = models.CharField(
+        max_length = 64,
+        unique=True,
+    )
     contact_number = models.CharField(max_length = 20)
     website_url = models.URLField(max_length = 255)
 
@@ -77,24 +108,21 @@ class Team(models.Model):
             through_fields = ('team', 'member'),
             related_name="member",
             )
-  
-    def __unicode__(self):
-        return self.name
 
 class MembershipManager(models.Manager):
-    def create_membership(self, team, member):
-        if member.__class__.__name__ is not "User":
-            raise ValidationError("member argument must be User object")
+    def create_membership(self, team, user):
+        if user.__class__.__name__ is not "User":
+            raise ValidationError("user argument must be User object")
         if team.__class__.__name__ is not "Team":
             raise ValidationError("team argument must be Team object")
 
         # Does the member already exist? 
         try:
-            team.members.get_member(email = member.email)
+            team.members.get_member(id = user.id)
         except ObjectDoesNotExist:
             membership = self.model(
                 team = team, 
-                member = member,
+                member = user,
             )
             membership.save(using = self._db)
             return membership
@@ -140,7 +168,7 @@ class WaitListManager(models.Manager):
 
         # Does the wait_member already exist? 
         try:
-            team.wait_members.get_member(email = wait_member.email)
+            team.wait_members.get_member(id = wait_member.id)
         except ObjectDoesNotExist:
             wait_list = self.model(
                 team = team, 

@@ -44,9 +44,9 @@ class TestWaitList(TestCase):
 
     def test_team_could_get_wait_member(self):
         try:
-            self.team.wait_members.get_user(self.user_email)
+            self.team.wait_members.get_wait_member(self.user.id)
         except: 
-            self.fail("getting a wait_user failed")
+            self.fail("getting a wait_member failed")
 
     def test_waitlist_must_have_date_requested(self):
         try:

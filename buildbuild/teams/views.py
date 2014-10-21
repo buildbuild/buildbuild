@@ -18,7 +18,7 @@ from django.db import OperationalError
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from teams.forms import MakeTeamForm
-from teams.models import Team, Membership
+from teams.models import Team, Membership, WaitList
 from users.models import User
 
 class MakeTeamView(FormView):
@@ -58,10 +58,12 @@ class MakeTeamView(FormView):
             return HttpResponseRedirect(reverse("maketeam"))
         else:
             # link user to team using Membership  
-            email = self.request.user
-            user = User.objects.get_user(email)
-            membership = Membership()
-            membership = Membership(team = team, member = user, is_admin = True)
+            user = self.request.user
+            membership = Membership.objects.create(
+                team = team, 
+                member = user, 
+                is_admin = True,
+            )
             membership.save()
  
             messages.add_message(

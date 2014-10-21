@@ -45,12 +45,12 @@ class Membership_team_to_member_test(TestCase):
 # ObjectDoesNotExist
     def test_team_could_get_member(self):
         try:
-            self.team.members.get_member(self.user_email)
+            self.team.members.get_member(self.user.id)
         except:
             self.fail("getting team member failed")
 
     def test_team_could_exclude_team_member(self):
         try:
-            self.team.membership_team.exclude_member(self.user)
+            self.team.membership_team.exclude_member(self.user.id)
         except ValidationError:
             self.fail("exclude_member has occured an error")

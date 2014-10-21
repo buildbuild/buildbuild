@@ -22,24 +22,26 @@ class ProjectManager(models.Manager):
         return project
 
     def validate_name(self, name):
-        if len(name) > 64:
+       if len(name) < 1:
             raise ValidationError(
-                ("project.name length should be at most 64"),
-                code = 'invalid'
+                "project name length should be at most 64",
+            )
+       if len(name) > 64:
+            raise ValidationError(
+                "project name max length is 64",
             )
 
-    def get_project(self, name):
+    def get_project(self, id):
         try:
-            self.validate_name(name)
             project = Project.objects.get(name = name)
         except ObjectDoesNotExist:
-            raise ObjectDoesNotExist("The project.name does not exist")
+            raise ObjectDoesNotExist("The id not exist in project DB")
         else:
             return project
 
     # Update project needed to add functions, and test code
-    def update_project(self, name, **kwargs):
-        project = Project.objects.get_project(name)
+    def update_project(self, id, **kwargs):
+        project = Project.objects.get_project(id)
         if "properties" in kwargs:
             project.properties = kwargs['properties']
         if "docker_text" in kwargs:
@@ -48,10 +50,14 @@ class ProjectManager(models.Manager):
         project.save(using = self.db)
 
 
-    def delete_project(self, name):
-        project = Project.objects.get_project(name)
-        project.deactivate()
-        project.save(using = self._db)
+    def delete_project(self, id):
+        project = Project.objects.get_project(id)
+        project.delete()
+
+        if project.id is None:
+            return True
+        else:
+            raise OperationalError("delete project failed")
 
 class Project(models.Model):
     name = models.CharField(max_length = 64, unique = True)
@@ -59,43 +65,42 @@ class Project(models.Model):
     docker_text = models.TextField(default = '')
     objects = ProjectManager()
     
-    team_wait_list = models.ManyToManyField(
+    project_wait_teams = models.ManyToManyField(
             Team, 
             through = 'ProjectWaitList',
-            through_fields = ('project', 'wait_team'),
-            related_name="project_wait_list"
+            through_fields = ('project', 'project_wait_team'),
+            related_name="project_wait_teams"
             )
     
-    team_list = models.ManyToManyField(
+    project_teams = models.ManyToManyField(
             Team, 
             through = 'ProjectMembership',
-            through_fields = ('project', 'team'),
-            related_name="project_membership"
+            through_fields = ('project', 'project_team'),
+            related_name="project_teams"
             )
     
-    def __unicode__(self):
-        return self.name
+class ProjectMembership(models.Model):
+    project = models.ForeignKey(
+            Project, 
+            related_name="membership_project",
+            )
+    project_team = models.ForeignKey(
+            Team, 
+            related_name="membership_project_team",
+            default = None,
+            )
+    date_joined = models.DateField(auto_now_add=True)
+    is_admin = models.BooleanField(default=False)
 
 class ProjectWaitList(models.Model):
     project = models.ForeignKey(
             Project, 
-            related_name="project_wait_list_project",
+            related_name="wait_list_project",
             )
-    wait_team = models.ForeignKey(
+    project_wait_team = models.ForeignKey(
             Team, 
-            related_name="project_wait_list_team",
+            related_name="wait_list_project_team",
+            default = None,
             )
     date_requested = models.DateTimeField(auto_now_add=True)
-
-class ProjectMembership(models.Model):
-    project = models.ForeignKey(
-            Project, 
-            related_name="project_membership_project",
-            )
-    team = models.ForeignKey(
-            Team, 
-            related_name="project_membership_team",
-            )
-    date_joined = models.DateField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
 

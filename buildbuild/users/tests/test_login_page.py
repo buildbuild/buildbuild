@@ -18,35 +18,46 @@ class LoginPageTest(TestCase):
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
 
-    def test_get_login_page_request_should_return_200(self):
+    def test_get_login_return_200(self):
         response = self.client.get("/login/")
         self.assertEqual(response.status_code, 200)
 
     # POST with valid user information
-    def test_post_login_page_with_valid_user_information_should_return_302(self):
-        response = self.client.post("/login/", {
-            "email": self.valid_email,
-            "password": self.valid_password,
-            })
-        self.assertEqual(response.status_code, 302)
+    def test_post_with_valid_user_redirects_main_page_with_code_302(self):
+        self.assertRedirects(
+            self.client.post(
+                "/login/", {
+                    "email": self.valid_email,
+                    "password": self.valid_password,
+                }
+            ),
+            "/",
+        )
 
-    # POST with invalid user information
-    def test_post_login_page_with_invalid_user_information_should_return_302(self):
-        response = self.client.post("/login/", {
-            "email": self.valid_email,
-            "password": self.invalid_password,
-            })
-        self.assertEqual(response.status_code, 302)
+    def test_post_with_invalid_user_redirects_to_login_with_code_302(self):
+        self.assertRedirects(
+            self.client.post(
+                "/login/", {
+                    "email": self.valid_email,
+                    "password": self.invalid_password,
+                }
+            ),
+            "/login/",
+        )
 
-    def test_post_login_page_with_invalid_user_information_should_redirect_to_login(self):
-        response = self.client.post("/login/", {
-            "email": self.valid_email,
-            "password": self.invalid_password,
-            })
-        self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/login/")
-
-    # POST with no user information
-    def test_post_login_page_with_no_user_information_should_have_error_message(self):
+    def test_post_with_no_user_information_error_message(self):
         response = self.client.post("/login/", {})
+        self.assertContains(response, "This field is required.")
+
+    def test_post_login_page_with_email_and_without_password_should_have_error_message(self):
+        response = self.client.post("/login/", {
+            "email": self.valid_email,    
+        })
+        self.assertContains(response, "This field is required.")
+
+    def test_post_login_page_with_password_and_without_email_should_have_error_message(self):
+        response = self.client.post("/login/", {
+            "password": self.valid_password,
+        })
         self.assertContains(response, "This field is required.")
 

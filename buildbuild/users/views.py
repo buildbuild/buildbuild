@@ -18,9 +18,8 @@ from users.models import User
 from users.forms import LoginForm
 from users.forms import SignUpForm
 
-from django.db import IntegrityError
-from django.db import OperationalError
-from django.core.exceptions import ValidationError
+from django.db import IntegrityError, OperationalError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from users import tasks
 from django.core.validators import validate_email
@@ -40,31 +39,13 @@ class Login(FormView):
     form_class = LoginForm
 
     def form_valid(self, form):
-        # Email field required
-        try:
-            email = self.request.POST["email"]
-        except:
-            messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : user email form empty"
-                    )
-            return HttpResponseRedirect(reverse("login"))       
-
-        # Password field required
-        try:
-            password = self.request.POST["password"]
-        except:
-            messages.add_message(
-                    self.request,
-                    "ERROR : user password form empty"
-                    )
-            return HttpResponseRedirect(reverse("login"))       
+        email = self.request.POST["email"]
+        password = self.request.POST["password"]
 
         # User authentication
         try:
             user = authenticate(email=email, password=password)
-        except:
+        except ValidationError:
             messages.add_message(
                     self.request,
                     "ERROR : the user email not exist"
@@ -116,7 +97,7 @@ class Logout(RedirectView):
                 self.request, 
                 messages.SUCCESS, 
                 "Successfully Logout"
-            )
+            ) 
             return reverse("home")
 
 class AccountView(DetailView):
@@ -134,83 +115,64 @@ class SignUp(FormView):
     form_class = SignUpForm
     
     def form_valid(self, form):
-        # Email field required
-        try:
-            email = self.request.POST["email"]
-        except:
-            messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : user email form empty"
-                    )
-            return HttpResponseRedirect(reverse("signup"))       
-
-        # Valid email test
+        email = self.request.POST["email"]
+        password = self.request.POST["password"]
+        
+        # Validate email
         try:
             validate_email(email)
-        except:
-            messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : invalid email"
-                    )
-            return HttpResponseRedirect(reverse("signup"))       
-
-        # Password field required
-        try:
-            password = self.request.POST["password"]
-        except:
-            messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : user password form empty"
-                    )
-            return HttpResponseRedirect(reverse("signup"))
-
-        # Valid Password test
-        try:
-            User.objects.validate_password(password)
-        except:
-            messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : invalid user password"
-                    )
-            return HttpResponseRedirect(reverse("signup"))       
-
-        try:
-            new_user = User.objects.create_user(email, password = password)
         except ValidationError:
             messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : invalid information detected"
-                    )
-            return HttpResponseRedirect(reverse("signup"))           
-        except IntegrityError:
-            messages.add_message(
-                    self.request, 
-                    messages.ERROR, 
-                    "ERROR : The account already exists"
-                    )
-            return HttpResponseRedirect(reverse("signup"))
-        else: 
-            messages.add_message(
-                    self.request, 
-                    messages.SUCCESS, 
-                    "Successfully Signup"
-                    )
+                self.request,
+                messages.ERROR,
+                "ERROR : invalid user email"
+            )
+            return HttpResponseRedirect(reverse("signup"))       
 
-            # send Email test
-            try:
-                tasks.send_mail_to_new_user.delay(new_user)
-            except OperationalError:
-                messages.add_message(
-                    self.request, 
-                    messages.ERROR, 
-                    "Sign-up email was not sended"
-                )
-                return HttpResponseRedirect(reverse("login"))
-            else:
-                return HttpResponseRedirect(reverse("login"))
+        # Check Uniqueness of User
+        try:
+            User.objects.get(email=email)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "ERROR : The user email already exist"
+            )
+            return HttpResponseRedirect(reverse("home"))
+
+        # Validate password
+        try:
+            User.objects.validate_password(password)
+        except ValidationError:
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                "ERROR : invalid user password"
+            )
+            return HttpResponseRedirect(reverse("signup"))       
+       
+        # Create new user
+        User.objects.create_user(email, password = password)
+        
+        messages.add_message(
+            self.request, 
+            messages.SUCCESS, 
+            "Successfully Signup"
+        )
+        return HttpResponseRedirect(reverse("login"))
+
+        # send Email test
+        try:
+            tasks.send_mail_to_new_user.delay(new_user)
+        except OperationalError:
+            messages.add_message(
+                self.request, 
+                messages.ERROR, 
+                "Sign-up email was not sended"
+            )
+            return HttpResponseRedirect(reverse("login"))
+        else:
+            return HttpResponseRedirect(reverse("login"))
 

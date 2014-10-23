@@ -154,11 +154,11 @@ class ProjectWaitListManager(models.Manager):
 class ProjectWaitList(models.Model):
     project = models.ForeignKey(
             Project, 
-            related_name="wait_list_project",
+            related_name="project_wait_list_project",
             )
     project_wait_team = models.ForeignKey(
             Team, 
-            related_name="wait_list_project_team",
+            related_name="project_wait_list_project_team",
             default = None,
             )
     date_requested = models.DateTimeField(auto_now_add=True)

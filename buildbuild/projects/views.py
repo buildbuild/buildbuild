@@ -15,54 +15,89 @@ from django.core.urlresolvers import reverse
 
 from django.db import IntegrityError
 from django.db import OperationalError
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from projects.forms import MakeProjectForm
-from projects.models import Project
-
-from projects.models import Project
+from projects.models import Project, ProjectMembership
+from teams.models import Team
 
 class MakeProjectView(FormView):
     template_name = "projects/makeproject.html"
     form_class = MakeProjectForm
 
     def form_valid(self, form):
-        # name field required
-        try:
-            self.request.POST["projects_project_name"]
-        except ValidationError:
+        def msg_error(msg=""):
             messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : project name form empty"
-                    )
-            return HttpResponseRedirect(reverse("makeproject"))           
-        else:
-            name = self.request.POST["projects_project_name"]
+                self.request,
+                messages.ERROR,
+                msg
+            )
 
-        # valid and unique team name test
-        try:        
-            project = Project.objects.create_project(name)
+        def msg_success(msg=""):
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                msg
+            )
+        
+        project_invalid = "ERROR : invalid project name"
+        project_already_exist = "ERROR : The project name already exists" 
+        project_invalid_team_name = "ERROR : invalid team name"
+        project_non_exist_team = "ERROR : The team name is not in teams DB"
+        project_user_does_not_belong_team = "ERROR : The user doesn't belong the team"
+        project_make_success = "Project created successfully"
+
+        project_name = self.request.POST["projects_project_name"]
+        team_name = self.request.POST["projects_team_name"]
+        # Check valid project name
+        try:
+            Project.objects.validate_name(project_name)
         except ValidationError:
-            messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    "ERROR : invalid project name"
-                    )
-            return HttpResponseRedirect(reverse("makeproject"))          
-        except IntegrityError:
-            messages.add_message(
-                    self.request, 
-                    messages.ERROR, 
-                    "ERROR : The project name already exists"
-                    )
+            msg_error(project_invalid)
             return HttpResponseRedirect(reverse("makeproject"))
-        else: 
-            # needed to add to link project to team using Project Memberhip 
-            messages.add_message(
-                    self.request, 
-                    messages.SUCCESS, 
-                    "Project created successfully"
-                    )
-            return HttpResponseRedirect(reverse("home")) 
+        
+        # Check uniqueness of project
+        try:
+            Project.objects.get(name = project_name)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            msg_error(project_already_exist)
+            return HttpResponseRedirect(reverse("makeproject"))
+        
+        # Check valid team name
+        try:
+            Team.objects.validate_name(team_name)
+        except ValidationError:
+            msg_error(project_invalid_team_name)
+            return HttpResponseRedirect(reverse("maketeam"))
+   
+        # Check the team is in <teams DB>
+        try:
+            team = Team.objects.get(name = team_name)
+        except ObjectDoesNotExist:
+            msg_error(project_non_exist_team)
+            return HttpResponseRedirect(reverse("makeproject"))
+
+        # Check login user belong to the team
+        user = self.request.user
+        try:
+            team.members.get_member(id = user.id)
+        except ObjectDoesNotExist:
+            msg_error(project_user_does_not_belong_team)
+            return HttpResponseRedirect(reverse("makeproject"))
+        
+        # Login check is programmed in buildbuild/urls.py
+        # link team to project using ProjectMembership
+        project = Project.objects.create_project(project_name)
+
+        project_membership = ProjectMembership.objects.create(
+            project = project,
+            project_team = team,
+            is_admin = True,
+        )
+        project_membership.save()
+        
+        msg_success(project_make_success)
+        return HttpResponseRedirect(reverse("home")) 
 

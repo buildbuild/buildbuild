@@ -130,17 +130,17 @@ class MembershipManager(models.Manager):
             raise ValidationError(member.email + " is already the team member")
     
     # User -> membership_member -> leave_team
-    def leave_team(self, team):
+    def leave_team(self, id):
         try:
-            membership = self.get(team = team)
+            membership = self.get(id = id)
         except ValidationError:
-            raise ValidationError("The team is not a member's belonged team")
+            raise ValidationError("The team id is not a member's belonged team")
         membership.delete()
 
     # Team -> membership_team -> exclude_member
-    def exclude_member(self, member):
+    def exclude_member(self, id):
         try:
-            membership = self.get(member = member)
+            membership = self.get(id = id)
         except ValidationError:
             raise ValidationError("The member is not a team member")
         membership.delete()

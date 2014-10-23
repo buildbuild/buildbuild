@@ -7,13 +7,13 @@ class MakeProjectForm(forms.Form):
             required=True,
             label="Project Name(*required)",
             )
-    """
+    
     projects_team_name = forms.CharField(
             max_length = 64,
-            required=False,
+            required=True,
             label="Team Name",
             )
-
+    """
     lang = forms.CharField(
             max_length = 20,
             required=False,

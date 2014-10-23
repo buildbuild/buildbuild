@@ -98,7 +98,25 @@ class ProjectMembershipManager(models.Manager):
             return project_membership
         else:
             raise ValidationError(team.name + "is already the project member")
-            
+           
+    # Team -> project_membership_project_team -> leave_project
+    def leave_project(self, id):
+        try:
+            project_membership = self.get(id = id)
+        except ValidationError:
+            raise ValidationError("The team doesn't belong the project")
+        else:
+            project_membership.delete()
+
+    # Project -> project_membership_project -> exclude_project_team
+    def exclude_project_team(self, id):
+        try:
+            project_team = self.get(id = id)
+        except ValidationError:
+            raise ValidationError("The project_team is not a team member")
+        else:
+            project_teamship.delete()        
+
 class ProjectMembership(models.Model):
     project = models.ForeignKey(
             Project, 
@@ -136,11 +154,11 @@ class ProjectWaitListManager(models.Manager):
 class ProjectWaitList(models.Model):
     project = models.ForeignKey(
             Project, 
-            related_name="wait_list_project",
+            related_name="project_wait_list_project",
             )
     project_wait_team = models.ForeignKey(
             Team, 
-            related_name="wait_list_project_team",
+            related_name="project_wait_list_project_team",
             default = None,
             )
     date_requested = models.DateTimeField(auto_now_add=True)

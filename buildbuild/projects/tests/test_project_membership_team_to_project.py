@@ -44,4 +44,18 @@ class Membership_team_to_member_test(TestCase):
         self.assertEqual(project_teams[0], self.project)
         self.assertEqual(project_teams[1], self.second_project)
 
+    def test_team_could_leave_belonged_project(self):
+        try:
+            self.team.project_membership_project_team.leave_project(
+                self.project.id
+            )
+        except ValidationError:
+            self.fail("leave_project has occured an error")
 
+    def test_leaved_team_cannot_belong_project(self):
+        self.team.project_membership_project_team.leave_project(
+            self.project.id
+        )
+
+        belonged_project = self.team.project_teams.all()
+        self.assertNotIn(self.team, belonged_project)

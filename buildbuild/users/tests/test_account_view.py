@@ -20,29 +20,34 @@ class TestAccountView(TestCase):
             name = self.user_name,
             phonenumber=self.user_phone_number
         )
+    # Default Set function, These are not Unit Test function
+    def post_login_set(self, user_email="", user_password="", follow = False):
+        response = self.client.post(
+                   "/login/", {
+                       "email" : user_email,
+                       "password" : user_password,
+                       },
+                       follow = follow
+                   )
+        return response
+
+    # Test Code for Default Set function
+    def test_post_login_set(self):
+        self.post_login_set(self.user_email, self.user_password)
 
     def test_after_login_can_move_account_page(self):
-        self.client.post("/login/", {
-            "email": self.user_email,
-            "password": self.user_password,
-            })
+        self.post_login_set(self.user_email, self.user_password)
         response = self.client.get("/account/")
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_login_can_not_move_account_page(self):
-        self.client.post("/login/", {
-            "email": self.user_email,
-            "password": self.invalid_user_password,
-            })
+        self.post_login_set(self.user_email, self.invalid_user_password)
         response = self.client.get("/account/")
         self.assertEqual(response.status_code, 302)
         #If login is success, login redirect must not be happen
 
     def test_account_page_should_contain_user_info(self):
-        self.client.post("/login/", {
-            "email": self.user_email,
-            "password": self.user_password,
-            })
+        self.post_login_set(self.user_email, self.user_password)
         response = self.client.get("/account/")
         self.assertContains(response, self.user_email)
         self.assertContains(response, self.user_name)

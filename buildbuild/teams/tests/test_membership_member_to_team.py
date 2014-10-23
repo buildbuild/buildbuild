@@ -51,12 +51,12 @@ class Membership_member_to_team_test(TestCase):
    
     def test_member_could_leave_belonged_team(self):
         try:
-            self.user.membership_member.leave_team(self.team)
+            self.user.membership_member.leave_team(self.team.id)
         except ValidationError:
             self.fail("leave_team has occured an error")
 
     def test_leaved_user_cannot_belong_team(self):
-        self.user.membership_member.leave_team(self.team)
+        self.user.membership_member.leave_team(self.team.id)
         belonged_team = self.user.member.all()
         self.assertNotIn(self.team, belonged_team)
 

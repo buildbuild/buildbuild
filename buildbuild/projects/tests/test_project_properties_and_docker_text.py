@@ -136,6 +136,8 @@ class MakeProjectPageTest(TestCase):
             follow = True
         )
         Language = 0
+        print Project.objects.count()
+        print Project.objects.all()[0].name
         # For travis test, get using name instead of get id
         project = Project.objects.get(name = self.project_name)
         self.assertEqual(project.properties[Language], self.lang_python)

@@ -29,6 +29,10 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
+# Docker text form files is located in /media/
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 ALLOWED_HOSTS = []
 
 # Application definition

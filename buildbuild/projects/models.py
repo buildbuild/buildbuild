@@ -11,11 +11,27 @@ class ProjectManager(models.Manager):
         project.name = name
 
         if "team_name" in kwargs:
+            Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
+        
+        # Language & Version
         if "properties" in kwargs:
-            project.properties = kwargs['properties']
-        if "docker_text" in kwargs:
-            project.docker_text = kwargs['docker_text']
+            Language = 0
+            Version = 1
+
+            # Language should be stored in lower case 
+            # Because our file for judgement available language
+            properties = kwargs['properties']
+            properties = (properties[Language].lower(), properties[Version])
+
+            self.validate_lang_ver(properties[Language], properties[Version])
+            docker_text = self.customize_docker_text(
+                              properties[Language], 
+                              properties[Version]
+                          )
+
+            project.properties = properties
+            project.docker_text = docker_text
 
         project.save(using = self.db)
 
@@ -30,6 +46,26 @@ class ProjectManager(models.Manager):
             raise ValidationError(
                 "project name max length is 64",
             )
+
+    # When file open, given argument lang is applide to open file path
+    # If it raise IOError when file opening, then the language is not supported
+    # and then it reads file and find given argument ver in the file
+    # If it can't find such version, then the version is not supported
+    def validate_lang_ver(self, lang, ver):
+        try:
+            file_handler = open(
+                           "media/available_languages_and_versions/"
+                           + lang 
+                           + "_ver_available",
+                           'r'
+                      )
+        except IOError:
+            raise IOError("The language is not supported")
+        else:
+            if ver in file_handler.read():
+                return True
+            else:
+                raise ValidationError("The language is not supported")
 
     def get_project(self, id):
         try:
@@ -49,7 +85,6 @@ class ProjectManager(models.Manager):
 
         project.save(using = self.db)
 
-
     def delete_project(self, id):
         project = Project.objects.get_project(id)
         project.delete()
@@ -58,6 +93,16 @@ class ProjectManager(models.Manager):
             return True
         else:
             raise OperationalError("delete project failed")
+
+    def customize_docker_text(self, lang, ver):
+        file_handler = open(
+                           "media/docker/" + lang + "_Dockerfile",
+                           'r',
+                       )
+        docker_text = file_handler.read()
+        docker_text = docker_text.replace("<x.y>", ver[:3])
+        docker_text = docker_text.replace("<x.y.z>", ver)         
+        return docker_text
 
 class Project(models.Model):
     name = models.CharField(max_length = 64, unique = True)
@@ -85,8 +130,8 @@ class ProjectMembershipManager(models.Manager):
             raise ValidationError("team argument must be Team object")
         if project.__class__.__name__ is not "Project":
             raise ValidationError("project argument must be Project object")
-
-        # Does the member already exist? 
+        # Does the member already exist?
+        #print project.project_teams.get_project_team(id = team.id)
         try:
             project.project_teams.get_project_team(id = team.id)
         except ObjectDoesNotExist:

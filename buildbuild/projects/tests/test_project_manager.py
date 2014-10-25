@@ -22,12 +22,12 @@ class TestProjectName(TestCase):
         )
 
     def test_create_project_must_contain_name(self):
-        try:
-            project = Project.objects.create_project(
-                properties = ('python','2.7.8')
-            )
-        except TypeError:
-            pass
+        self.assertRaises(
+            TypeError,
+            Project.objects.create_project,
+            team_name = self.team_name,
+            properties = ('python','2.7.8')
+        )
 
     def test_create_project_name_min_length_1(self):
         try:

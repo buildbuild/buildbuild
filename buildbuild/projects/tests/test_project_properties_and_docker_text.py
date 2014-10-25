@@ -121,7 +121,9 @@ class MakeProjectPageTest(TestCase):
             properties = (self.lang_python, self.ver_278),
             follow = True,
         )
-        project = Project.objects.get_project(1)
+
+        # For travis test, get using name instead of get id
+        project = Project.objects.get(name = self.project_name)
         self.assertEqual(project.docker_text, self.docker_text_with_python_278)
 
     def test_post_project_lang_automatically_lowercase(self):

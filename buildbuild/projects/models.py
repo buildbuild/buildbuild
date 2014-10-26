@@ -105,17 +105,25 @@ class ProjectManager(models.Manager):
         return docker_text
 
 class Project(models.Model):
-    name = models.CharField(max_length = 64, unique = True)
+    name = models.CharField(
+               verbose_name = "Project name",
+               max_length = 64,
+               unique = True
+           )
     properties = JSONField(default = ('','') )
-    docker_text = models.TextField(default = '')
+    docker_text = models.TextField(
+                      verbose_name = "Project docker_text",
+                      default = ''
+                  )
     objects = ProjectManager()
     
     project_wait_teams = models.ManyToManyField(
-            Team, 
-            through = 'ProjectWaitList',
-            through_fields = ('project', 'project_wait_team'),
-            related_name="project_wait_teams"
-            )
+                             Team,
+                             verbose_name = "Project wait_teams",
+                             through = 'ProjectWaitList',
+                             through_fields = ('project', 'project_wait_team'),
+                             related_name="project_wait_teams"
+                         )
     
     project_teams = models.ManyToManyField(
             Team, 
@@ -164,16 +172,24 @@ class ProjectMembershipManager(models.Manager):
 
 class ProjectMembership(models.Model):
     project = models.ForeignKey(
-            Project, 
+            Project,
+            verbose_name = "ProjectMembership project",
             related_name="project_membership_project",
             )
     project_team = models.ForeignKey(
-            Team, 
+            Team,
+            verbose_name = "ProjectMembership project_team",
             related_name="project_membership_project_team",
             default = None,
             )
-    date_joined = models.DateField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
+    date_joined = models.DateField(
+                      verbose_name = "ProjectMembership date_joined",
+                      auto_now_add=True
+                  )
+    is_admin = models.BooleanField(
+                   verbose_name = "ProjectMembership is_admin",
+                   default=False
+               )
     objects = ProjectMembershipManager()
 
 class ProjectWaitListManager(models.Manager):
@@ -198,13 +214,18 @@ class ProjectWaitListManager(models.Manager):
 
 class ProjectWaitList(models.Model):
     project = models.ForeignKey(
-            Project, 
-            related_name="project_wait_list_project",
-            )
+                  Project,
+                  verbose_name = "ProjectWaitList project",  
+                  related_name="project_wait_list_project",
+              )
     project_wait_team = models.ForeignKey(
-            Team, 
-            related_name="project_wait_list_project_team",
-            default = None,
-            )
-    date_requested = models.DateTimeField(auto_now_add=True)
+                            Team,
+                            verbose_name = "ProjectWaitList project_wait_team",
+                            related_name="project_wait_list_project_team",
+                            default = None,
+                        )
+    date_requested = models.DateTimeField(
+                         verbose_name = "ProjectWaitList date_requested",
+                         auto_now_add=True,
+                     )
     objects = ProjectWaitListManager()

@@ -56,19 +56,16 @@ class UserManager(BaseUserManager):
                 "user phonenumber max length 30",
             )
        
-        if bool(re.match('^[0-9]+$', phonenumber)):
-            pass
-        else:
-            raise ValidationError(("user phonenumber should not be with character"))
+        if bool(re.match('^[0-9]+$', phonenumber)) is False:
+            raise ValidationError("user phonenumber should not be with character")
 
     def validate_name(self, name):
         if len(name) > 30:
             raise ValidationError(("user name length should be at most 30"),
                                     code = 'invalid')
-        if bool(re.match('^[ a-zA-Z_]+$', name)):
-            pass
-        else:
-            raise ValidationError(("user name cannot contain things but alphabet, white space, '_'"))
+
+        if bool(re.match('^[ a-zA-Z_]+$', name)) is False:
+            raise ValidationError("user name cannot contain things but alphabet, white space, '_'")
 
     def get_user(self, id):
         try:

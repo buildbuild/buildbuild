@@ -87,16 +87,16 @@ class TeamManager(models.Manager):
 
 class Team(models.Model):
     name = models.CharField(
-        verbose_name = "Team name",
+        help_text = "Team name",
         max_length = 64,
         unique=True,
     )
     contact_number = models.CharField(
-                        verbose_name = "Team contact_number",
+                        help_text = "Team contact_number to inform something or contact",
                         max_length = 20,
                      )
     website_url = models.URLField(
-                      verbose_name = "Team website_url",
+                      help_text = "Team website_url",
                       max_length = 255
                   )
 
@@ -104,7 +104,7 @@ class Team(models.Model):
  
     wait_members = models.ManyToManyField(
                        User,
-                       verbose_name = "Team wait_members",
+                       verbose_name = "team wait_members",
                        through = 'WaitList',
                        through_fields = ('team', 'wait_member'),
                        related_name="wait_member",
@@ -112,7 +112,7 @@ class Team(models.Model):
     
     members = models.ManyToManyField(
                   User,
-                  verbose_name = "Team members", 
+                  verbose_name = "team members for team",
                   through = 'Membership',
                   through_fields = ('team', 'member'),
                   related_name="member",
@@ -157,22 +157,22 @@ class MembershipManager(models.Manager):
 class Membership(models.Model):
     team = models.ForeignKey(
                Team,
-               verbose_name = "Membership team",
+               verbose_name = "membership team",
                related_name="membership_team",
            )
     member = models.ForeignKey(
                  User,
-                 verbose_name = "Membership member",
+                 verbose_name = "membership member",
                  related_name="membership_member",
              )
     objects = MembershipManager()
     
     date_joined = models.DateTimeField(
-                      verbose_name = "Membership date_joined",
+                      help_text = "Membership date_joined when the member joined the team",
                       auto_now_add=True,
                   )
     is_admin = models.BooleanField(
-                   verbose_name = "Membership is_admin",
+                   help_text = "Membership is_admin",
                    default=False
                )
 
@@ -215,17 +215,19 @@ class WaitListManager(models.Manager):
 class WaitList(models.Model):
     team = models.ForeignKey(
                Team, 
-               verbose_name = "WaitList team",
+               verbose_name = "waitList team",
                related_name="wait_list_team",
            )
     wait_member = models.ForeignKey(
                       User,
-                      verbose_name = "WaitList wait_member",
+                      verbose_name = "waitList wait_member",
                       related_name="wait_list_wait_member",
                   )
     date_requested = models.DateTimeField(
-                         verbose_name = "WaitList date_requested",
+                         help_text = "WaitList date_requested when user " +
+                             "send a request to join a team",
                          auto_now_add=True,
                      )
 
     objects = WaitListManager()
+

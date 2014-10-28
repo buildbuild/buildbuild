@@ -59,6 +59,7 @@ INSTALLED_APPS = (
     'teams',
     'projects',
     'deploys',
+    'properties',
 )
 
 MIDDLEWARE_CLASSES = (

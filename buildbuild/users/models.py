@@ -129,31 +129,31 @@ class UserManager(BaseUserManager):
  
 class User(AbstractBaseUser):
     name = models.CharField(
-               verbose_name = "User name",
+               help_text = "User name",
                max_length = 30,
            )
     email = models.EmailField(
-                verbose_name = "User email",
+                help_text = "User email",
                 max_length = 50,
                 unique = True,
             )
 
     is_active = models.BooleanField(
-                    verbose_name = "User is_active",
+                    help_text = "User is_active to judge if the account is active",
                     default=True
                 )
 
     is_admin = models.BooleanField(
-                   verbose_name = "User is_admin",
+                   help_text = "User is_admin for administrator permission",
                    default=False
                )
 
     is_staff = models.BooleanField(
-                   verbose_name = "User is_staff",
+                   help_text = "User is_staff for user can access admin site",
                    default=False
                )
     phonenumber = models.CharField(
-                      verbose_name = "User phonenumber",
+                      help_text = "User phonenumber",
                       max_length=18
                   )
 

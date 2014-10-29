@@ -1,6 +1,7 @@
-Django==1.7
+Django==1.7.1
 Fabric==1.10.0
 Markdown==2.4.1
+PyYAML==3.11
 amqp==1.4.6
 anyjson==0.3.3
 billiard==3.3.0.18
@@ -12,13 +13,18 @@ django-jsonfield==0.9.13
 django-smtp-ssl==1.0
 djangorestframework==2.4.0
 ecdsa==0.11
+enum34==1.0.3
 gnureadline==6.3.3
 ipython==2.1.0
 kombu==3.0.23
 meld3==1.0.0
 paramiko==1.15.1
 pep8==1.5.7
+psycopg2==2.5.4
 pycrypto==2.6.1
+python-coveralls==2.4.3
 pytz==2014.4
+requests==2.4.3
+sh==1.09
 six==1.7.3
 wsgiref==0.1.2

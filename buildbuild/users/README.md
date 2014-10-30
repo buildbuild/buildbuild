@@ -11,11 +11,11 @@
 ** phonenumber
 * signup/in 
 * login
-** remember me?
-* logout
-* signout
-* modification of user information
-* forget password
-* forget id
-* user management
-** ??? admin ???
+* remember me?
+** logout
+** signout
+** modification of user information
+** forget password
+** forget id
+** user management
+* ??? admin ???

@@ -19,6 +19,8 @@ class VersionListManager(models.Manager):
 
         lang_ver = VersionList.objects.create(lang=lang, ver=ver)
         lang_ver.save(using = self._db)
+        
+        return lang_ver
 
     def validate_lang(self, lang):
         try:
@@ -61,16 +63,23 @@ class VersionList(models.Model):
 
 class DockerTextManager(models.Manager):
     def create_docker_text(self, lang, docker_text):
-        Version.objects.validate_lang(lang)
+        VersionList.objects.validate_lang(lang)
 
-        docker_text = DockerText.objects.create(docker_text = {lang : docker_text})
+        docker_text = DockerText.objects.create(lang = lang, docker_text = docker_text)
         docker_text.save(using = self._db)
+        return docker_text
 
 class DockerText(models.Model):
-    docker_text = JSONField(
+   lang = models.CharField(
+              help_text = "This field informs language",
+              max_length = 30,
+              unique = True,
+              default = "", # ex : "python"
+          )
+
+   docker_text = models.TextField(
                       help_text = "This field have docker text for each language",
-                      unique = True,
-                      default = {"" : ""} # ex : {"python" : <python docker text>}
+                      default = "" # ex : <python docker text>
                   )
 
-    objects = DockerTextManager()
+   objects = DockerTextManager()

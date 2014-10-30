@@ -1,21 +1,22 @@
 * user modeling
-** userid ( email )
-** userpassword 
-** username ( real name )
-** organization
-** is_org_admin # organization admin
-** is_admin # system admin
-** password hint
-** login session id
-** is_active
-** phonenumber
-* signup/in 
-* login
-* remember me?
-** logout
-** signout
-** modification of user information
-** forget password
-** forget id
-** user management
-* ??? admin ???
+---
+# Done
+ * userid ( email )
+ * userpassword 
+ * username ( real name )
+ * is admin
+ * login session id
+ * is active
+ * phonenumber
+ * signup/in 
+ * login
+ * logout
+ * signout
+ * modification of user information
+---
+# Required
+ * password hint
+ * remember me?
+ * modification of user information in UI
+ * forget id/password
+ * user management

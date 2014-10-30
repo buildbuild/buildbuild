@@ -1,6 +1,8 @@
-* Project modeling
+Project modeling
+===
+
+Done
 ---
-# Done
 `
  * project_id
  * project name
@@ -10,8 +12,9 @@
  * rest api for team project
  * MtoM teams and projects
 `
+
+Required
 ---
-# Required
 `
  * request to join project in UI
  * invite team to project in UI

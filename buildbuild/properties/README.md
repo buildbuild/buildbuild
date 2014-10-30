@@ -20,7 +20,7 @@ $ ./manage.py dumpdata <app_name> --format=<file extension> > <fixture file path
 $ ./manage.py loaddata.py <fixture file path>
 ```
 
-* In test code, load fixture file ( first list in test class )
+* In test code, load fixture file ( Write following code to first line in test class )
 ```
 fixtures = ['<fixture file path>']
 ```

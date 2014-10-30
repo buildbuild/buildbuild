@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 class TestLanguage(TestCase):
     fixtures = ['properties_data.yaml']
     def setUp(self):
-        pass
+        self.non_exist_lang = "never_exist_lang"
 
     def test_get_all_available_language(self):
         self.assertIsNotNone(AvailableLanguage.objects.all())
@@ -24,11 +24,11 @@ class TestLanguage(TestCase):
         language_object = AvailableLanguage.objects.get(lang="ruby")
         self.assertEqual("ruby", language_object.lang)
 
-    def test_get_non_exsit_language_must_be_fail(self):
+    def test_get_non_exist_language_must_be_fail(self):
         self.assertRaises(
             ObjectDoesNotExist,
             AvailableLanguage.objects.get,
-            lang="never_exist_lang"
+            lang = self.non_exist_lang,
         )
 
 

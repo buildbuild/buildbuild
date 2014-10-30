@@ -35,6 +35,11 @@ MEDIA_URL = '/media/'
 
 ALLOWED_HOSTS = []
 
+# For additional fixture path
+FIXTURES_DIRS = (
+    os.path.join(BASE_DIR, 'fixtures')
+)
+
 # Application definition
 
 INSTALLED_APPS = (

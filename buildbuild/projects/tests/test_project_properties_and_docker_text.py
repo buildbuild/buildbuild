@@ -108,7 +108,6 @@ class MakeProjectPageTest(TestCase):
                        properties = {self.lang_python : self.invalid_ver},
                        follow = True
                    )
-        print response
         self.assertRedirects(response, "/makeproject/")
         self.assertContains(response, self.project_ver_invalid)
 

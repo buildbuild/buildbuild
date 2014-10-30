@@ -20,6 +20,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from projects.forms import MakeProjectForm
 from projects.models import Project, ProjectMembership
 from teams.models import Team
+from properties.models import AvailableLanguage, VersionList, DockerText
 
 class MakeProjectView(FormView):
     template_name = "projects/makeproject.html"
@@ -104,15 +105,18 @@ class MakeProjectView(FormView):
             ver = self.request.POST["ver"]
  
             try:
-                Project.objects.validate_lang_ver(lang, ver)
-            except IOError:
+                VersionList.objects.validate_lang(lang)
+            except ObjectDoesNotExist:
                 msg_error(project_lang_invalid)
                 return HttpResponseRedirect(reverse("makeproject"))
-            except ValidationError:
+
+            try:
+                Project.objects.validate_ver_for_lang(lang, ver)
+            except ObjectDoesNotExist:
                 msg_error(project_ver_invalid)
                 return HttpResponseRedirect(reverse("makeproject"))
 
-            properties = (lang, ver)
+            properties = {lang : ver}
             project = Project.objects.create_project(
                           name = project_name,
                           team_name = team.name,                      

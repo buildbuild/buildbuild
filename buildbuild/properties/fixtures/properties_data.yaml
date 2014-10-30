@@ -1,9 +1,24 @@
 -   fields: {lang: python}
-    model: properties.language
+    model: properties.availablelanguage
     pk: 1
 -   fields: {lang: ruby}
-    model: properties.language
+    model: properties.availablelanguage
     pk: 2
+-   fields: {lang: python, ver: 2.7.8}
+    model: properties.versionlist
+    pk: 1
+-   fields: {lang: python, ver: 3.4.2}
+    model: properties.versionlist
+    pk: 2
+-   fields: {lang: ruby, ver: 2.0.0}
+    model: properties.versionlist
+    pk: 3
+-   fields: {lang: ruby, ver: 1.9.1}
+    model: properties.versionlist
+    pk: 4
+-   fields: {lang: ruby, ver: 1.9.3}
+    model: properties.versionlist
+    pk: 5
 -   fields:
         docker_text: {python: 'FROM ubuntu:14.04
 

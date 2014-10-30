@@ -6,8 +6,6 @@ install:
 script:
 - cd ./buildbuild/
 - export BUILDBUILD_PASSWORD=[secure]
-- python manage.py loaddata users/fixtures/user_data.yaml
-- python manage.py loaddata properties/fixtures/properties_data.yaml
 - python manage.py test -v2
 env:
   global:

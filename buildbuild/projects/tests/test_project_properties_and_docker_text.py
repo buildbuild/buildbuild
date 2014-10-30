@@ -10,6 +10,7 @@ from teams.models import Team
 from users.models import User
 
 class MakeProjectPageTest(TestCase):
+    fixtures = ['properties_data.yaml']
     def setUp(self):
         self.client = Client()
         self.project_name = "buildbuild_project"
@@ -67,14 +68,12 @@ class MakeProjectPageTest(TestCase):
 
         if "properties" in kwargs:
             properties = kwargs["properties"]
-            Language = 0
-            Version = 1
             response = self.client.post(
                            "/makeproject/", {
                                "projects_project_name" : name,
                                "projects_team_name" : team_name,
-                               "lang" : properties[Language],
-                               "ver" : properties[Version],
+                               "lang" : properties.keys(),
+                               "ver" : properties.values(),
                            },
                            follow = follow
                        )
@@ -94,7 +93,7 @@ class MakeProjectPageTest(TestCase):
         response = self.post_make_project_set(
                        name = self.project_name, 
                        team_name = self.team_name, 
-                       properties = (self.invalid_lang, self.ver_278),
+                       properties = {self.invalid_lang : self.ver_278},
                        follow = True
                    )
         self.assertRedirects(response, "/makeproject/")
@@ -106,7 +105,7 @@ class MakeProjectPageTest(TestCase):
         response = self.post_make_project_set(
                        name = self.project_name, 
                        team_name = self.team_name, 
-                       properties = (self.lang_python, self.invalid_ver),
+                       properties = {self.lang_python : self.invalid_ver},
                        follow = True
                    )
         self.assertRedirects(response, "/makeproject/")
@@ -118,7 +117,7 @@ class MakeProjectPageTest(TestCase):
         self.post_make_project_set(
             name = self.project_name, 
             team_name = self.team_name, 
-            properties = (self.lang_python, self.ver_278),
+            properties = {self.lang_python : self.ver_278},
             follow = True,
         )
 
@@ -126,23 +125,5 @@ class MakeProjectPageTest(TestCase):
         project = Project.objects.get(name = self.project_name)
         self.assertEqual(project.docker_text, self.docker_text_with_python_278)
 
-    # this test have problem in travis CI
-    """
-    def test_post_project_lang_automatically_lowercase(self):
-        self.post_login_set(self.user_email, self.user_password)
-        self.post_make_team_set(self.team_name, follow = True)
-        self.post_make_project_set(
-            name = self.project_name, 
-            team_name = self.team_name, 
-            properties = (self.lang_python_upper_case, self.ver_278),
-            follow = True
-        )
-        Language = 0
-        # For travis test, get using name instead of get id
-        project = Project.objects.get(name = self.project_name)
-        self.assertEqual(project.properties[Language], self.lang_python)
-    """
 
-    # Required test
-    # all available language and all available version should make an docker text
 

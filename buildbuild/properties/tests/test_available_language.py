@@ -1,4 +1,4 @@
-from properties.models import Language
+from properties.models import AvailableLanguage
 from django.test import TestCase
 from django.core.exceptions import ObjectDoesNotExist
 

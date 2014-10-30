@@ -9,7 +9,7 @@ class Language(models.Model):
                max_length = 30,
                unique = True,
            )
-                         
+
 
 class VersionManager(models.Manager):
     def create_ver(self, lang_ver):
@@ -30,7 +30,7 @@ class VersionManager(models.Manager):
         except ObjectDoesNotExist:
             raise ObjectDoesNotExist("The language is not supported")
 
-    # It only test the available regex, not version service available
+    # It only test available regex for <ver> value, not version service available
     def validate_ver(self, ver):
         ver = ''.join(ver)
         if bool(re.match('^[0-9.]+$', ver)) is False:
@@ -38,9 +38,25 @@ class VersionManager(models.Manager):
                       "version should only be composed of numberic characters and ."
                   )
 
+    def get_version_list_for_each_language(self, lang):
+        self.validate_lang(lang)
+
+        # dict key type is 'list', for compare to it, string parameter need to be changed to list
+        lang = [lang]
+        all_version_list = Version.objects.all()
+
+        version_list_for_one_language = Version()
+        len_of_all_version_list = len(all_version_list)
+        
+
+        for index in range(len_of_all_version_list):
+            if ver[0].lang_ver.keys() is lang:
+                version_list_for_one_language = ver[0].lang_ver.keys()
+
+
 class Version(models.Model):
     lang_ver = JSONField(
-              help_text = "This field informs available languages and  versions",
+              help_text = "This field informs available versions for each language",
               unique = True,
               default = {"" : ""} # ex : {"python" : "2.7.8"}
           )
@@ -48,21 +64,14 @@ class Version(models.Model):
     objects = VersionManager()
 
 class DockerTextManager(models.Manager):
-    def create_docker_text(self, lang_ver, docker_text):
-        if type(lang_ver) is not dict:
-            raise ValidationError("lang_ver must be dict")
-
-        Version.objects.validate_lang(lang_ver.keys())
-        Version.objects.validate_ver(lang_ver.values())
-
-        lang = lang_ver.keys()
-        lang = lang.join(lang)
+    def create_docker_text(self, lang, docker_text):
+        Version.objects.validate_lang(lang)
 
         DockerText.objects.create(docker_text = {lang : docker_text}) 
 
 class DockerText(models.Model):
     docker_text = JSONField(
-                      help_text = "This field have docker texts for each language",
+                      help_text = "This field have docker text for each language",
                       unique = True,
                       default = {"" : ""} # ex : {"python" : <python docker text>}
                   )

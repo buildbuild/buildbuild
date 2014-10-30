@@ -1,7 +1,10 @@
-* user modeling
+user modeling
+====
+
+Done
 ---
-# Done
- * userid ( email )
+`
+ * user_id ( email )
  * userpassword 
  * username ( real name )
  * is admin
@@ -13,10 +16,14 @@
  * logout
  * signout
  * modification of user information
+`
+
+Required 
 ---
-# Required
+`
  * password hint
  * remember me?
  * modification of user information in UI
  * forget id/password
  * user management
+`

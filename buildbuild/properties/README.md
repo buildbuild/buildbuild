@@ -2,11 +2,11 @@
 
 * If you want to know that a language is available, use
 ```
-[ AvailableLanguage.objects.get(<language>) ]
+AvailableLanguage.objects.get(<language>) 
 ```
 * If you want to know that a language and version is available, use
 ```
-[ VersionList.objects.get(lang=<language>, ver=<version>) ]
+VersionList.objects.get(lang=<language>, ver=<version>) 
 ```
 
 ### Usage of Django Initial data providing ###

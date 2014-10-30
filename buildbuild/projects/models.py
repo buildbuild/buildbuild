@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from teams.models import Team
 from jsonfield import JSONField
 import re
+from properties.models import AvailableLanguage, VersionList, DockerText
 
 class ProjectManager(models.Manager):
     def create_project(self, name, **kwargs):
@@ -16,20 +17,26 @@ class ProjectManager(models.Manager):
         
         # Language & Version
         if "properties" in kwargs:
-            Language = 0
-            Version = 1
-
-            # Language should be stored in lower case 
-            # Because our file for judgement available language
+            self.validate_properties(kwargs['properties'])
+            # Language should be stored in lower case
+            # But it is not sure that UI form is text input
+            # So making language to lower case is skipped.
             properties = kwargs['properties']
-            properties = (properties[Language].lower(), properties[Version])
 
-            self.validate_lang_ver(properties[Language], properties[Version])
+            # list -> string
+            lang = ''.join(properties.keys())
+            ver = ''.join(properties.values())
+            
+            # Check validation about language & version
+            VersionList.objects.validate_lang(lang)
+            self.validate_ver_for_lang(lang, ver)
+
+            # Make custom docker text
             docker_text = self.customize_docker_text(
-                              properties[Language], 
-                              properties[Version]
+                              lang, 
+                              ver,
                           )
-
+            
             project.properties = properties
             project.docker_text = docker_text
 
@@ -46,26 +53,20 @@ class ProjectManager(models.Manager):
             raise ValidationError(
                 "project name max length is 64",
             )
-
-    # When file open, given argument lang is applide to open file path
-    # If it raise IOError when file opening, then the language is not supported
-    # and then it reads file and find given argument ver in the file
-    # If it can't find such version, then the version is not supported
-    def validate_lang_ver(self, lang, ver):
+    
+    # Check if the version for language is in DB
+    # Be aware it checks only validate about version, not language
+    def validate_ver_for_lang(self, lang, ver):
         try:
-            file_handler = open(
-                           "media/available_languages_and_versions/"
-                           + lang 
-                           + "_ver_available",
-                           'r'
-                      )
-        except IOError:
-            raise IOError("The language is not supported")
-        else:
-            if ver in file_handler.read():
-                return True
-            else:
-                raise ValidationError("The language is not supported")
+            VersionList.objects.get(lang = lang, ver = ver)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                      "The version for " + lang + " is not supported"
+                  )
+
+    def validate_properties(self, properties):
+        if type(properties) is not dict:
+            raise TypeError("properties must be dict")
 
     def get_project(self, id):
         try:
@@ -94,14 +95,12 @@ class ProjectManager(models.Manager):
         else:
             raise OperationalError("delete project failed")
 
+    # Be aware it only creates docker text, not check valid language & version
     def customize_docker_text(self, lang, ver):
-        file_handler = open(
-                           "media/docker/" + lang + "_Dockerfile",
-                           'r',
-                       )
-        docker_text = file_handler.read()
+        docker_text_query = DockerText.objects.get(lang = lang)
+        docker_text = docker_text_query.docker_text
         docker_text = docker_text.replace("<x.y>", ver[:3])
-        docker_text = docker_text.replace("<x.y.z>", ver)         
+        docker_text = docker_text.replace("<x.y.z>", ver)
         return docker_text
 
 class Project(models.Model):
@@ -110,7 +109,10 @@ class Project(models.Model):
                max_length = 64,
                unique = True
            )
-    properties = JSONField(default = ('','') )
+    properties = JSONField(
+                     help_text = "Project language and version",
+                     default = {'' : ''}, # ex {"python" : "2.7.8"}
+                 )
     docker_text = models.TextField(
                       help_text = "Project docker_text for project environment",
                       default = ''

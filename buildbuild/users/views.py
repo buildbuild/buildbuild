@@ -68,7 +68,7 @@ class Login(FormView):
         else:
             next = ""
              
-            if self.request.GET:
+            if 'next' in self.request.GET:
                 next = self.request.GET['next']
                 
             if user is not None:

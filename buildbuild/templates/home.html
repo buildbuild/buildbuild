@@ -3,3 +3,11 @@
 {% block content %}
   <h1>Home Page</h1>
 {% endblock %}
+
+{% block search_object %}
+  <form action="/search_object/" method="get">
+      <input type="text" name="search_object_text">
+      <input type="submit" value="Search">
+  </form>
+{% endblock %}
+

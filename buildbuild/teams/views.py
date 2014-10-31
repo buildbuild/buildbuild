@@ -21,10 +21,6 @@ from teams.forms import MakeTeamForm
 from teams.models import Team, Membership, WaitList
 from users.models import User
 
-class UserTeamListView(ListView):
-    template_name = 'teams/user_teamlist.html'
-    
-
 class MakeTeamView(FormView):
     template_name = "teams/maketeam.html"
     form_class = MakeTeamForm

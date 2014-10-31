@@ -21,25 +21,15 @@ from teams.forms import MakeTeamForm
 from teams.models import Team, Membership, WaitList
 from users.models import User
 
+class UserTeamListView(ListView):
+    template_name = 'teams/user_teamlist.html'
+    
+
 class MakeTeamView(FormView):
     template_name = "teams/maketeam.html"
     form_class = MakeTeamForm
 
     def form_valid(self, form):
-        def msg_error(msg=""):
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                msg
-            )
-
-        def msg_success(msg=""):
-            messages.add_message(
-                self.request,
-                messages.SUCCESS,
-                msg
-            )
-
         team_invalid = "ERROR : invalid team name"
         team_already_exist = "ERROR : The team name already exists"
         team_make_success = "Team created successfully"
@@ -51,7 +41,7 @@ class MakeTeamView(FormView):
         try:
             Team.objects.validate_name(name)
         except ValidationError:
-            msg_error(team_invalid)
+            messages.error(self.request, team_invalid)
             return HttpResponseRedirect(reverse("maketeam"))          
 
         # unique team test
@@ -60,7 +50,7 @@ class MakeTeamView(FormView):
         except ObjectDoesNotExist:
             pass
         else:
-            msg_error(team_already_exist)
+            messages.error(self.request, team_already_exist)
             return HttpResponseRedirect(reverse("maketeam"))          
  
         # Login check is programmed in buildbuild/urls.py
@@ -75,7 +65,7 @@ class MakeTeamView(FormView):
         membership.is_admin = True
         membership.save()
 
-        msg_success(team_make_success)
+        messages.success(self.request, team_make_success)
  
         return HttpResponseRedirect(reverse("home"))
 

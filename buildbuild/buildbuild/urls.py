@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, include, url
 
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 admin.autodiscover()
 
 from users.views import Login
@@ -12,12 +11,14 @@ from buildbuild.views import Home
 from teams.views import MakeTeamView
 from projects.views import MakeProjectView
 from django.contrib.auth.decorators import login_required
+from buildbuild import views
 
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'buildbuild.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
     url(r'^$', Home.as_view(), name='home'),
+    url(r'^search_object/$', views.search_object_form, name='search_object'),
     url(r'^api/', include('api.urls', namespace="api")),
     url(r'^login/', Login.as_view(), name="login"),
     url(r'^logout/', Logout.as_view(), name="logout"),

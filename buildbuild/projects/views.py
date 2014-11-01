@@ -27,20 +27,6 @@ class MakeProjectView(FormView):
     form_class = MakeProjectForm
 
     def form_valid(self, form):
-        def msg_error(msg=""):
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                msg
-            )
-
-        def msg_success(msg=""):
-            messages.add_message(
-                self.request,
-                messages.SUCCESS,
-                msg
-            )
-        
         project_invalid = "ERROR : invalid project name"
         project_already_exist = "ERROR : The project name already exists" 
         project_invalid_team_name = "ERROR : invalid team name"
@@ -64,7 +50,7 @@ class MakeProjectView(FormView):
         try:
             Project.objects.validate_name(project_name)
         except ValidationError:
-            msg_error(project_invalid)
+            messages.error(self.request, project_invalid)
             return HttpResponseRedirect(reverse("makeproject"))
         
         # Check uniqueness of project
@@ -73,21 +59,21 @@ class MakeProjectView(FormView):
         except ObjectDoesNotExist:
             pass
         else:
-            msg_error(project_already_exist)
+            messages.error(self.request, project_already_exist)
             return HttpResponseRedirect(reverse("makeproject"))
         
         # Check valid team name
         try:
             Team.objects.validate_name(team_name)
         except ValidationError:
-            msg_error(project_invalid_team_name)
+            messages.error(self.request, project_invalid_team_name)
             return HttpResponseRedirect(reverse("maketeam"))
   
         # Check the team is in <teams DB>
         try:
             team = Team.objects.get(name = team_name)
         except ObjectDoesNotExist:
-            msg_error(project_non_exist_team)
+            messages.error(self.request, project_non_exist_team)
             return HttpResponseRedirect(reverse("makeproject"))
 
         # Login check is programmed in buildbuild/urls.py
@@ -96,7 +82,7 @@ class MakeProjectView(FormView):
         try:
             team.members.get_member(id = user.id)
         except ObjectDoesNotExist:
-            msg_error(project_user_does_not_belong_team)
+            messages.error(self.request, project_user_does_not_belong_team)
             return HttpResponseRedirect(reverse("makeproject"))
        
         # Both Language & Version form is needed
@@ -107,13 +93,13 @@ class MakeProjectView(FormView):
             try:
                 VersionList.objects.validate_lang(lang)
             except ObjectDoesNotExist:
-                msg_error(project_lang_invalid)
+                messages.error(self.request, project_lang_invalid)
                 return HttpResponseRedirect(reverse("makeproject"))
 
             try:
                 Project.objects.validate_ver_for_lang(lang, ver)
             except ObjectDoesNotExist:
-                msg_error(project_ver_invalid)
+                messages.error(self.request, project_ver_invalid)
                 return HttpResponseRedirect(reverse("makeproject"))
 
             properties = {lang : ver}
@@ -123,7 +109,7 @@ class MakeProjectView(FormView):
                           properties = properties
                       )
         elif ("lang" in self.request.POST) or ("ver" in self.request.POST):
-            msg_error(project_both_lang_and_ver_is_needed)
+            messages.error(self.request, project_both_lang_and_ver_is_needed)
             return HttpResponseRedirect(reverse("makeproject"))
         # Or team name & project form submitted, not both language & version
         else:
@@ -140,6 +126,6 @@ class MakeProjectView(FormView):
         project_membership.is_admin = True
         project_membership.save()
         
-        msg_success(project_make_success)
+        messages.success(self.request, project_make_success)
         return HttpResponseRedirect(reverse("home")) 
 

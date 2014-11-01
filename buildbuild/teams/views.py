@@ -13,13 +13,29 @@ from django.contrib import messages
 
 from django.core.urlresolvers import reverse
 
-from django.db import IntegrityError
-from django.db import OperationalError
+from django.db import IntegrityError, OperationalError
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from teams.forms import MakeTeamForm
 from teams.models import Team, Membership, WaitList
 from users.models import User
+from projects.models import Project
+from django.shortcuts import render
+
+def search_team(request):
+    pattern_not_found = "searched pattern not found in Team list"
+    try:
+        # Case insensitive filtering
+        teams = Team.objects.filter(name__icontains = search_team_text) 
+    except:
+        teams = []
+        messages.error(request, pattern_not_found)
+
+    return render(
+               request,
+               "search_team_result.html",
+               { "teams" : teams }
+           )            
 
 class MakeTeamView(FormView):
     template_name = "teams/maketeam.html"

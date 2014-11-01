@@ -1,6 +1,25 @@
--   fields: {email: buildbuildservice@gmail.com, is_active: true, is_admin: false,
-        last_login: !!timestamp '2014-10-29 17:50:22.372382+00:00', name: '', password: pbkdf2_sha256$12000$UMBAokzVSVvR$1KLLrsPEPmKm3fL0q9BgMn6CZQPvIX9QDyQbUKCa0kc=,
-        phonenumber: ''}
-    model: users.user
-    pk: 1
-
+- fields: {email: buildbuildservice@gmail.com, is_active: true, is_admin: false, last_login: !!timestamp '2014-10-29
+      17:50:22.372382+00:00', name: '', password: pbkdf2_sha256$12000$UMBAokzVSVvR$1KLLrsPEPmKm3fL0q9BgMn6CZQPvIX9QDyQbUKCa0kc=,
+    phonenumber: ''}
+  model: users.user
+  pk: 1
+- fields: {email: buildbuildservice2@gmail.com, is_active: true, is_admin: false,
+    last_login: !!timestamp '2014-11-01 11:15:49.765051+00:00', name: '', password: pbkdf2_sha256$12000$0AXVnciogUdJ$CPI0Y+DJS6rRA8VoTsmQHVEwljoY6S6wlnQp/nq4SmM=,
+    phonenumber: ''}
+  model: users.user
+  pk: 2
+- fields: {email: buildbuildservice3@gmail.com, is_active: true, is_admin: false,
+    last_login: !!timestamp '2014-11-01 11:16:15.965517+00:00', name: '', password: pbkdf2_sha256$12000$Z1MVndcFDScD$NBm2LWraaNq+i/9TDFQaAFEX92rKViI9a622I9XMkG4=,
+    phonenumber: ''}
+  model: users.user
+  pk: 3
+- fields: {email: buildbuildservice4@gmail.com, is_active: true, is_admin: false,
+    last_login: !!timestamp '2014-11-01 11:16:22.565797+00:00', name: '', password: pbkdf2_sha256$12000$CJuAYxfK2rbt$Y+Y5vdI0/79e0fkq4Gyjfd4VJrawnr3dw5iXW6uQ8qc=,
+    phonenumber: ''}
+  model: users.user
+  pk: 4
+- fields: {email: buildbuildservice5@gmail.com, is_active: true, is_admin: false,
+    last_login: !!timestamp '2014-11-01 11:16:31.085938+00:00', name: '', password: pbkdf2_sha256$12000$MElqscqIDXVq$5gXuSWUzSYzmh7/7BnHUM9jjFqDjRM84jbTfHPGt8M0=,
+    phonenumber: ''}
+  model: users.user
+  pk: 5

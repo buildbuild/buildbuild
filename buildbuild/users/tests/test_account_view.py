@@ -23,7 +23,7 @@ class TestAccountView(TestCase):
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/login/", {
+                   "/users/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -37,30 +37,31 @@ class TestAccountView(TestCase):
 
     def test_after_login_can_move_account_page(self):
         self.post_login_set(self.user_email, self.user_password)
-        response = self.client.get("/account/")
+        response = self.client.get("/users/account/")
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_login_can_not_move_account_page(self):
         self.post_login_set(self.user_email, self.invalid_user_password)
-        response = self.client.get("/account/")
+        response = self.client.get("/users/account/")
         self.assertEqual(response.status_code, 302)
         #If login is success, login redirect must not be happen
 
     def test_account_page_should_contain_user_info(self):
         self.post_login_set(self.user_email, self.user_password)
-        response = self.client.get("/account/")
+        response = self.client.get("/users/account/")
         self.assertContains(response, self.user_email)
         self.assertContains(response, self.user_name)
         self.assertContains(response, self.user_phone_number)
 
     def test_non_login_user_should_get_result_next_parameter(self):
-        response = self.client.get("/account/")
-        self.assertEqual(str(response.url), "http://testserver/login/?next=/account/")
+        response = self.client.get("/users/account/")
+        self.assertEqual(str(response.url), "http://testserver/login/?next=/users/account/")
 
     def test_after_login_user_should_redirect_to_account_page(self):
-        response = self.client.post("/login/?next=/account/", {
+        self.post_login_set(self.user_email, self.user_password)
+        response = self.client.post("/users/login/?next=/users/account/", {
             "email": self.user_email,
             "password": self.user_password,
             })
-        self.assertEqual(str(response.url), "http://testserver/account/")
+        self.assertEqual(str(response.url), "http://testserver/users/account/")
 

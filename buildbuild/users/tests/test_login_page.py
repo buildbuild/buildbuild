@@ -26,7 +26,7 @@ class LoginPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/login/", {
+                   "/users/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -39,7 +39,7 @@ class LoginPageTest(TestCase):
         self.post_login_set(self.user_email, self.user_password)
 
     def test_get_login_return_200(self):
-        response = self.client.get("/login/")
+        response = self.client.get("/users/login/")
         self.assertEqual(response.status_code, 200)
 
     # POST with valid user information
@@ -50,7 +50,7 @@ class LoginPageTest(TestCase):
 
     def test_post_with_invalid_password_redirects_to_login_with_message(self):
         response = self.post_login_set(self.user_email, self.invalid_password, follow = True)
-        self.assertRedirects(response, "/login/",)
+        self.assertRedirects(response, "/users/login/",)
         self.assertContains(response, self.user_invalid)
 
     def test_post_with_no_user_information_error_message(self):

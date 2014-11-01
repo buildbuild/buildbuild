@@ -56,19 +56,16 @@ class UserManager(BaseUserManager):
                 "user phonenumber max length 30",
             )
        
-        if bool(re.match('^[0-9]+$', phonenumber)):
-            pass
-        else:
-            raise ValidationError(("user phonenumber should not be with character"))
+        if bool(re.match('^[0-9]+$', phonenumber)) is False:
+            raise ValidationError("user phonenumber should not be with character")
 
     def validate_name(self, name):
         if len(name) > 30:
             raise ValidationError(("user name length should be at most 30"),
                                     code = 'invalid')
-        if bool(re.match('^[ a-zA-Z_]+$', name)):
-            pass
-        else:
-            raise ValidationError(("user name cannot contain things but alphabet, white space, '_'"))
+
+        if bool(re.match('^[ a-zA-Z_]+$', name)) is False:
+            raise ValidationError("user name cannot contain things but alphabet, white space, '_'")
 
     def get_user(self, id):
         try:
@@ -129,18 +126,33 @@ class UserManager(BaseUserManager):
  
 class User(AbstractBaseUser):
     name = models.CharField(
-        max_length = 30,
-    )
+               help_text = "User name",
+               max_length = 30,
+           )
     email = models.EmailField(
-                verbose_name = "Email Address",
+                help_text = "User email",
                 max_length = 50,
                 unique = True,
             )
 
-    is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
-    phonenumber = models.CharField(max_length=18)
+    is_active = models.BooleanField(
+                    help_text = "User is_active to judge if the account is active",
+                    default=True
+                )
+
+    is_admin = models.BooleanField(
+                   help_text = "User is_admin for administrator permission",
+                   default=False
+               )
+
+    is_staff = models.BooleanField(
+                   help_text = "User is_staff for user can access admin site",
+                   default=False
+               )
+    phonenumber = models.CharField(
+                      help_text = "User phonenumber",
+                      max_length=18
+                  )
 
     USERNAME_FIELD = 'email'
 

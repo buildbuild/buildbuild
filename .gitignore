@@ -63,3 +63,7 @@ components/
 
 # staticfiles ( result of ./manage.py collectstatic --noinput )
 static/
+
+# Migrations files
+migrations/
+

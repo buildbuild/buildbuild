@@ -1,0 +1,6 @@
+-   fields: {email: buildbuildservice@gmail.com, is_active: true, is_admin: false,
+        last_login: !!timestamp '2014-10-29 17:50:22.372382+00:00', name: '', password: pbkdf2_sha256$12000$UMBAokzVSVvR$1KLLrsPEPmKm3fL0q9BgMn6CZQPvIX9QDyQbUKCa0kc=,
+        phonenumber: ''}
+    model: users.user
+    pk: 1
+

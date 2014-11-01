@@ -68,11 +68,11 @@ class MakeTeamView(FormView):
         user = self.request.user
         team = Team.objects.create_team(name)
 
-        membership = Membership.objects.create(
+        membership = Membership.objects.create_membership(
             team = team, 
-            member = user, 
-            is_admin = True,
+            user = user, 
         )
+        membership.is_admin = True
         membership.save()
 
         msg_success(team_make_success)

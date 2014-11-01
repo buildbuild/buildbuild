@@ -1,8 +1,0 @@
-* team modeling
-** team_id
-** teamname
-** additional info
-
-* user-team relational modeling
-** user should have M-teams
-** team should have N-users

@@ -29,7 +29,16 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
+# Docker text form files is located in /media/
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 ALLOWED_HOSTS = []
+
+# For additional fixture path
+FIXTURES_DIRS = (
+    os.path.join(BASE_DIR, 'fixtures')
+)
 
 # Application definition
 
@@ -55,6 +64,7 @@ INSTALLED_APPS = (
     'teams',
     'projects',
     'deploys',
+    'properties',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -70,19 +80,30 @@ ROOT_URLCONF = 'buildbuild.urls'
 
 WSGI_APPLICATION = 'buildbuild.wsgi.application'
 
+"""
+# for postgresql
+if "BUILDBUILD_PASSWORD" in os.environ:
+    DB_PASSWORD = os.environ['BUILDBUILD_PASSWORD']
+else:
+    DB_PASSWORD = ""
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'buildbuildDB',
+        'USER': 'buildbuild',
+        'PASSWORD': DB_PASSWORD,
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 

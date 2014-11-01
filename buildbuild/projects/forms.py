@@ -5,7 +5,7 @@ class MakeProjectForm(forms.Form):
     projects_project_name = forms.CharField(
             max_length = 64,
             required=True,
-            label="Project Name(*required)",
+            label="Project Name",
             )
     
     projects_team_name = forms.CharField(
@@ -13,7 +13,7 @@ class MakeProjectForm(forms.Form):
             required=True,
             label="Team Name",
             )
-    """
+    
     lang = forms.CharField(
             max_length = 20,
             required=False,
@@ -25,4 +25,4 @@ class MakeProjectForm(forms.Form):
             required=False,
             label="Language Version"
             )
-    """
+    

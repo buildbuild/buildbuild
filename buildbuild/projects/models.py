@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from teams.models import Team
 from jsonfield import JSONField
 import re
+from properties.models import AvailableLanguage, VersionList, DockerText
 
 class ProjectManager(models.Manager):
     def create_project(self, name, **kwargs):
@@ -11,11 +12,33 @@ class ProjectManager(models.Manager):
         project.name = name
 
         if "team_name" in kwargs:
+            Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
+        
+        # Language & Version
         if "properties" in kwargs:
-            project.properties = kwargs['properties']
-        if "docker_text" in kwargs:
-            project.docker_text = kwargs['docker_text']
+            self.validate_properties(kwargs['properties'])
+            # Language should be stored in lower case
+            # But it is not sure that UI form is text input
+            # So making language to lower case is skipped.
+            properties = kwargs['properties']
+
+            # list -> string
+            lang = ''.join(properties.keys())
+            ver = ''.join(properties.values())
+            
+            # Check validation about language & version
+            VersionList.objects.validate_lang(lang)
+            self.validate_ver_for_lang(lang, ver)
+
+            # Make custom docker text
+            docker_text = self.customize_docker_text(
+                              lang, 
+                              ver,
+                          )
+            
+            project.properties = properties
+            project.docker_text = docker_text
 
         project.save(using = self.db)
 
@@ -30,6 +53,20 @@ class ProjectManager(models.Manager):
             raise ValidationError(
                 "project name max length is 64",
             )
+    
+    # Check if the version for language is in DB
+    # Be aware it checks only validate about version, not language
+    def validate_ver_for_lang(self, lang, ver):
+        try:
+            VersionList.objects.get(lang = lang, ver = ver)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                      "The version for " + lang + " is not supported"
+                  )
+
+    def validate_properties(self, properties):
+        if type(properties) is not dict:
+            raise TypeError("properties must be dict")
 
     def get_project(self, id):
         try:
@@ -49,7 +86,6 @@ class ProjectManager(models.Manager):
 
         project.save(using = self.db)
 
-
     def delete_project(self, id):
         project = Project.objects.get_project(id)
         project.delete()
@@ -59,21 +95,41 @@ class ProjectManager(models.Manager):
         else:
             raise OperationalError("delete project failed")
 
+    # Be aware it only creates docker text, not check valid language & version
+    def customize_docker_text(self, lang, ver):
+        docker_text_query = DockerText.objects.get(lang = lang)
+        docker_text = docker_text_query.docker_text
+        docker_text = docker_text.replace("<x.y>", ver[:3])
+        docker_text = docker_text.replace("<x.y.z>", ver)
+        return docker_text
+
 class Project(models.Model):
-    name = models.CharField(max_length = 64, unique = True)
-    properties = JSONField(default = ('','') )
-    docker_text = models.TextField(default = '')
+    name = models.CharField(
+               help_text = "Project name",
+               max_length = 64,
+               unique = True
+           )
+    properties = JSONField(
+                     help_text = "Project language and version",
+                     default = {'' : ''}, # ex {"python" : "2.7.8"}
+                 )
+    docker_text = models.TextField(
+                      help_text = "Project docker_text for project environment",
+                      default = ''
+                  )
     objects = ProjectManager()
     
     project_wait_teams = models.ManyToManyField(
-            Team, 
-            through = 'ProjectWaitList',
-            through_fields = ('project', 'project_wait_team'),
-            related_name="project_wait_teams"
-            )
+                             Team,
+                             verbose_name = "project wait_teams", 
+                             through = 'ProjectWaitList',
+                             through_fields = ('project', 'project_wait_team'),
+                             related_name="project_wait_teams"
+                         )
     
     project_teams = models.ManyToManyField(
-            Team, 
+            Team,
+            verbose_name = "project project_teams",
             through = 'ProjectMembership',
             through_fields = ('project', 'project_team'),
             related_name="project_teams"
@@ -85,8 +141,8 @@ class ProjectMembershipManager(models.Manager):
             raise ValidationError("team argument must be Team object")
         if project.__class__.__name__ is not "Project":
             raise ValidationError("project argument must be Project object")
-
-        # Does the member already exist? 
+        # Does the member already exist?
+        #print project.project_teams.get_project_team(id = team.id)
         try:
             project.project_teams.get_project_team(id = team.id)
         except ObjectDoesNotExist:
@@ -119,16 +175,24 @@ class ProjectMembershipManager(models.Manager):
 
 class ProjectMembership(models.Model):
     project = models.ForeignKey(
-            Project, 
+            Project,
+            verbose_name = "projectMembership project",
             related_name="project_membership_project",
             )
     project_team = models.ForeignKey(
-            Team, 
+            Team,
+            verbose_name = "projectMembership project_team",
             related_name="project_membership_project_team",
             default = None,
             )
-    date_joined = models.DateField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)
+    date_joined = models.DateField(
+                      help_text = "ProjectMembership date_joined when team joined the project",
+                      auto_now_add=True
+                  )
+    is_admin = models.BooleanField(
+                   help_text = "ProjectMembership is_admin",
+                   default=False
+               )
     objects = ProjectMembershipManager()
 
 class ProjectWaitListManager(models.Manager):
@@ -153,13 +217,19 @@ class ProjectWaitListManager(models.Manager):
 
 class ProjectWaitList(models.Model):
     project = models.ForeignKey(
-            Project, 
-            related_name="project_wait_list_project",
-            )
+                  Project,
+                  verbose_name = "projectWaitList project",  
+                  related_name="project_wait_list_project",
+              )
     project_wait_team = models.ForeignKey(
-            Team, 
-            related_name="project_wait_list_project_team",
-            default = None,
-            )
-    date_requested = models.DateTimeField(auto_now_add=True)
+                            Team,
+                            verbose_name = "projectWaitList project_wait_team",
+                            related_name="project_wait_list_project_team",
+                            default = None,
+                        )
+    date_requested = models.DateTimeField(
+                         help_text = "ProjectWaitList date_requested when team" +
+                            "send a request to join a project",
+                         auto_now_add=True,
+                     )
     objects = ProjectWaitListManager()

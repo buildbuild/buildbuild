@@ -4,7 +4,7 @@
   <h1>Login Page</h1>
 
   {% if next %}
-    <form action="/login/?next={{next}}" method="post" >
+    <form action="/users/login/?next={{next}}" method="post" >
   {%else%}
   <form method="POST">{% csrf_token %}
     {{ form.as_p }}

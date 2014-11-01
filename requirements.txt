@@ -6,6 +6,7 @@ amqp==1.4.6
 anyjson==0.3.3
 billiard==3.3.0.18
 celery==3.1.13
+click==3.3
 django-bower==5.0.1
 django-celery==3.1.10
 django-filter==0.7

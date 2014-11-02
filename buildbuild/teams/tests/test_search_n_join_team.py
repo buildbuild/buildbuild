@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from teams.views import MakeTeamView
 from teams.models import Team, WaitList
 from users.models import User
+from buildbuild import custom_msg
 
 class MakeTeamPageTest(TestCase):
     def setUp(self):
@@ -35,11 +36,6 @@ class MakeTeamPageTest(TestCase):
         self.abc_pattern = "abc"
         self.abc_pattern_first_team = "111abc111"
         self.abc_pattern_second_team = "222abcd222"
-        self.request_join_team = "the request to join the team sended"
-        self.pattern_not_found = "that pattern not found in Team list"
-        self.already_member = "the user is already team member"
-        self.already_wait_member = "the user already sent a request to join that team"
- 
 
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
@@ -140,7 +136,7 @@ class MakeTeamPageTest(TestCase):
         self.post_make_team_set(self.team_name)
         response = self.post_join_team(id = 1, follow = True)
         self.assertRedirects(response, "/")
-        self.assertContains(response, self.already_member)
+        self.assertContains(response, custom_msg.already_member)
  
     def test_join_team_already_wait_member_should_be_redirected_to_main_with_message(self):
         self.post_login_set(self.user_email, self.user_password)
@@ -148,7 +144,7 @@ class MakeTeamPageTest(TestCase):
         self.post_join_team(id = 1, follow = True)
         response = self.post_join_team(id = 1, follow = True)
         self.assertRedirects(response, "/")
-        self.assertContains(response, self.already_wait_member)
+        self.assertContains(response, custom_msg.already_wait_member)
  
     """
     test

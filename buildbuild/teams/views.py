@@ -22,26 +22,23 @@ from users.models import User
 from projects.models import Project
 from django.shortcuts import render
 from teams.models import AlreadyMemberError, AlreadyWaitMemberError
+from buildbuild import custom_msg
 
 # Warning : create team operation from view automatically make MtoM relationship
 
 def join_team(request, team_id):
-    already_member = "the user is already team member"
-    already_wait_member = "the user already sent a request to join that team"
-    request_join_team = "the request to join the team sended"
-
     wait_member = request.user
     team = Team.objects.get(id=team_id)
     try:
         WaitList.objects.create_wait_list(team, wait_member)
     except AlreadyMemberError:
-        messages.error(request, already_member)
+        messages.error(request, custom_msg.already_member)
         return HttpResponseRedirect(reverse("home"))
     except AlreadyWaitMemberError:
-        messages.error(request, already_wait_member)
+        messages.error(request, custom_msg.already_wait_member)
         return HttpResponseRedirect(reverse("home"))
 
-    messages.success(request, request_join_team) 
+    messages.success(request, custom_msg.request_join_team) 
     return HttpResponseRedirect(reverse("home"))
 
 def search_team(request):
@@ -61,10 +58,6 @@ class MakeTeamView(FormView):
     form_class = MakeTeamForm
 
     def form_valid(self, form):
-        team_invalid = "ERROR : invalid team name"
-        team_already_exist = "ERROR : The team name already exists"
-        team_make_success = "Team created successfully"
-
         # name field required 
         name = self.request.POST["teams_team_name"]
         
@@ -72,7 +65,7 @@ class MakeTeamView(FormView):
         try:
             Team.objects.validate_name(name)
         except ValidationError:
-            messages.error(self.request, team_invalid)
+            messages.error(self.request, custom_msg.team_invalid)
             return HttpResponseRedirect(reverse("teams:maketeam")) 
 
         # unique team test
@@ -81,7 +74,7 @@ class MakeTeamView(FormView):
         except ObjectDoesNotExist:
             pass
         else:
-            messages.error(self.request, team_already_exist)
+            messages.error(self.request, custom_msg.team_already_exist)
             return HttpResponseRedirect(reverse("teams:maketeam"))          
  
         # Login check is programmed in buildbuild/urls.py
@@ -96,7 +89,7 @@ class MakeTeamView(FormView):
         membership.is_admin = True
         membership.save()
 
-        messages.success(self.request, team_make_success)
+        messages.success(self.request, custom_msg.team_make_success)
  
         return HttpResponseRedirect(reverse("home"))
 

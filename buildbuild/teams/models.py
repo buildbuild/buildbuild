@@ -183,6 +183,14 @@ class WaitListManager(models.Manager):
         if team.__class__.__name__ is not "Team":
             raise ValidationError("team argument must be Team object")
 
+        # Does the member already exist? 
+        try:
+            team.members.get_member(id = wait_member.id)
+        except ObjectDoesNotExist:
+            pass
+        else:
+            raise ValidationError(wait_member.email + "is already the team member")
+ 
         # Does the wait_member already exist? 
         try:
             team.wait_members.get_member(id = wait_member.id)

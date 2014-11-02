@@ -1,0 +1,4 @@
+{% for team in teams %}
+<a href="{% url 'teams:join_team' team.id %}">{{ team.name }}</a>
+<br>
+{% endfor %}

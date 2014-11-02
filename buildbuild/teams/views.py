@@ -23,19 +23,19 @@ from projects.models import Project
 from django.shortcuts import render
 
 def join_team(request, team_id):
+    request_join_team = "the request to join the team sended"
     wait_member = request.user
     team = Team.objects.get(id=team_id)
     WaitList.objects.create_wait_list(team, wait_member)
-    return HttpResponse("OK")
+    messages.success(request, request_join_team) 
+    return HttpResponseRedirect(reverse("home"))
 
 def search_team(request):
     search_team = request.GET['search_team']
-    pattern_not_found = "that pattern not found in Team list"
 
     # Case insensitive filtering
     teams = Team.objects.filter(name__icontains = search_team) 
-    print teams
-    
+   
     return render(
                request,
                "teams/search_team_result.html",

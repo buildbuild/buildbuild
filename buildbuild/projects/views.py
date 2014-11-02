@@ -51,7 +51,7 @@ class MakeProjectView(FormView):
             Project.objects.validate_name(project_name)
         except ValidationError:
             messages.error(self.request, project_invalid)
-            return HttpResponseRedirect(reverse("makeproject"))
+            return HttpResponseRedirect(reverse("projects:makeproject"))
         
         # Check uniqueness of project
         try:
@@ -60,21 +60,21 @@ class MakeProjectView(FormView):
             pass
         else:
             messages.error(self.request, project_already_exist)
-            return HttpResponseRedirect(reverse("makeproject"))
+            return HttpResponseRedirect(reverse("projects:makeproject"))
         
         # Check valid team name
         try:
             Team.objects.validate_name(team_name)
         except ValidationError:
             messages.error(self.request, project_invalid_team_name)
-            return HttpResponseRedirect(reverse("maketeam"))
+            return HttpResponseRedirect(reverse("teams:maketeam"))
   
         # Check the team is in <teams DB>
         try:
             team = Team.objects.get(name = team_name)
         except ObjectDoesNotExist:
             messages.error(self.request, project_non_exist_team)
-            return HttpResponseRedirect(reverse("makeproject"))
+            return HttpResponseRedirect(reverse("projects:makeproject"))
 
         # Login check is programmed in buildbuild/urls.py
         # Check login user belong to the team
@@ -83,7 +83,7 @@ class MakeProjectView(FormView):
             team.members.get_member(id = user.id)
         except ObjectDoesNotExist:
             messages.error(self.request, project_user_does_not_belong_team)
-            return HttpResponseRedirect(reverse("makeproject"))
+            return HttpResponseRedirect(reverse("projects:makeproject"))
        
         # Both Language & Version form is needed
         if ("lang" in self.request.POST) and ("ver" in self.request.POST):
@@ -94,13 +94,13 @@ class MakeProjectView(FormView):
                 VersionList.objects.validate_lang(lang)
             except ObjectDoesNotExist:
                 messages.error(self.request, project_lang_invalid)
-                return HttpResponseRedirect(reverse("makeproject"))
+                return HttpResponseRedirect(reverse("projects:makeproject"))
 
             try:
                 Project.objects.validate_ver_for_lang(lang, ver)
             except ObjectDoesNotExist:
                 messages.error(self.request, project_ver_invalid)
-                return HttpResponseRedirect(reverse("makeproject"))
+                return HttpResponseRedirect(reverse("projects:makeproject"))
 
             properties = {lang : ver}
             project = Project.objects.create_project(
@@ -110,7 +110,7 @@ class MakeProjectView(FormView):
                       )
         elif ("lang" in self.request.POST) or ("ver" in self.request.POST):
             messages.error(self.request, project_both_lang_and_ver_is_needed)
-            return HttpResponseRedirect(reverse("makeproject"))
+            return HttpResponseRedirect(reverse("projects:makeproject"))
         # Or team name & project form submitted, not both language & version
         else:
              project = Project.objects.create_project(

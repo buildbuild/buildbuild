@@ -6,6 +6,7 @@ from users.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 from users.views import SignUp
+from buildbuild import custom_msg
 
 class SignUpPageTest(TestCase):
     def setUp(self):
@@ -16,12 +17,6 @@ class SignUpPageTest(TestCase):
 
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
-
-        self.this_field_is_required =  "This field is required."
-        self.user_signup_success = "Successfully SignUp"
-        self.user_invalid_email = "ERROR : invalid user email"
-        self.user_already_exist = "ERROR : The user email already exist"
-        self.user_invalid_password = "ERROR : invalid user password"
 
     # Default Set function, These are not Unit Test function
     def post_signup_set(self, user_email="", user_password="", follow=False):
@@ -46,22 +41,22 @@ class SignUpPageTest(TestCase):
         self.post_signup_set(self.user_email, self.user_password)
         response = self.post_signup_set(self.user_email, self.user_password, follow = True)
         self.assertRedirects(response, "/users/signup/",)
-        self.assertContains(response, self.user_already_exist)
+        self.assertContains(response, custom_msg.user_already_exist)
 
     def test_post_available_new_user_information_redirect_to_login_page(self):
         response = self.post_signup_set(self.user_email, self.user_password, follow = True)
         self.assertRedirects(response, "/users/login/",)
-        self.assertContains(response, self.user_signup_success)
+        self.assertContains(response, custom_msg.user_signup_success)
     
     def test_post_invalid_user_password_return_signup(self):
         response = self.post_signup_set(self.user_email, self.invalid_password, follow = True)
         self.assertRedirects(response, "/users/signup/",)
-        self.assertContains(response, self.user_invalid_password)
+        self.assertContains(response, custom_msg.user_invalid_password)
     
     # POST with no user information
     def test_post_signup_page_with_no_user_information_should_have_error_message(self):
         response = self.post_signup_set()
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.this_field_is_required)
+        self.assertContains(response, custom_msg.this_field_is_required)
 
     

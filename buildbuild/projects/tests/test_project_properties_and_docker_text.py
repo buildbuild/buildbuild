@@ -45,7 +45,7 @@ class MakeProjectPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                       "/login/", {
+                       "/users/login/", {
                            "email" : user_email,
                            "password" : user_password,
                        },
@@ -56,7 +56,7 @@ class MakeProjectPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_make_team_set(self, team_name="", follow=False):
         response = self.client.post(
-                       "/maketeam/", {
+                       "/teams/maketeam/", {
                        "teams_team_name": team_name,
                        },
                        follow = follow
@@ -69,7 +69,7 @@ class MakeProjectPageTest(TestCase):
         if "properties" in kwargs:
             properties = kwargs["properties"]
             response = self.client.post(
-                           "/makeproject/", {
+                           "/projects/makeproject/", {
                                "projects_project_name" : name,
                                "projects_team_name" : team_name,
                                "lang" : properties.keys(),
@@ -79,7 +79,7 @@ class MakeProjectPageTest(TestCase):
                        )
         else:
             response = self.client.post(
-                           "/makeproject/", {
+                           "/projects/makeproject/", {
                                "projects_project_name" : name,
                                "projects_team_name" : team_name
                            },
@@ -96,7 +96,7 @@ class MakeProjectPageTest(TestCase):
                        properties = {self.invalid_lang : self.ver_278},
                        follow = True
                    )
-        self.assertRedirects(response, "/makeproject/")
+        self.assertRedirects(response, "/projects/makeproject/")
         self.assertContains(response, self.project_lang_invalid)
 
     def test_post_project_with_invalid_version_error_message_and_should_redirect_to_makeproject(self):
@@ -108,7 +108,7 @@ class MakeProjectPageTest(TestCase):
                        properties = {self.lang_python : self.invalid_ver},
                        follow = True
                    )
-        self.assertRedirects(response, "/makeproject/")
+        self.assertRedirects(response, "/projects/makeproject/")
         self.assertContains(response, self.project_ver_invalid)
 
     def test_post_project_docker_text_must_be_equal_to_the_result_of_customize_docker_text_function_in_models(self):

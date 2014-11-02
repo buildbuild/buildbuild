@@ -1,4 +1,11 @@
-{% for team in teams %}
-<a href="{% url 'teams:join_team' team.id %}">{{ team.name }}</a>
-<br>
-{% endfor %}
+{% if teams %}
+  {% for team in teams %}
+    <a href="{% url 'teams:join_team' team.id %}">{{ team.name }}</a>
+    <br>
+  {% endfor %}
+  <a href="{% url 'home' %}">Go back Main page</a>
+{% else %}
+<h1>Not found.</h1>
+  <a href="{% url 'home' %}">Go back Main page</a>
+{% endif %}
+

@@ -136,7 +136,7 @@ class MembershipManager(models.Manager):
             membership.save(using = self._db)
             return membership
         else:
-            raise ValidationError(member.email + " is already the team member")
+            raise AlreadyMemberError(member.email + " is already the team member")
     
     # User -> membership_member -> leave_team
     def leave_team(self, id):
@@ -189,7 +189,7 @@ class WaitListManager(models.Manager):
         except ObjectDoesNotExist:
             pass
         else:
-            raise ValidationError(wait_member.email + "is already the team member")
+            raise AlreadyMemberError(wait_member.email + "is already the team member")
  
         # Does the wait_member already exist? 
         try:
@@ -202,7 +202,7 @@ class WaitListManager(models.Manager):
             wait_list.save(using = self._db)
             return wait_list
         else:
-            raise ValidationError(wait_member.email + " is already the team member")
+            raise AlreadyWaitMemberError(wait_member.email + " is already the team member")
 
     # User -> wait_list_user -> cancel_to_request_to_team
     def cancel_to_request_to_team(self, team):
@@ -239,3 +239,8 @@ class WaitList(models.Model):
 
     objects = WaitListManager()
 
+class AlreadyMemberError(Exception):
+    pass
+
+class AlreadyWaitMemberError(Exception):
+    pass

@@ -8,6 +8,8 @@ from projects.models import Project
 
 from teams.models import Team
 from users.models import User
+from buildbuild import custom_msg
+
 
 class MakeProjectPageTest(TestCase):
     def setUp(self):
@@ -27,19 +29,6 @@ class MakeProjectPageTest(TestCase):
             email = self.user_email,
             password = self.user_password,
         )
-
-        self.max_value_exception = "Ensure this value has at most"
-        self.this_field_is_required = "This field is required"
-        self.project_invalid = "ERROR : invalid project name"
-        self.project_already_exist = "ERROR : The project name already exists"
-        self.project_invalid_team_name = "ERROR : invalid team name"
-        self.project_non_exist_team = "ERROR : The team name is not in teams DB"
-        self.project_user_does_not_belong_team = "ERROR : The user doesn't belong the team"
-        self.project_make_success = "Project created successfully"
-        self.project_lang_invalid = "ERROR : The language is not supported"
-        self.project_ver_invalid = "ERROR : The version is not suppoerted"
-        self.project_both_lang_and_ver_is_needed = \
-            "ERROR : Both Language and Version should be submitted"
 
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
@@ -116,14 +105,14 @@ class MakeProjectPageTest(TestCase):
         self.post_make_project_set(name = self.project_name, team_name = self.team_name)
         response = self.post_make_project_set(self.project_name, team_name = self.second_team_name, follow = True)
         self.assertRedirects(response, "/projects/makeproject/")
-        self.assertContains(response, self.project_already_exist)
+        self.assertContains(response, custom_msg.project_already_exist)
 
     def test_post_project_with_valid_informations_should_redirect_to_home(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name, follow = True)
         response = self.post_make_project_set(name = self.project_name, team_name = self.team_name, follow = True)
         self.assertRedirects(response, "/")
-        self.assertContains(response, self.project_make_success)
+        self.assertContains(response, custom_msg.project_make_success)
 
     def test_post_without_project_name_redirect_to_make_project_page(self):
         self.post_login_set(self.user_email, self.user_password)
@@ -134,7 +123,7 @@ class MakeProjectPageTest(TestCase):
             properties = (self.lang, self.ver)
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, self.this_field_is_required)    
+        self.assertContains(response, custom_msg.this_field_is_required)    
     
     def test_post_properties_with_lang_and_without_ver_raise_error_and_redirect_to_makeproject(self):
         self.post_login_set(self.user_email, self.user_password)
@@ -148,7 +137,7 @@ class MakeProjectPageTest(TestCase):
                        follow = True
                    )
         self.assertRedirects(response, "/projects/makeproject/")
-        self.assertContains(response, self.project_both_lang_and_ver_is_needed)    
+        self.assertContains(response, custom_msg.project_both_lang_and_ver_is_needed)    
 
     def test_post_properties_without_lang_and_with_ver_raise_error_and_redirect_to_makeproject(self):
         self.post_login_set(self.user_email, self.user_password)
@@ -162,6 +151,6 @@ class MakeProjectPageTest(TestCase):
                        follow = True
                    )
         self.assertRedirects(response, "/projects/makeproject/")
-        self.assertContains(response, self.project_both_lang_and_ver_is_needed)    
+        self.assertContains(response, custom_msg.project_both_lang_and_ver_is_needed)    
 
 

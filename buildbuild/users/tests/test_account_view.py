@@ -55,7 +55,7 @@ class TestAccountView(TestCase):
 
     def test_non_login_user_should_get_result_next_parameter(self):
         response = self.client.get("/users/account/")
-        self.assertEqual(str(response.url), "http://testserver/login/?next=/users/account/")
+        self.assertEqual(str(response.url), "http://testserver/users/login/?next=/users/account/")
 
     def test_after_login_user_should_redirect_to_account_page(self):
         self.post_login_set(self.user_email, self.user_password)

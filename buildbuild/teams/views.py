@@ -21,12 +21,26 @@ from teams.models import Team, Membership, WaitList
 from users.models import User
 from projects.models import Project
 from django.shortcuts import render
+from teams.models import AlreadyMemberError, AlreadyWaitMemberError
+
+# Warning : create team operation from view automatically make MtoM relationship
 
 def join_team(request, team_id):
+    already_member = "the user is already team member"
+    already_wait_member = "the user already sent a request to join that team"
     request_join_team = "the request to join the team sended"
+
     wait_member = request.user
     team = Team.objects.get(id=team_id)
-    WaitList.objects.create_wait_list(team, wait_member)
+    try:
+        WaitList.objects.create_wait_list(team, wait_member)
+    except AlreadyMemberError:
+        messages.error(request, already_member)
+        return HttpResponseRedirect(reverse("home"))
+    except AlreadyWaitMemberError:
+        messages.error(request, already_wait_member)
+        return HttpResponseRedirect(reverse("home"))
+
     messages.success(request, request_join_team) 
     return HttpResponseRedirect(reverse("home"))
 

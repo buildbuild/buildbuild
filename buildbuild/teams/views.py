@@ -22,19 +22,24 @@ from users.models import User
 from projects.models import Project
 from django.shortcuts import render
 
-def search_team(request):
-    pattern_not_found = "searched pattern not found in Team list"
-    try:
-        # Case insensitive filtering
-        teams = Team.objects.filter(name__icontains = search_team_text) 
-    except:
-        teams = []
-        messages.error(request, pattern_not_found)
+def join_team(request, team_id):
+    wait_member = request.user
+    team = Team.objects.get(id=team_id)
+    WaitList.objects.create_wait_list(team, wait_member)
+    return HttpResponse("OK")
 
+def search_team(request):
+    search_team = request.GET['search_team']
+    pattern_not_found = "that pattern not found in Team list"
+
+    # Case insensitive filtering
+    teams = Team.objects.filter(name__icontains = search_team) 
+    print teams
+    
     return render(
                request,
-               "search_team_result.html",
-               { "teams" : teams }
+               "teams/search_team_result.html",
+               { "teams" : teams },
            )            
 
 class MakeTeamView(FormView):
@@ -54,7 +59,7 @@ class MakeTeamView(FormView):
             Team.objects.validate_name(name)
         except ValidationError:
             messages.error(self.request, team_invalid)
-            return HttpResponseRedirect(reverse("maketeam"))          
+            return HttpResponseRedirect(reverse("teams:maketeam")) 
 
         # unique team test
         try:
@@ -63,7 +68,7 @@ class MakeTeamView(FormView):
             pass
         else:
             messages.error(self.request, team_already_exist)
-            return HttpResponseRedirect(reverse("maketeam"))          
+            return HttpResponseRedirect(reverse("teams:maketeam"))          
  
         # Login check is programmed in buildbuild/urls.py
         # link user to team using Membership  

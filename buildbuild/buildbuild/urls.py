@@ -16,8 +16,8 @@ urlpatterns = patterns('',
     url(r'^$', Home.as_view(), name='home'),
     url(r'^api/', include('api.urls', namespace="api")),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^users/', include('users.urls',namespace='users')),
-    url(r'^maketeam/', login_required(MakeTeamView.as_view()), name="maketeam"),
-    url(r'^makeproject/', login_required(MakeProjectView.as_view()), name="makeproject"),
-    url(r'^teams/', include('teams.urls',namespace='teams')),
+    url(r'^users/', include('users.urls', namespace='users')),
+    url(r'^teams/', include('teams.urls', namespace='teams')),
+    url(r'^projects/', include('projects.urls', namespace='projects')),
+
 )

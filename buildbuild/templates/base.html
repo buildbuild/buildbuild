@@ -12,6 +12,7 @@
   <body>
     <script src="{% static 'angular/angular.min.js' %}"></script>
     <script src="{% static 'js/buildbuild.js' %}"></script>
+    <p><a href="/">Main</a></p>
 
     {% verbatim angular %}
       {{ "angularjs" + " works!" }}
@@ -25,8 +26,8 @@
     <div>Welcome, {{ user.email }}</div>
       <a href="/users/logout/">Logout</a>
       <a href="/users/account/">Account info</a>
-      <a href="/maketeam/">Make a Team</a>
-      <a href="/makeproject/">Make a Project</a>
+      <a href="/teams/maketeam/">Make a Team</a>
+      <a href="/projects/makeproject/">Make a Project</a>
       <p></p>
       {% block search_team %}
       {% endblock %}

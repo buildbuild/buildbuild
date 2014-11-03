@@ -23,6 +23,21 @@ from teams.models import Team
 from properties.models import AvailableLanguage, VersionList, DockerText
 from buildbuild import custom_msg
 
+# when User click a project in team page, 
+# team_page.html links to project_page url denoted in projects' urlconf
+# and project_page method in view render project_page.html 
+# with the fields of project
+def project_page(request, project_id):
+    project = Project.objects.get_project(project_id)
+    return render(
+               request,
+               "projects/project_page.html",
+               {
+                   "project" : project,
+               },
+           )            
+
+
 class MakeProjectView(FormView):
     template_name = "projects/makeproject.html"
     form_class = MakeProjectForm
@@ -87,12 +102,15 @@ class MakeProjectView(FormView):
                 return HttpResponseRedirect(reverse("projects:makeproject"))
 
             try:
-                Project.objects.validate_ver_for_lang(lang, ver)
+                Project.objects.validate_version_of_language(lang, ver)
             except ObjectDoesNotExist:
                 messages.error(self.request, custom_msg.project_ver_invalid)
                 return HttpResponseRedirect(reverse("projects:makeproject"))
 
-            properties = {lang : ver}
+            properties = {
+                             'language' : lang,
+                             'version' : ver
+                         }
             project = Project.objects.create_project(
                           name = project_name,
                           team_name = team.name,                      

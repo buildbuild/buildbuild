@@ -1,1 +1,7 @@
-<h1>{{team.name}}'s Page</h1>
+<h1>{{ team.name }}'s Page</h1>
+  <p><a href="{% url 'home' %}">Go back</a></p>
+  {% for project in project_list %}
+  <a href="{% url 'projects:project_page' project.id %}">{{ project.name }}</a>
+    <br>
+  {% endfor %}
+

@@ -1,4 +1,4 @@
-# Available ruby versions
-1.9.1
-1.9.3
-2.0.0
+#VersionList.objects.create_available_version("ruby", "Available ruby versions
+VersionList.objects.create_available_version("ruby", "1.9.1")
+VersionList.objects.create_available_version("ruby", "1.9.3")
+VersionList.objects.create_available_version("ruby", "2.0.0")

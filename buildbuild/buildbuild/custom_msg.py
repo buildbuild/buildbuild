@@ -23,7 +23,7 @@ request_join_team = "the request to join the team sended"
 pattern_not_found = "that pattern not found in Team list"
 already_member = "You are already that team member"
 already_wait_member = "You already sent a request to join that team"
-
+already_team_member = "My team"
 
 ## make team view
 team_invalid = "ERROR : invalid team name"

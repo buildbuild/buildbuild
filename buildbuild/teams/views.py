@@ -26,15 +26,19 @@ from buildbuild import custom_msg
 
 # Warning : create team operation from view automatically make MtoM relationship
 
-# when User click a team, team_page method will render team_page.html with the team argument 
+# when User click a team, team_page method will render team_page.html
+# with the team argument 
 def team_page(request, team_id):
     team = Team.objects.get_team(team_id)
+    project_list = team.project_teams.all()
     return render(
                request,
                "teams/team_page.html",
-               { "team" : team },
+               {
+                   "team" : team,
+                   "project_list" : project_list,
+               },
            )            
-    pass
 
 def join_team(request, team_id):
     wait_member = request.user
@@ -60,7 +64,10 @@ def search_team(request):
     return render(
                request,
                "teams/search_team_result.html",
-               { "teams" : teams },
+               {
+                   "teams" : teams,
+                   "already_team_member" : custom_msg.already_team_member,
+               },
            )            
 
 class MakeTeamView(FormView):

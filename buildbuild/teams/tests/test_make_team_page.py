@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from teams.views import MakeTeamView
 from teams.models import Team
 from users.models import User
+from buildbuild import custom_msg
 
 class MakeTeamPageTest(TestCase):
     def setUp(self):
@@ -30,16 +31,10 @@ class MakeTeamPageTest(TestCase):
                 password = self.user_password,
                 )
 
-        self.this_field_is_required =  "This field is required."
-        self.max_value_exception = "Ensure this value has at most"
-        self.team_invalid = "ERROR : invalid team name"
-        self.team_already_exist = "ERROR : The team name already exists"
-        self.team_make_success = "Team created successfully"
-
-    # Default Set function, These are not Unit Test function
+     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/login/", {
+                   "/users/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -54,7 +49,7 @@ class MakeTeamPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_make_team_set(self, team_name="", follow=False):
         response = self.client.post(
-                       "/maketeam/", {
+                       "/teams/maketeam/", {
                        "teams_team_name": team_name,
                        },
                        follow = follow
@@ -71,34 +66,34 @@ class MakeTeamPageTest(TestCase):
 
     def test_get_make_team_page_request_with_login_response_to_maketeam(self):
         self.post_login_set(self.user_email, self.user_password)
-        response = self.client.get("/maketeam/")
-        self.assertEqual(response._request.path, "/maketeam/")
+        response = self.client.get("/teams/maketeam/")
+        self.assertEqual(response._request.path, "/teams/maketeam/")
  
     def test_get_make_team_page_without_login_redirect_to_login_page(self):
-        response = self.client.get("/maketeam/", follow = True)
-        self.assertEqual(response.wsgi_request.path, "/login/")
+        response = self.client.get("/teams/maketeam/", follow = True)
+        self.assertEqual(response.wsgi_request.path, "/users/login/")
  
     def test_check_uniqueness_of_name(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
         response = self.post_make_team_set(self.team_name, follow = True)
-        self.assertContains(response, self.team_already_exist)
+        self.assertContains(response, custom_msg.team_already_exist)
     
     def test_post_vaild_team_information_redirect_to_main_page(self):
         self.post_login_set(self.user_email, self.user_password)
         response = self.post_make_team_set(self.team_name, follow = True)
         self.assertRedirects(response, "/")
-        self.assertContains(response, self.team_make_success)
+        self.assertContains(response, custom_msg.team_make_success)
 
     def test_post_team_name_required(self):
         self.post_login_set(self.user_email, self.user_password)
         response = self.post_make_team_set(follow = True)
-        self.assertContains(response, self.this_field_is_required)
+        self.assertContains(response, custom_msg.this_field_is_required)
 
     def test_post_team_name_more_than_max_length_error_message(self):
         self.post_login_set(self.user_email, self.user_password)
         response = self.post_make_team_set(self.invalid_team_name)
-        self.assertContains(response, self.max_value_exception)
+        self.assertContains(response, custom_msg.max_value_exception)
 
     def test_user_who_created_team_should_have_membership_relation(self):
         self.post_login_set(self.user_email, self.user_password)

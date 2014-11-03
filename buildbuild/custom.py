@@ -10,9 +10,16 @@ def loaddata_set():
     projects_fixtures_path = "projects/fixtures/projects_data.yaml"
 
     # subprocess.call(data type: list) 
-    subprocess.call(["python", "manage.py", "loaddata", users_fixtures_path])
-    subprocess.call(["python", "manage.py", "loaddata", teams_fixtures_path])
-    subprocess.call(["python", "manage.py", "loaddata", projects_fixtures_path])
+    subprocess.call(
+        [
+            "python", 
+            "manage.py", 
+            "loaddata", 
+            users_fixtures_path,
+            teams_fixtures_path,
+            projects_fixtures_path,
+        ]
+    )
      
 if __name__ == '__main__':
     loaddata_set()

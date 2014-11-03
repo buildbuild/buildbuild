@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 from users.models import User
+from buildbuild import custom_msg
 
 class LoginPageTest(TestCase):
     def setUp(self):
@@ -18,15 +19,10 @@ class LoginPageTest(TestCase):
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
 
-        self.this_field_is_required =  "This field is required."
-        self.user_login_success = "Successfully Login"
-        self.user_invalid_password = "ERROR : invalid user password"
-        self.user_invalid = "ERROR : invalid email or password"
-
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/login/", {
+                   "/users/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -39,29 +35,29 @@ class LoginPageTest(TestCase):
         self.post_login_set(self.user_email, self.user_password)
 
     def test_get_login_return_200(self):
-        response = self.client.get("/login/")
+        response = self.client.get("/users/login/")
         self.assertEqual(response.status_code, 200)
 
     # POST with valid user information
     def test_post_with_valid_user_redirects_main_page_with_message(self):
         response = self.post_login_set(self.user_email, self.user_password, follow = True)
         self.assertRedirects(response, "/",)
-        self.assertContains(response, self.user_login_success)
+        self.assertContains(response, custom_msg.user_login_success)
 
     def test_post_with_invalid_password_redirects_to_login_with_message(self):
         response = self.post_login_set(self.user_email, self.invalid_password, follow = True)
-        self.assertRedirects(response, "/login/",)
-        self.assertContains(response, self.user_invalid)
+        self.assertRedirects(response, "/users/login/",)
+        self.assertContains(response, custom_msg.user_invalid)
 
     def test_post_with_no_user_information_error_message(self):
         response = self.post_login_set()
-        self.assertContains(response, self.this_field_is_required)
+        self.assertContains(response, custom_msg.this_field_is_required)
 
     def test_post_login_page_with_email_and_without_password_should_have_error_message(self):
         response = self.post_login_set(user_email = self.user_email)
-        self.assertContains(response, self.this_field_is_required)
+        self.assertContains(response, custom_msg.this_field_is_required)
 
     def test_post_login_page_with_password_and_without_email_should_have_error_message(self):
         response = self.post_login_set(user_password = self.user_password)
-        self.assertContains(response, self.this_field_is_required)
+        self.assertContains(response, custom_msg.this_field_is_required)
 

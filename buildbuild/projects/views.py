@@ -57,7 +57,7 @@ class MakeProjectView(FormView):
             Team.objects.validate_name(team_name)
         except ValidationError:
             messages.error(self.request, custom_msg.project_invalid_team_name)
-            return HttpResponseRedirect(reverse("teams:maketeam"))
+            return HttpResponseRedirect(reverse("projects:makeproject"))
   
         # Check the team is in <teams DB>
         try:

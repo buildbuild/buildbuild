@@ -10,10 +10,12 @@ class TestVersion(TestCase):
         self.invalid_ver = "only numeric characters & . available"
        
         self.lang_python = "python"
-        self.ver_list_python = ["2.7.8", "3.4.2",]
+        file_handler = open("media/lang_ver/python_ver_available", "r")
+        self.ver_list_python = file_handler.read()
         
         self.lang_ruby = "ruby"
-        self.ver_list_ruby = ["1.9.1", "1.9.3", "2.0.0"]
+        file_handler = open("media/lang_ver/ruby_ver_available", "r")
+        self.ver_list_ruby = file_handler.read()
  
 
     def test_get_all_available_python_versions(self):
@@ -69,7 +71,7 @@ class TestVersion(TestCase):
 
     def test_get_python_version(self):
         version_list = VersionList.objects.filter(lang="python")
-        len_of_ver_list_python = len(self.ver_list_python)
+        len_of_ver_list_python = len(version_list)
         for index in range(len_of_ver_list_python):
             self.assertIn(
                 version_list[index].ver,
@@ -78,7 +80,7 @@ class TestVersion(TestCase):
 
     def test_get_ruby_version(self):
         version_list = VersionList.objects.filter(lang="ruby")
-        len_of_ver_list_ruby = len(self.ver_list_ruby)
+        len_of_ver_list_ruby = len(version_list)
         for index in range(len_of_ver_list_ruby):
             self.assertIn(
                 version_list[index].ver,

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Home Page</h1>
+  <h1></h1>
 {% endblock %}
 
 
 <!--
 The block (search_team) can make user finds teams
-And This is in user.authenticated, 
+And This is allowed to the user who is  user.authenticated, 
 so only login user can access this search text form
 -->
 {% block search_team %}
@@ -17,3 +17,15 @@ so only login user can access this search text form
   </form>
 {% endblock %}
 
+<!--
+The block (teamlist) can make user see user's team list
+And This is allowed to the user who is user.authenticated, 
+so only login user can access user's tem list
+-->
+{% block team_list %}
+<h1>Team list</h1>
+  {% for team in team_list %}
+    <a href="{% url 'teams:team_page' team.id %}">{{ team.name }}</a>
+    <br>
+  {% endfor %}
+{% endblock %}

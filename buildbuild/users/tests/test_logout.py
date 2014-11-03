@@ -21,7 +21,7 @@ class LoginPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/login/", {
+                   "/users/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -36,7 +36,7 @@ class LoginPageTest(TestCase):
     def test_logout(self):
         self.post_login_set(self.user_email, self.user_password)
         self.assertRedirects(
-            self.client.post("/logout/"),
+            self.client.post("/users/logout/"),
             "/",
             301,
         )

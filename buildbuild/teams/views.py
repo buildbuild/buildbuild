@@ -26,6 +26,16 @@ from buildbuild import custom_msg
 
 # Warning : create team operation from view automatically make MtoM relationship
 
+# when User click a team, team_page method will render team_page.html with the team argument 
+def team_page(request, team_id):
+    team = Team.objects.get_team(team_id)
+    return render(
+               request,
+               "teams/team_page.html",
+               { "team" : team },
+           )            
+    pass
+
 def join_team(request, team_id):
     wait_member = request.user
     team = Team.objects.get(id=team_id)

@@ -35,10 +35,9 @@
   <nav>
     {% if user.is_authenticated %}
     <div>Welcome, {{ user.email }}</div>
-      <a href="/users/logout/">Logout</a>
-      <a href="/users/account/">Account info</a>
-      <a href="/teams/maketeam/">Make a Team</a>
-      <a href="/projects/makeproject/">Make a Project</a>
+      <a href="{% url 'users:logout' %}">Logout</a>
+      <a href="{% url 'users:account' %}">Account info</a>
+      <a href="{% url 'teams:maketeam' %}">Make a Team</a>
       <p>
       {% block search_team %}
       {% endblock %}
@@ -48,8 +47,8 @@
       {% endblock %}
       </p>
     {% else %}
-      <a href="/users/login/">Login</a>
-	  <a href="/users/signup/">SignUp</a>
+      <a href="{% url 'users:login' %}">Login</a>
+      <a href="{% url 'users:signup' %}">SignUp</a>
     {% endif %}
   </nav>
 

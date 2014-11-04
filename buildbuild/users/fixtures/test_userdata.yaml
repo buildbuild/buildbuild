@@ -1,0 +1,5 @@
+- fields: {email: test_user@test.user, is_active: true, is_admin: false, last_login: !!timestamp '2014-11-03
+      15:49:41.427174+00:00', name: '', password: pbkdf2_sha256$12000$oQWYW5Jw6TsM$NNkZ+BM0CBscIsvR3Ehv2QhRloAheldoBaQ+32kxqfg=,
+    phonenumber: ''}
+  model: users.user
+  pk: 1

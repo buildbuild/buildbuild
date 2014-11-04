@@ -42,15 +42,16 @@ class MakeProjectView(FormView):
     template_name = "projects/makeproject.html"
     form_class = MakeProjectForm
 
+    def get_queryset(self):
+        print type(self.kwargs['team_name'])
+        return self.kwargs['team_name']
+
     def form_valid(self, form):
         project = Project()
         project_name = self.request.POST["projects_project_name"]
-        team_name = self.request.POST["projects_team_name"]
-
+        team_name = self.get_queryset()
         lang = ""
         ver = ""
-        properties = (lang, ver)
-         
         # Check valid project name
         try:
             Project.objects.validate_name(project_name)
@@ -94,7 +95,7 @@ class MakeProjectView(FormView):
         if ("lang" in self.request.POST) and ("ver" in self.request.POST):
             lang = self.request.POST["lang"]
             ver = self.request.POST["ver"]
- 
+
             try:
                 VersionList.objects.validate_lang(lang)
             except ObjectDoesNotExist:

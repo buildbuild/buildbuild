@@ -23,13 +23,21 @@ from projects.models import Project
 from django.shortcuts import render
 from teams.models import AlreadyMemberError, AlreadyWaitMemberError
 from buildbuild import custom_msg
-
+from django.http import HttpResponseForbidden
 # Warning : create team operation from view automatically make MtoM relationship
 
 # when User click a team, team_page method will render team_page.html
 # with the team argument 
 def team_page(request, team_id):
     team = Team.objects.get_team(team_id)
+
+    # user who is not the team member cannot access the team page
+    try:
+        user = request.user
+        team.members.get_member(user.id)
+    except ObjectDoesNotExist:
+        return HttpResponseForbidden(custom_msg.forbidden)
+
     project_list = team.project_teams.all()
     return render(
                request,

@@ -1,7 +1,7 @@
 ##### all apps msg
 this_field_is_required =  "This field is required."
 max_value_exception = "Ensure this value has at most"
-
+forbidden = "Forbidden"
 
 ### users app msg
 ## login
@@ -29,6 +29,9 @@ already_team_member = "My team"
 team_invalid = "ERROR : invalid team name"
 team_already_exist = "ERROR : The team name already exists"
 team_make_success = "Team created successfully"
+
+## team page
+not_belonged_team = "ERROR : you are not the team member"
 
 
 ### projects app msg

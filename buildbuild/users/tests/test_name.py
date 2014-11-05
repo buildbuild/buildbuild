@@ -7,15 +7,14 @@ class UserNameTest(TestCase):
         self.user = User()
         self.valid_email = "test@example.com"
         self.valid_password = "test_password"
-        self.valid_name = "test_username"
-        self.over_length_name = "aaaabbbbccccddddeeeef"
-        self.invalid_name ="invalid_name1"
+        self.valid_name = "a" * 30
+        self.over_length_name = "a" * 31
+        self.invalid_name ="invalid_name_contained_numeric_value_1"
 
-    def test_user_should_have_test_field(self):
-        try:
-            self.user.name
-        except AttributeError:
-            self.fail("User should have name field")
+    def test_user_should_have_name_field(self):
+        self.assertIsNotNone(
+            self.user.name,
+        )
 
     def test_user_with_name_args_shoud_have_name(self):
         user = User.objects.create_user(
@@ -25,13 +24,13 @@ class UserNameTest(TestCase):
                 )
         self.assertEqual(self.valid_name, user.name)
 
-    def test_name_with_more_than_21_character_should_not_be_allowed(self):
+    def test_name_with_more_than_31_character_should_not_be_allowed(self):
         self.assertRaises(ValidationError, User.objects.create_user,
                           email = self.valid_email,
                           password = self.valid_password,
                           name = self.over_length_name)
 
-    def test_name_without_character_should_not_be_allowed(self):
+    def test_name_with_numeric_value_should_not_be_allowed(self):
         self.assertRaises(ValidationError, User.objects.create_user,
                           email = self.valid_email,
                           password = self.valid_password,

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <a href="/"><- go back</a>
+
+        <h2>{{ user_account }} 's Account page </h2>
+        <ul>
+            <li>Name : {{ user_account.name }}</li>
+            <li>Phone number : {{ user_account.phonenumber }}</li>
+        </ul>
+{% endblock %}

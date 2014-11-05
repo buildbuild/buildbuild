@@ -6,6 +6,7 @@ install:
 script:
 - cd ./buildbuild/
 - export BUILDBUILD_PASSWORD=[secure]
+- python manage.py makemigrations
 - python manage.py test -v2
 env:
   global:

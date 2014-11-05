@@ -1,0 +1,25 @@
+FROM ubuntu:14.04
+
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install -y python-dev python-setuptools
+
+RUN easy_install pip
+RUN apt-get install -y git-core
+RUN apt-get install -y curl
+
+# To compile Python and pyenv utilities
+RUN apt-get install -y make libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget llvm
+
+# Python version set
+RUN /bin/mkdir -p /downloads/python_pkgs/
+RUN /usr/bin/wget -P /downloads/python_pkgs/ https://www.python.org/ftp/python/<x.y.z>/Python-<x.y.z>.tgz
+RUN /bin/tar -zxf /downloads/python_pkgs/Python-<x.y.z>.tgz -C /downloads/python_pkgs/
+RUN cd /downloads/python_pkgs/Python-<x.y.z>/ && /bin/sh configure
+#RUN /bin/sh /downloads/python_pkgs/Python-<x.y.z>/configure
+RUN /usr/bin/make -C downloads/python_pkgs/Python-<x.y.z>/ clean
+RUN /usr/bin/make -C downloads/python_pkgs/Python-<x.y.z>/
+RUN /usr/bin/make install -C downloads/python_pkgs/Python-<x.y.z>/
+RUN /bin/rm /usr/local/bin/python
+RUN /bin/ln -s /usr/local/bin/python<x.y> /usr/local/bin/python

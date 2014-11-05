@@ -1,9 +1,14 @@
 <h1>{{ team.name }}'s Page</h1>
   <p><a href="{% url 'home' %}">Go back</a></p>
   <p><a href="{% url 'projects:makeproject' team.name %}">Make a Project</a></p>
- 
-  {% for project in project_list %}
-  <a href="{% url 'projects:project_page' project.id %}">{{ project.name }}</a>
-    <br>
-  {% endfor %}
+
+  {% if project_list %}
+    <h1>Project list</h1>
+    {% for project in project_list %}
+      <a href="{% url 'projects:project_page' project.id %}">{{ project.name }}</a>
+      <br>
+    {% endfor %}
+  {% else %}
+    <h1>You don't have a project yet</h1>
+  {% endif %}
 

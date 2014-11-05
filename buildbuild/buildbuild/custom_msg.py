@@ -33,6 +33,8 @@ team_make_success = "Team created successfully"
 ## team page
 not_belonged_team = "ERROR : you are not the team member"
 
+## accept_request_to_join_team
+accept_request_to_join_team = "The user accepted to team  successfully"
 
 ### projects app msg
 ## make project view

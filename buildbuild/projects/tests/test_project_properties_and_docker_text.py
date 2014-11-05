@@ -64,61 +64,68 @@ class MakeProjectPageTest(TestCase):
         if "properties" in kwargs:
             properties = kwargs["properties"]
             response = self.client.post(
-                           "/projects/makeproject/", {
+                           "/projects/makeproject/" + team_name, {
                                "projects_project_name" : name,
-                               "projects_team_name" : team_name,
-                               "lang" : properties.keys(),
-                               "ver" : properties.values(),
+                               "lang" : properties['language'],
+                               "ver" : properties['version'],
                            },
                            follow = follow
                        )
         else:
             response = self.client.post(
-                           "/projects/makeproject/", {
+                           "/projects/makeproject/" + team_name, {
                                "projects_project_name" : name,
-                               "projects_team_name" : team_name
                            },
                            follow = follow
                        )
         return response
-
-    def test_post_project_with_invalid_language_error_message_and_should_redirect_to_makeproject(self):
+    """
+    def test_post_project_with_invalid_language_error_message_and_should_redirect_to_home(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name, follow = True)
         response = self.post_make_project_set(
-                       name = self.project_name, 
-                       team_name = self.team_name, 
-                       properties = {self.invalid_lang : self.ver_278},
+                       name = self.project_name,
+                       team_name = self.team_name,
+                       properties = {
+                                        'language' : self.invalid_lang,
+                                        'version' : self.ver_278
+                                    },
                        follow = True
                    )
-        self.assertRedirects(response, "/projects/makeproject/")
+        self.assertRedirects(response, "home")
+#        self.assertRedirects(response, "/projects/makeproject/" + self.team_name + "/")
         self.assertContains(response, custom_msg.project_lang_invalid)
-
+    
     def test_post_project_with_invalid_version_error_message_and_should_redirect_to_makeproject(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name, follow = True)
         response = self.post_make_project_set(
-                       name = self.project_name, 
-                       team_name = self.team_name, 
-                       properties = {self.lang_python : self.invalid_ver},
+                       name = self.project_name,
+                       team_name = self.team_name,
+                       properties = {
+                                        'language' : self.lang_python, 
+                                        'version' : self.invalid_ver
+                                    },
                        follow = True
                    )
-        self.assertRedirects(response, "/projects/makeproject/")
+        self.assertRedirects(response, "/projects/makeproject/" + self.team_name + "/")
         self.assertContains(response, custom_msg.project_ver_invalid)
-
-    def test_post_project_docker_text_must_be_equal_to_the_result_of_customize_docker_text_function_in_models(self):
+    
+    def test_post_project_docker_text_must_be_equal_to_the_customize_docker_text_in_properties_fields(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name, follow = True)
         self.post_make_project_set(
-            name = self.project_name, 
-            team_name = self.team_name, 
-            properties = {self.lang_python : self.ver_278},
+            name = self.project_name,
+            team_name = self.team_name,
+            properties = {
+                             'language' : self.lang_python, 
+                             'version' : self.ver_278
+                         },
             follow = True,
         )
 
         # For travis test, get using name instead of get id
         project = Project.objects.get(name = self.project_name)
         self.assertEqual(project.docker_text, self.docker_text_with_python_278)
-
-
+    """
 

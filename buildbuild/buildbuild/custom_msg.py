@@ -1,7 +1,7 @@
 ##### all apps msg
 this_field_is_required =  "This field is required."
 max_value_exception = "Ensure this value has at most"
-
+forbidden = "Forbidden"
 
 ### users app msg
 ## login
@@ -23,13 +23,18 @@ request_join_team = "the request to join the team sended"
 pattern_not_found = "that pattern not found in Team list"
 already_member = "You are already that team member"
 already_wait_member = "You already sent a request to join that team"
-
+already_team_member = "My team"
 
 ## make team view
 team_invalid = "ERROR : invalid team name"
 team_already_exist = "ERROR : The team name already exists"
 team_make_success = "Team created successfully"
 
+## team page
+not_belonged_team = "ERROR : you are not the team member"
+
+## accept_request_to_join_team
+accept_request_to_join_team = "The user accepted to team  successfully"
 
 ### projects app msg
 ## make project view

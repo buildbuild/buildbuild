@@ -23,6 +23,17 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from users import tasks
 from django.core.validators import validate_email
 from buildbuild import custom_msg
+from django.shortcuts import render
+
+def user_page(request, user_id):
+    user = User.objects.get_user(user_id)
+    return render(
+               request,
+               "users/user_page.html",
+               {
+                   "user" : user,
+               },
+           )
 
 class UsersIndexView(ListView):
     template_name = 'users/index.html'

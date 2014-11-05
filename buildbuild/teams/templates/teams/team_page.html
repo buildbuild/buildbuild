@@ -2,13 +2,26 @@
   <p><a href="{% url 'home' %}">Go back</a></p>
   <p><a href="{% url 'projects:makeproject' team.name %}">Make a Project</a></p>
 
-  {% if project_list %}
-    <h1>Project list</h1>
+ <h3>Wait list</h3>
+ {% for wait_member in team.wait_members.all %}
+   <a href="{% url 'users:user_page' wait_member.id %}">{{ wait_member.email }}</a>
+   <a href="{% url 'teams:accept_request_to_join_team' team.id wait_member.id %}"> Accept</a>
+   <br>
+   {% endfor %}
+
+  <h3>Member list </h3>
+  {% for member in team.members.all %}
+    <a href="{% url 'users:user_page' member.id %}">{{ member.email }}</a>
+    <br>
+  {% endfor %}
+
+{% if project_list %}
+    <h3>Project list</h3>
     {% for project in project_list %}
       <a href="{% url 'projects:project_page' project.id %}">{{ project.name }}</a>
       <br>
     {% endfor %}
-  {% else %}
-    <h1>You don't have a project yet</h1>
+{% else %}
+  <h1>You don't have a project yet</h1>
   {% endif %}
 

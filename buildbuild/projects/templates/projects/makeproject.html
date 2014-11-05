@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Make Project Page</h1>
-
-  <form method="POST">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="MakeProject" />
-  </form>
+  {% if is_team_member %} 
+    <h1>Make Project Page</h1>
+      <form method="POST">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="MakeProject" />
+      </form>
+  {% else %}
+   <h1>You're not the team member</h1>
+  {% endif %}  
 {% endblock %}

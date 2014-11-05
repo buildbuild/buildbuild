@@ -211,6 +211,15 @@
 - fields: {lang: python, ver: 2.0.1}
   model: properties.versionlist
   pk: 168
+- fields: {lang: ruby, ver: 1.9.1}
+  model: properties.versionlist
+  pk: 169
+- fields: {lang: ruby, ver: 1.9.3}
+  model: properties.versionlist
+  pk: 170
+- fields: {lang: ruby, ver: 2.0.0}
+  model: properties.versionlist
+  pk: 171
 - fields: {docker_text: 'FROM ubuntu:14.04
 
 

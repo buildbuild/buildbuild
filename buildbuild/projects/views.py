@@ -45,6 +45,23 @@ class MakeProjectView(FormView):
     def get_queryset(self):
         return self.kwargs['team_name']
 
+    # context['var'] in views -> {{var}} in html
+    def get_context_data(self, **kwargs):
+        context = super(MakeProjectView, self).get_context_data(**kwargs)
+        user = self.request.user
+        team_name = self.get_queryset()
+        team = Team.objects.get(name = team_name)
+
+        # user who doesn't belong the team cannot access makeproject page
+        try:
+            team.members.get_member(user.id)
+        except ObjectDoesNotExist:
+            context['is_team_member'] = False
+        else:
+            context['is_team_member'] = True
+ 
+        return context
+
     def form_valid(self, form):
         project = Project()
         project_name = self.request.POST["projects_project_name"]

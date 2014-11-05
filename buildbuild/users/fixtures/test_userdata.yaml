@@ -1,5 +1,0 @@
-- fields: {email: test_user@test.user, is_active: true, is_admin: false, last_login: !!timestamp '2014-11-03
-      15:49:41.427174+00:00', name: '', password: 'test_user_password',
-    phonenumber: ''}
-  model: users.user
-  pk: 1

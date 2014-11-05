@@ -1,14 +1,17 @@
 from django.test import TestCase
-from teams.models import Team,WaitList
+from teams.models import Team, WaitList
 from users.models import User
-class TestWaitList(TestCase):
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+
+class WaitList_test(TestCase):
     def setUp(self):
         self.user_email = "test@example.com"
         self.user_password = "12345678"
-        self.no_user_email = "no@example.com"
+        self.user_email_2 = "test2@example.com"
 
         self.team_name = "Team1"
-        self.no_team_name = "NoTeam"
+        self.team_name_2 = "Team2"
 
         self.user = User.objects.create_user(
             email = self.user_email,
@@ -18,74 +21,43 @@ class TestWaitList(TestCase):
         self.team = Team.objects.create_team(
             name = self.team_name
         )
-    def test_operation_of_wait_list(self):
+
+        self.user_2 = User.objects.create_user(
+            email = self.user_email_2,
+            password = self.user_password
+        )
+
+        self.team_2 = Team.objects.create_team(
+            name = self.team_name_2
+        )
+        self.wait_list = WaitList.objects.create_wait_list(
+            self.team,
+            self.user,
+        )
+
+# Attribute
+    def test_wait_list_must_have_date_requested(self):
         try:
-            WaitList.objects.create(
-                team = self.team,
-                wait_member = self.user,
-                )
-        except:
-            self.fail("test operation of wait_list failed")
-    
-    def test_get_wait_member_from_wait_list_module(self):
-        WaitList.objects.create(
-            team = self.team,
-            wait_member = self.user,
-            )
-        
-        try:
-            WaitList.objects.get(
-                    team=self.team,
-                    wait_member=self.user
-                    )
-        except:
-            self.fail("get wait_member failed from wait_list instance")
-    
-    def test_get_wait_member_from_team_instance(self):
-        WaitList.objects.create(
-            team = self.team,
-            wait_member = self.user,
-            )
-        
-        try:
-            self.team.wait_members.all()
-        except:
-            self.fail("get wait_member failed from team instance")
- 
-    def test_should_have_date_requested(self):
-        wait_list = WaitList.objects.create(
-            team = self.team,
-            wait_member = self.user,
-            )
- 
-        try:
-            wait_list.date_requested
+            self.wait_list.date_requested
         except AttributeError:
-            self.fail("team membership should have date_requested")
+            self.fail("team wait_list should have date_requested")
 
-    def test_get_wait_member_from_non_exist_team(self):
-        WaitList.objects.create(
-                team = self.team,
-                wait_member = self.user,
-                )
+# Validation
+    def test_create_wait_list_member_argument_should_be_User_object(self):
         try:
-            WaitList.objects.get(
-                    team=self.no_team,
-                    wait_member = self.user
-                    )
-        except:
-            pass 
+            self.wait_list = WaitList.objects.create_wait_list(
+                self.team,
+                self.team,
+            )
+        except ValidationError:
+            pass
 
-    def test_get_wait_member_from_non_exist_user(self):
-        WaitList.objects.create(
-                team = self.team,
-                wait_member = self.user,
-                )
+    def test_create_wait_list_team_argument_should_be_Team_object(self):
         try:
-            WaitList.objects.getr(
-                    team=self.team,
-                    wait_member = self.no_user
-                    )
-        except:
-            pass 
+            self.wait_list = WaitList.objects.create_wait_list(
+                self.user,
+                self.user,
+            )
+        except ValidationError:
+            pass
 

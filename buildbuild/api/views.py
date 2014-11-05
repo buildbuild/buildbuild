@@ -58,4 +58,5 @@ class TeamProjectList(generics.ListAPIView):
     def get_queryset(self):
         teamname = self.kwargs['name']
         team = get_object_or_404(Team, name=teamname)
-        return team.project_set.all()
+        return team.project_teams.all()
+

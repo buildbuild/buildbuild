@@ -12,7 +12,6 @@ class TestAPIUserList(TestCase):
         )
         self.project = Project.objects.create_project(
             name="test_project_name",
-            team=self.team,
         )
 
         self.client = Client()

@@ -1,0 +1,165 @@
+- fields:
+    docker_text: 'FROM ubuntu:14.04
+
+
+      RUN apt-get update
+
+      RUN apt-get install -y build-essential
+
+      RUN apt-get install -y python-dev python-setuptools
+
+
+      RUN easy_install pip
+
+      RUN apt-get install -y git-core
+
+      RUN apt-get install -y curl
+
+
+      # To compile Python and pyenv utilities
+
+      RUN apt-get install -y make libssl-dev zlib1g-dev libbz2-dev \
+
+      libreadline-dev libsqlite3-dev wget llvm
+
+
+      # Python version set
+
+      RUN /bin/mkdir -p /downloads/python_pkgs/
+
+      RUN /usr/bin/wget -P /downloads/python_pkgs/ https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz
+
+      RUN /bin/tar -zxf /downloads/python_pkgs/Python-2.7.8.tgz -C /downloads/python_pkgs/
+
+      RUN cd /downloads/python_pkgs/Python-2.7.8/ && /bin/sh configure
+
+      #RUN /bin/sh /downloads/python_pkgs/Python-2.7.8/configure
+
+      RUN /usr/bin/make -C downloads/python_pkgs/Python-2.7.8/ clean
+
+      RUN /usr/bin/make -C downloads/python_pkgs/Python-2.7.8/
+
+      RUN /usr/bin/make install -C downloads/python_pkgs/Python-2.7.8/
+
+      RUN /bin/rm /usr/local/bin/python
+
+      RUN /bin/ln -s /usr/local/bin/python2.7 /usr/local/bin/python
+
+      '
+    name: buildbuildproject2
+    properties: {language: python, version: 2.7.8}
+  model: projects.project
+  pk: 1
+- fields:
+    docker_text: 'FROM ubuntu:14.04
+
+
+      RUN apt-get update
+
+      RUN apt-get install -y build-essential
+
+      RUN apt-get install -y python-dev python-setuptools
+
+
+      RUN easy_install pip
+
+      RUN apt-get install -y git-core
+
+      RUN apt-get install -y curl
+
+
+      # To compile Python and pyenv utilities
+
+      RUN apt-get install -y make libssl-dev zlib1g-dev libbz2-dev \
+
+      libreadline-dev libsqlite3-dev wget llvm
+
+
+      # Python version set
+
+      RUN /bin/mkdir -p /downloads/python_pkgs/
+
+      RUN /usr/bin/wget -P /downloads/python_pkgs/ https://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz
+
+      RUN /bin/tar -zxf /downloads/python_pkgs/Python-2.7.8.tgz -C /downloads/python_pkgs/
+
+      RUN cd /downloads/python_pkgs/Python-2.7.8/ && /bin/sh configure
+
+      #RUN /bin/sh /downloads/python_pkgs/Python-2.7.8/configure
+
+      RUN /usr/bin/make -C downloads/python_pkgs/Python-2.7.8/ clean
+
+      RUN /usr/bin/make -C downloads/python_pkgs/Python-2.7.8/
+
+      RUN /usr/bin/make install -C downloads/python_pkgs/Python-2.7.8/
+
+      RUN /bin/rm /usr/local/bin/python
+
+      RUN /bin/ln -s /usr/local/bin/python2.7 /usr/local/bin/python
+
+      '
+    name: buildbuildproject
+    properties: {language: python, version: 2.7.8}
+  model: projects.project
+  pk: 2
+- fields:
+    docker_text: 'FROM ubuntu:14.04
+
+
+      RUN apt-get update
+
+      RUN apt-get install -y build-essential
+
+      RUN apt-get install -y python-dev python-setuptools
+
+
+      RUN easy_install pip
+
+      RUN apt-get install -y git-core
+
+      RUN apt-get install -y curl
+
+
+      # To compile Python and pyenv utilities
+
+      RUN apt-get install -y make libssl-dev zlib1g-dev libbz2-dev \
+
+      libreadline-dev libsqlite3-dev wget llvm
+
+
+      # Python version set
+
+      RUN /bin/mkdir -p /downloads/python_pkgs/
+
+      RUN /usr/bin/wget -P /downloads/python_pkgs/ https://www.python.org/ftp/python/3.4.2/Python-3.4.2.tgz
+
+      RUN /bin/tar -zxf /downloads/python_pkgs/Python-3.4.2.tgz -C /downloads/python_pkgs/
+
+      RUN cd /downloads/python_pkgs/Python-3.4.2/ && /bin/sh configure
+
+      #RUN /bin/sh /downloads/python_pkgs/Python-3.4.2/configure
+
+      RUN /usr/bin/make -C downloads/python_pkgs/Python-3.4.2/ clean
+
+      RUN /usr/bin/make -C downloads/python_pkgs/Python-3.4.2/
+
+      RUN /usr/bin/make install -C downloads/python_pkgs/Python-3.4.2/
+
+      RUN /bin/rm /usr/local/bin/python
+
+      RUN /bin/ln -s /usr/local/bin/python3.4 /usr/local/bin/python
+
+      '
+    name: buildbuildproject3
+    properties: {language: python, version: 3.4.2}
+  model: projects.project
+  pk: 3
+- fields: {date_joined: 2014-11-04, is_admin: true, project: 1, project_team: 9}
+  model: projects.projectmembership
+  pk: 2
+- fields: {date_joined: 2014-11-04, is_admin: true, project: 2, project_team: 8}
+  model: projects.projectmembership
+  pk: 3
+- fields: {date_joined: 2014-11-04, is_admin: true, project: 3, project_team: 9}
+  model: projects.projectmembership
+  pk: 4

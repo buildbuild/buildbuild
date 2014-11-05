@@ -1,0 +1,13 @@
+language: python
+python:
+- '2.7'
+install:
+- pip install -r requirements.txt
+script:
+- cd ./buildbuild/
+- export BUILDBUILD_PASSWORD=[secure]
+- python manage.py test -v2
+env:
+  global:
+    secure: qErwG8P/GP2xngHC5qtt6uYyjIlhGLccdhp1oD7q36VXrbX6jjlvY8wlOiQVXS4c5yFK/MAiaFmQR++B+W5k2pLnMtuIsdkh4LYkszEEpwpR8dER/Wlkk16pZ5pDGAWO5yW87mrv/3glrLHQwozAFeVFwS8GISE3jhMEoFg9QRc=
+

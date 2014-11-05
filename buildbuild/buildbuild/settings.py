@@ -12,6 +12,16 @@ from __future__ import absolute_import
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+# exception message handling
+# when we are attempt to save a naive datetime, warning occurs
+# During development, such warnings into ignore status
+import warnings 
+warnings.filterwarnings(
+        'ignore', r"DateTimeField .* received a naive datetime",
+        RuntimeWarning, r'django\.db\.models\.fields')
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production

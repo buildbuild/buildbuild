@@ -23,12 +23,47 @@ from projects.models import Project
 from django.shortcuts import render
 from teams.models import AlreadyMemberError, AlreadyWaitMemberError
 from buildbuild import custom_msg
+from django.http import HttpResponseForbidden
+# Warning : create team operation from view automatically make MtoM relationship and admin permission
 
-# Warning : create team operation from view automatically make MtoM relationship
+def accept_request_to_join_team(request, team_id, wait_member_id):
+    team = Team.objects.get_team(team_id)
+    user = User.objects.get_user(wait_member_id)
+    wait_list = WaitList.objects.get(team = team, wait_member = user)
+    wait_list.delete()
+    Membership.objects.create_membership(team = team, user = user)
+    messages.success(request, custom_msg.accept_request_to_join_team) 
+    return HttpResponseRedirect(reverse("home"))
+
+
+# when User click a team, team_page method will render team_page.html
+# with the team argument 
+def team_page(request, team_id):
+    team = Team.objects.get_team(team_id)
+
+    # user who is not the team member cannot access the team page
+    try:
+        user = request.user
+        team.members.get_member(user.id)
+    except ObjectDoesNotExist:
+        return HttpResponseForbidden(custom_msg.forbidden)
+
+    project_list = team.project_teams.all()
+    return render(
+               request,
+               "teams/team_page.html",
+               {
+                   "team" : team,
+                   "project_list" : project_list,
+               },
+           )            
 
 def join_team(request, team_id):
     wait_member = request.user
     team = Team.objects.get(id=team_id)
+
+    # already team member cannot send a request to join the team from UI
+    # But more test for catch a mistake when develops
     try:
         WaitList.objects.create_wait_list(team, wait_member)
     except AlreadyMemberError:
@@ -50,7 +85,10 @@ def search_team(request):
     return render(
                request,
                "teams/search_team_result.html",
-               { "teams" : teams },
+               {
+                   "teams" : teams,
+                   "already_team_member" : custom_msg.already_team_member,
+               },
            )            
 
 class MakeTeamView(FormView):

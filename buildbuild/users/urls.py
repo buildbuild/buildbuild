@@ -12,6 +12,6 @@ urlpatterns = patterns('',
     url(r'^logout/', Logout.as_view(), name="logout"),
     url(r'^account/', login_required(AccountView.as_view()), name="account"),
     url(r'^signup/', SignUp.as_view(), name="signup"),
- 
+    url(r'^user_page/([0-9]+)/$', 'users.views.user_page', name="user_page"), 
 )
 

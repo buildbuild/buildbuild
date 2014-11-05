@@ -1,0 +1,7 @@
+<h1>{{ project.name }}'s Page</h1>
+  <p><a href="{% url 'home' %}">Go back</a></p>
+  <h1>{{ project.name }}</h1>
+  {% for key, value in project.properties.items %}
+    {{ key }} : {{ value }} 
+  <br>
+  {% endfor %}

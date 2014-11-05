@@ -78,6 +78,7 @@ class UserManager(BaseUserManager):
         user = User.objects.get(id=id)
         user.delete()
 
+        # For debugging, it will be deleted soon 
         if user.id is None:
             return True
         else:

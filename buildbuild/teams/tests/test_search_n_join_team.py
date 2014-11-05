@@ -98,6 +98,13 @@ class MakeTeamPageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.team_name)
 
+    def test_search_team_but_already_team_member_should_not_link_to_href(self):
+        self.post_login_set(self.user_email, self.user_password)
+        self.post_make_team_set(self.team_name)
+        response = self.post_search_team(self.team_name)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, custom_msg.already_team_member)
+
     def test_search_teams_that_have_same_patterns_should_be_contained_all(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.abc_pattern_first_team)
@@ -131,6 +138,8 @@ class MakeTeamPageTest(TestCase):
         get_wait_member = team.wait_members.get_wait_member(wait_member.id)
         self.assertEqual(get_wait_member, wait_member)
 
+    # The team member cannot link to join the team, 
+    # but if it was possible, then redirected to main with messages
     def test_join_team_already_member_should_be_redirected_to_main_with_message(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)

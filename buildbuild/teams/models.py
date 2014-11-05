@@ -33,6 +33,13 @@ class TeamManager(models.Manager):
             raise ValidationError(
                 "team name length should be at most 64",
             )
+        
+        # test code, not yet
+        if bool(re.match('^[ a-zA-Z0-9_]+$', name)) is False:
+            raise ValidationError(
+                     "team name cannot contain things but alphabet, white space, '_', number"
+                  )
+        
 
     def get_team(self, id):
         try:
@@ -54,7 +61,7 @@ class TeamManager(models.Manager):
     def validate_contact_number(self, contact_number):
         if len(contact_number) > 20:
             raise ValidationError("Contact number cannot contain more than 20 digits")
-        if bool(re.match('^[0-9]+$', contact_number)):
+        if bool(re.match('^[0-9-]+$', contact_number)):
             pass
         else:
             raise ValidationError(("team contact number should not be with character"))

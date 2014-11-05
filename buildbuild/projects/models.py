@@ -18,23 +18,18 @@ class ProjectManager(models.Manager):
         # Language & Version
         if "properties" in kwargs:
             self.validate_properties(kwargs['properties'])
-            # Language should be stored in lower case
-            # But it is not sure that UI form is text input
-            # So making language to lower case is skipped.
             properties = kwargs['properties']
-
-            # list -> string
-            lang = ''.join(properties.keys())
-            ver = ''.join(properties.values())
-            
             # Check validation about language & version
-            VersionList.objects.validate_lang(lang)
-            self.validate_ver_for_lang(lang, ver)
+            VersionList.objects.validate_lang(properties['language'])
+            self.validate_version_of_language(
+                properties['language'], 
+                properties['version']
+            )
 
             # Make custom docker text
             docker_text = self.customize_docker_text(
-                              lang, 
-                              ver,
+                              properties['language'], 
+                              properties['version'],
                           )
             
             project.properties = properties
@@ -56,7 +51,7 @@ class ProjectManager(models.Manager):
     
     # Check if the version for language is in DB
     # Be aware it checks only validate about version, not language
-    def validate_ver_for_lang(self, lang, ver):
+    def validate_version_of_language(self, lang, ver):
         try:
             VersionList.objects.get(lang = lang, ver = ver)
         except ObjectDoesNotExist:
@@ -111,7 +106,10 @@ class Project(models.Model):
            )
     properties = JSONField(
                      help_text = "Project language and version",
-                     default = {'' : ''}, # ex {"python" : "2.7.8"}
+                     default = {
+                                   'language' : '',
+                                   'version' : ''
+                               },
                  )
     docker_text = models.TextField(
                       help_text = "Project docker_text for project environment",

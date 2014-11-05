@@ -59,9 +59,8 @@ class MakeProjectPageTest(TestCase):
             Language = 0
             Version = 1
             response = self.client.post(
-                           "/projects/makeproject/", {
+                           "/projects/makeproject/" + self.team_name, {
                                "projects_project_name" : name,
-                               "projects_team_name" : team_name,
                                "lang" : properties[Language],
                                "ver" : properties[Version],
                            },
@@ -69,9 +68,8 @@ class MakeProjectPageTest(TestCase):
                        )
         else:
             response = self.client.post(
-                           "/projects/makeproject/", {
+                           "/projects/makeproject/" + self.team_name, {
                                "projects_project_name" : name,
-                               "projects_team_name" : team_name
                            },
                            follow = follow
                        )
@@ -91,27 +89,36 @@ class MakeProjectPageTest(TestCase):
 
     def test_get_make_project_page_request_with_login(self):
         self.post_login_set()
-        response = self.client.get("/projects/makeproject/")
-        self.assertEqual(response.wsgi_request.path, "/projects/makeproject/")
+        response = self.client.get("/projects/makeproject/" + self.team_name, status_code=301,)
+        self.assertEqual(response.wsgi_request.path, "/projects/makeproject/" + self.team_name)
    
+    
     def test_get_make_project_page_without_login_redirect_to_login_page(self):
-        response = self.client.get("/projects/makeproject/", follow = True)
+        response = self.client.get("/projects/makeproject/" + self.team_name, status_code=301, follow = True)
         self.assertEqual(response.wsgi_request.path, "/users/login/")
- 
+    """    
     def test_check_uniqueness_of_project_name(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
         self.post_make_team_set(self.second_team_name)
-        self.post_make_project_set(name = self.project_name, team_name = self.team_name)
-        response = self.post_make_project_set(self.project_name, team_name = self.second_team_name, follow = True)
-        self.assertRedirects(response, "/projects/makeproject/")
+        response = self.post_make_project_set(
+                       name = self.project_name, 
+                       team_name = self.team_name,
+                       follow = True
+                   )
+        response = self.post_make_project_set(
+                       self.project_name, 
+                       team_name = self.second_team_name, 
+                       follow = True
+                   )
+        self.assertRedirects(response, "/projects/makeproject/" + self.team_name + "/", status_code=301,)
         self.assertContains(response, custom_msg.project_already_exist)
-
+    
     def test_post_project_with_valid_informations_should_redirect_to_home(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name, follow = True)
         response = self.post_make_project_set(name = self.project_name, team_name = self.team_name, follow = True)
-        self.assertRedirects(response, "/")
+        self.assertRedirects(response, "/", status_code = 301)
         self.assertContains(response, custom_msg.project_make_success)
 
     def test_post_without_project_name_redirect_to_make_project_page(self):
@@ -129,28 +136,26 @@ class MakeProjectPageTest(TestCase):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
         response = self.client.post(
-                       "/projects/makeproject/", {
+                       "/projects/makeproject/" + self.team_name, {
                            "projects_project_name" : self.project_name,
-                           "projects_team_name" : self.team_name,
                            "lang" : self.lang
                        },
                        follow = True
                    )
-        self.assertRedirects(response, "/projects/makeproject/")
+        self.assertRedirects(response, "/projects/makeproject/" + self.team_name + "/", status_code=301,)
         self.assertContains(response, custom_msg.project_both_lang_and_ver_is_needed)    
 
     def test_post_properties_without_lang_and_with_ver_raise_error_and_redirect_to_makeproject(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
         response = self.client.post(
-                       "/projects/makeproject/", {
+                       "/projects/makeproject/" + self.team_name, {
                            "projects_project_name" : self.project_name,
-                           "projects_team_name" : self.team_name,
                            "ver" : self.ver
                        },
                        follow = True
                    )
-        self.assertRedirects(response, "/projects/makeproject/")
+        self.assertRedirects(response, "/projects/makeproject/" + self.team_name + "/", status_code=301,)
         self.assertContains(response, custom_msg.project_both_lang_and_ver_is_needed)    
-
+    """
 

@@ -27,11 +27,15 @@ class ProjectManager(models.Manager):
             )
 
             # Make custom docker text
+            # No, Don't use it.
+            # Docker text will be customized when deploy
+            """
             docker_text = self.customize_docker_text(
                               properties['language'], 
                               properties['version'],
                           )
-            
+            """
+
             project.properties = properties
             project.docker_text = docker_text
 
@@ -90,6 +94,7 @@ class ProjectManager(models.Manager):
         else:
             raise OperationalError("delete project failed")
 
+    """
     # Be aware it only creates docker text, not check valid language & version
     def customize_docker_text(self, lang, ver):
         docker_text_query = DockerText.objects.get(lang = lang)
@@ -97,7 +102,7 @@ class ProjectManager(models.Manager):
         docker_text = docker_text.replace("<x.y>", ver[:3])
         docker_text = docker_text.replace("<x.y.z>", ver)
         return docker_text
-
+    """
 class Project(models.Model):
     name = models.CharField(
                help_text = "Project name",

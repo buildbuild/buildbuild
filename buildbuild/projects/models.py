@@ -21,6 +21,7 @@ class ProjectManager(models.Manager):
         if "team_name" in kwargs:
             Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
+
         
         # Language & Version
         if "properties" in kwargs:
@@ -161,6 +162,11 @@ class Project(models.Model):
                       help_text = "Project docker_text for project environment",
                       default = ''
                   )
+
+    swift_container = models.CharField(
+                    help_text = 'Open stack swift container name',
+                    max_length = 130
+                )
 
     objects = ProjectManager()
     

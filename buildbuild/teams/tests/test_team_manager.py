@@ -11,7 +11,7 @@ class TestTeamManager(TestCase):
         self.valid_second_team_name = "SecondTeam"
         self.invalid_long_length_name = "a" * 65
         self.invalid_long_length_contact_number = "a" * 21
-        self.invalid_long_length_website_url = "a" * 256
+        self.invalid_long_length_team_url = "a" * 201
             
         self.team = Team.objects.create_team(
             name = self.valid_team_name
@@ -68,16 +68,16 @@ class TestTeamManager(TestCase):
         else:
             self.fail("More than 20 digits phonenumber should raise ValidationError")
 
-    def test_more_than_255_letters_team_website_url_must_raise_validation_error(self):
+    def test_more_than_200_letters_team_website_url_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
                 name = self.valid_team_name,
-                website_url = self.invalid_long_length_website_url
+                team_url = self.invalid_long_length_team_url
             )
         except ValidationError:
             pass
         else:
-            self.fail("More than 255 letters website_url should raise ValidationError")
+            self.fail("More than 200 letters website_url should raise ValidationError")
     
     # ObjectDoesNotExist
     def test_team_manager_could_delete_team(self):

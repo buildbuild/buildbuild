@@ -7,13 +7,13 @@ from django.core.exceptions import ValidationError
 
 class ProjectWaitList_test(TestCase):
     def setUp(self):
-        self.project_name = "Team1"
+        self.first_team_name = "Team1"
         self.second_team_name = "Second Team"
         self.project_name = "Project1"
         self.second_project_name = "Second Project"
 
         self.team = Team.objects.create_team(
-            name = self.project_name
+            name = self.first_team_name
         )
 
         self.second_team = Team.objects.create_team(
@@ -21,11 +21,13 @@ class ProjectWaitList_test(TestCase):
         )
 
         self.project = Project.objects.create_project(
-            name = self.project_name
+            name = self.project_name,
+            team_name = self.first_team_name
         )
 
         self.second_project = Project.objects.create_project(
-            name = self.second_project_name
+            name = self.second_project_name,
+            team_name = self.second_team_name
         )
        
         self.project_wait_list = ProjectWaitList.objects.create_project_wait_list(

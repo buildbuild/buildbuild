@@ -5,13 +5,13 @@ from django.core.exceptions import ValidationError
 
 class ProjectMembership_test(TestCase):
     def setUp(self):
-        self.project_name = "Team1"
+        self.team_name = "Team1"
         self.second_team_name = "Second Team"
         self.project_name = "Project1"
         self.second_project_name = "Second Project"
 
         self.team = Team.objects.create_team(
-            name = self.project_name
+            name = self.team_name
         )
 
         self.second_team = Team.objects.create_team(
@@ -19,11 +19,13 @@ class ProjectMembership_test(TestCase):
         )
 
         self.project = Project.objects.create_project(
-            name = self.project_name
+            name = self.project_name,
+            team_name = self.team_name
         )
 
         self.second_project = Project.objects.create_project(
-            name = self.second_project_name
+            name = self.second_project_name,
+            team_name = self.second_team_name
         )
        
         self.project_membership = ProjectMembership.objects.create_project_membership(

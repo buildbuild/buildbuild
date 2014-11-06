@@ -25,12 +25,15 @@ class TestAPITeamProjectList(TestCase):
 
         self.first_project_belongs_to_team = Project.objects.create_project(
             name="test_project_name_first",
+            team_name=self.team.name
         )
         self.second_project_belongs_to_team = Project.objects.create_project(
             name="test_project_name_second",
+            team_name=self.team.name
         )
         self.project_not_belongs_to_team = Project.objects.create_project(
             name="test_project_name_third",
+            team_name=self.other_team.name
         )
 
         """

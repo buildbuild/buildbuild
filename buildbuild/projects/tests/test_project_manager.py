@@ -12,6 +12,7 @@ class TestProjectName(TestCase):
         self.create_name = "test_project"
         self.invalid_long_length_name = "a" * 65
         self.team_name = "test_team_name"
+        self.invalid_swift_container_name = self.team_name + "__" + self.second_name
         self.lang_python = "python"
         self.ver_python_278 = "2.7.8"
 
@@ -84,3 +85,9 @@ class TestProjectName(TestCase):
             Project.objects.create_project,
             name = self.create_name
         )
+
+    def test_swift_container_name_should_be_in_rule(self):
+        #Rule : team_name + __ + project_name
+        self.assertNotEqual(self.project.swift_container,
+                         self.invalid_swift_container_name,
+                         "Invalid swift container name must be not equal with model member")

@@ -11,6 +11,11 @@ class ProjectManager(models.Manager):
         self.validate_name(name)
         project.name = name
 
+        if "team_name" not in kwargs:
+            raise AttributeError(
+                "team name field is not specified"
+            )
+
         if "team_name" in kwargs:
             Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
@@ -115,6 +120,7 @@ class Project(models.Model):
                       help_text = "Project docker_text for project environment",
                       default = ''
                   )
+
     objects = ProjectManager()
     
     project_wait_teams = models.ManyToManyField(

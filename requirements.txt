@@ -21,7 +21,6 @@ kombu==3.0.23
 meld3==1.0.0
 paramiko==1.15.1
 pep8==1.5.7
-psycopg2==2.5.4
 pycrypto==2.6.1
 python-coveralls==2.4.3
 pytz==2014.4

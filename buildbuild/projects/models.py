@@ -18,10 +18,11 @@ class ProjectManager(models.Manager):
                 "team name field is not specified"
             )
 
+        project.swift_container = kwargs['team_name'] + "__" + name
+
         if "team_name" in kwargs:
             Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
-
         
         # Language & Version
         if "properties" in kwargs:

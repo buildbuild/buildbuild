@@ -22,6 +22,8 @@ from projects.models import Project, ProjectMembership
 from teams.models import Team
 from properties.models import AvailableLanguage, VersionList, DockerText
 from buildbuild import custom_msg
+from django.core.validators import URLValidator
+
 
 # when User click a project in team page, 
 # team_page.html links to project_page url denoted in projects' urlconf
@@ -66,8 +68,14 @@ class MakeProjectView(FormView):
         project = Project()
         project_name = self.request.POST["projects_project_name"]
         team_name = self.get_queryset()
-        lang = ""
-        ver = ""
+
+        # empty space value, for simple short name
+        language = ""
+        version = ""
+        git_url = ""
+        branch_name = ""
+        properties = dict()
+
         # Check valid project name
         try:
             Project.objects.validate_name(project_name)
@@ -108,40 +116,71 @@ class MakeProjectView(FormView):
             return HttpResponseRedirect(reverse("home"))
        
         # Both Language & Version form is needed
-        if ("lang" in self.request.POST) and ("ver" in self.request.POST):
-            lang = self.request.POST["lang"]
-            ver = self.request.POST["ver"]
+        if ("language" in self.request.POST) and ("version" in self.request.POST):
+            language = self.request.POST["language"]
+            version = self.request.POST["version"]
 
             try:
-                VersionList.objects.validate_lang(lang)
+                VersionList.objects.validate_lang(language)
             except ObjectDoesNotExist:
                 messages.error(self.request, custom_msg.project_lang_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
             try:
-                Project.objects.validate_version_of_language(lang, ver)
+                Project.objects.validate_version_of_language(language, version)
             except ObjectDoesNotExist:
                 messages.error(self.request, custom_msg.project_ver_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
-            properties = {
-                             'language' : lang,
-                             'version' : ver
-                         }
-            project = Project.objects.create_project(
-                          name = project_name,
-                          team_name = team.name,                      
-                          properties = properties
-                      )
-        elif ("lang" in self.request.POST) or ("ver" in self.request.POST):
+            # Add two dict(language, version) in properties 
+            properties.update({'language' : language})
+            properties.update({'version' : version})
+
+        elif ("language" in self.request.POST) or ("version" in self.request.POST):
             messages.error(self.request, custom_msg.project_both_lang_and_ver_is_needed)
             return HttpResponseRedirect(reverse("home"))
-        # Or team name & project form submitted, not both language & version
-        else:
-             project = Project.objects.create_project(
-                           name = project_name,
-                           team_name = team.name,
-                       )
+
+        # Both Git & Branch name form is needed
+        if ("git_url" in self.request.POST) and ("branch_name" in self.request.POST):
+            git_url = self.request.POST["git_url"]
+            branch_name = self.request.POST["branch_name"]
+
+            try:
+                validate_git_url = URLValidator()
+                validate_git_url(git_url)
+            except ValidationError:
+                messages.error(self.request, custom_msg.url_invalid)
+                return HttpResponseRedirect(reverse("home"))
+            except UnicodeError:
+                messages.error(self.request, custom_msg.url_unicode_invalid)
+                return HttpResponseRedirect(reverse("home"))
+
+            # it's empty validator for branch name, needed to more test for this.
+            try:
+                Project.objects.validate_git_url(branch_name)
+            except:
+                pass
+
+            # Add two dict(git_url, branch_name) in properties
+            properties.update({'git_url' : git_url})
+            properties.update({'branch_name' : branch_name})
+
+        elif ("git_url" in self.request.POST) or ("branch_name" in self.request.POST):
+            messages.error(self.request, custom_msg.project_both_git_url_and_branch_name_is_needed)
+            return HttpResponseRedirect(reverse("home"))
+
+        project = Project.objects.create_project(
+                      name = project_name,
+                      team_name = team.name,
+                      properties = properties,
+                  )
+ 
+        # If project name submitted without any others
+        if len(properties) is 0:
+            project = Project.objects.create_project(
+                          name = project_name,
+                          team_name = team.name,
+                      )
            
         # link team to project using ProjectMembership
         project_membership = ProjectMembership.objects.create_project_membership(

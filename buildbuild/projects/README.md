@@ -1,6 +1,11 @@
 Project modeling
 ===
 
+naming rule
+Open stack - swift custom container name = team_name__tenant_name(equals to project_name)
+
+---
+
 Done
 ---
 ```

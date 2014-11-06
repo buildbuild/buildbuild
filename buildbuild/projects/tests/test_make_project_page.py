@@ -56,13 +56,13 @@ class MakeProjectPageTest(TestCase):
 
         if "properties" in kwargs:
             properties = kwargs["properties"]
-            Language = 0
-            Version = 1
             response = self.client.post(
                            "/projects/makeproject/" + self.team_name, {
                                "projects_project_name" : name,
-                               "lang" : properties[Language],
-                               "ver" : properties[Version],
+                               "language" : properties['language'],
+                               "version" : properties['version'],
+                               "git_url" : properties['git_url'],
+                               "branch_name" : properties['branch_name'],
                            },
                            follow = follow
                        )

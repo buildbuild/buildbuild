@@ -254,8 +254,6 @@
 
       RUN cd /downloads/python_pkgs/Python-<x.y.z>/ && /bin/sh configure
 
-      #RUN /bin/sh /downloads/python_pkgs/Python-<x.y.z>/configure
-
       RUN /usr/bin/make -C downloads/python_pkgs/Python-<x.y.z>/ clean
 
       RUN /usr/bin/make -C downloads/python_pkgs/Python-<x.y.z>/
@@ -265,6 +263,12 @@
       RUN /bin/rm /usr/local/bin/python
 
       RUN /bin/ln -s /usr/local/bin/python<x.y> /usr/local/bin/python
+
+      # Git clone a Branch of Repo
+
+      RUN /bin/mkdir -p /opt/apps/<project_name>
+
+      RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
 
       ', lang: python}
   model: properties.dockertext
@@ -281,6 +285,12 @@
       RUN apt-get install -y ruby <x.y.z>
 
       RUN /usr/bin/gem install bundler
+
+      # Git clone a Branch of Repo
+
+      RUN /bin/mkdir -p /opt/apps/<project_name>
+
+      RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
 
       ', lang: ruby}
   model: properties.dockertext

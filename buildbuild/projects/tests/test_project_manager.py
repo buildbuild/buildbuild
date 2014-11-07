@@ -14,7 +14,7 @@ class TestProjectName(TestCase):
         self.team_name = "test_team_name"
         self.lang_python = "python"
         self.ver_python_278 = "2.7.8"
-
+        self.valid_name_with_characters = "TestProject0-_"
         self.project = Project.objects.create_project(
             name = self.name,
             team_name = self.team_name
@@ -28,6 +28,13 @@ class TestProjectName(TestCase):
         self.assertRaises(
             TypeError,
             Project.objects.create_project,
+            team_name = self.team_name,
+            properties = {self.lang_python : self.ver_python_278}
+        )
+
+    def test_create_project_name_with_available(self):
+        Project.objects.create_project(
+            name = self.valid_name_with_characters,
             team_name = self.team_name,
             properties = {self.lang_python : self.ver_python_278}
         )

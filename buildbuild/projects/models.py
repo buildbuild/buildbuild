@@ -170,7 +170,8 @@ class Project(models.Model):
 
     swift_container = models.CharField(
                     help_text = 'Open stack swift container name',
-                    max_length = 130
+                    max_length = 130,
+                    default = '',
                 )
 
     objects = ProjectManager()

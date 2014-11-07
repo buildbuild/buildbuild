@@ -168,7 +168,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  #for submission
 EMAIL_HOST_USER = "buildbuildteam@gmail.com"
 
+# Celery Unit Testing
+
 CELERY_ALWAYS_EAGER = True
+TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
 
 if "BUILDBUILD_PASSWORD" in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']

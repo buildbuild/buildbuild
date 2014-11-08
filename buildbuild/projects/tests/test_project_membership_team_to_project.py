@@ -1,12 +1,11 @@
 from django.test import TestCase
 from teams.models import Team
-from django.utils import timezone
 from projects.models import Project, ProjectMembership
 
 class Membership_team_to_member_test(TestCase):
     def setUp(self):
         self.team_name = "Team1"
-        self.second_team = "Team2"
+        self.second_team_name = "Team2"
 
         self.project_name = "Project1"
         self.second_project = "Project2"
@@ -16,15 +15,17 @@ class Membership_team_to_member_test(TestCase):
         )
 
         self.second_team = Team.objects.create_team(
-            name = self.second_team
+            name = self.second_team_name
         )
 
         self.project = Project.objects.create_project(
             name = self.project_name,
+            team_name = self.team_name
         )
         
         self.second_project = Project.objects.create_project(
             name = self.second_project,
+            team_name = self.second_team_name
         )
         
         self.project_membership = ProjectMembership.objects.create_project_membership(

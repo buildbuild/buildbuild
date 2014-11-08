@@ -17,9 +17,9 @@ class TestUserManager(TestCase):
         self.new_invalid_phonenumber = "a1234567"
         self.new_short_length_phonenumber = "1234"
 
-        self.old_name = "OldName"
-        self.new_name = "NewName"
-        self.new_invalid_name = "NewName1234"
+        self.old_name = "OldName1234"
+        self.new_name = "NewName1234"
+        self.new_invalid_name = "NewName1234!@#$"
         self.new_over_length_name = "a" * 31
 
         self.user = User.objects.create_user(

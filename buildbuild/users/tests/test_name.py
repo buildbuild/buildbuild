@@ -7,7 +7,8 @@ class UserNameTest(TestCase):
         self.user = User()
         self.valid_email = "test@example.com"
         self.valid_password = "test_password"
-        self.valid_name = "a" * 30
+        self.valid_length_name = "a" * 30
+        self.valid_name_with_valid_characters = "aA-_0"
         self.over_length_name = "a" * 31
         self.invalid_name ="invalid_name_contained_numeric_value_1"
 
@@ -20,9 +21,9 @@ class UserNameTest(TestCase):
         user = User.objects.create_user(
                 email = self.valid_email,
                 password = self.valid_password,
-                name = self.valid_name
+                name = self.valid_length_name
                 )
-        self.assertEqual(self.valid_name, user.name)
+        self.assertEqual(self.valid_length_name, user.name)
 
     def test_name_with_more_than_31_character_should_not_be_allowed(self):
         self.assertRaises(ValidationError, User.objects.create_user,
@@ -35,3 +36,11 @@ class UserNameTest(TestCase):
                           email = self.valid_email,
                           password = self.valid_password,
                           name = self.invalid_name)
+
+    def test_user_with_name_args_shoud_have_name(self):
+        User.objects.create_user(
+            email = self.valid_email,
+            password = self.valid_password,
+            name = self.valid_name_with_valid_characters
+        )
+ 

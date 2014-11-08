@@ -64,8 +64,8 @@ class UserManager(BaseUserManager):
             raise ValidationError(("user name length should be at most 30"),
                                     code = 'invalid')
 
-        if bool(re.match('^[ a-zA-Z_]+$', name)) is False:
-            raise ValidationError("user name cannot contain things but alphabet, white space, '_'")
+        if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:
+            raise ValidationError("user name cannot contain things but alphabet, '_', number")
 
     def get_user(self, id):
         try:

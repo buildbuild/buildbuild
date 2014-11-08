@@ -84,6 +84,11 @@ class ProjectManager(models.Manager):
             raise ValidationError(
                 "project name max length is 64",
             )
+       # test code, not yet
+       if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:
+            raise ValidationError(
+                     "team name cannot contain things but alphabet, '_', number"
+                  )
     
     # Check if the version for language is in DB
     # Be aware it checks only validate about version, not language
@@ -183,7 +188,8 @@ class Project(models.Model):
 
     swift_container = models.CharField(
                     help_text = 'Open stack swift container name',
-                    max_length = 130
+                    max_length = 130,
+                    default = '',
                 )
 
     objects = ProjectManager()

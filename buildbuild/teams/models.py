@@ -38,9 +38,9 @@ class TeamManager(models.Manager):
             )
         
         # test code, not yet
-        if bool(re.match('^[ a-zA-Z0-9_]+$', name)) is False:
+        if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:
             raise ValidationError(
-                     "team name cannot contain things but alphabet, white space, '_', number"
+                     "team name cannot contain things but alphabet, '_', number"
                   )
         
 

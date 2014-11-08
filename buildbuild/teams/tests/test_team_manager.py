@@ -7,7 +7,7 @@ class TestTeamManager(TestCase):
         self.team = Team()
         self.team.name = "firstTeam"
 
-        self.valid_team_name = "TeamTeam"
+        self.valid_team_name = "TeamTeam-_0"
         self.valid_second_team_name = "SecondTeam"
         self.invalid_long_length_name = "a" * 65
         self.invalid_long_length_contact_number = "a" * 21

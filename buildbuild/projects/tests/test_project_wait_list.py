@@ -8,9 +8,9 @@ from django.core.exceptions import ValidationError
 class ProjectWaitList_test(TestCase):
     def setUp(self):
         self.first_team_name = "Team1"
-        self.second_team_name = "Second Team"
+        self.second_team_name = "Second_Team1234"
         self.project_name = "Project1"
-        self.second_project_name = "Second Project"
+        self.second_project_name = "Second_Project1234"
 
         self.team = Team.objects.create_team(
             name = self.first_team_name
@@ -44,20 +44,18 @@ class ProjectWaitList_test(TestCase):
 
 # Validation
     def test_create_project_wait_list_project_argument_should_be_Project_object(self):
-        try:
-            self.project_wait_list = ProjectWaitList.objects.create_project_wait_list(
-                self.team,
-                self.team,
-            )
-        except ValidationError:
-            pass
+        self.assertRaises(
+            ValidationError,
+            ProjectWaitList.objects.create_project_wait_list,
+            self.team,
+            self.team,
+        )
 
     def test_create_project_wait_list_team_argument_should_be_Team_object(self):
-        try:
-            self.project_wait_list = ProjectWaitList.objects.create_project_wait_list(
-                self.project,
-                self.project,
-            )
-        except ValidationError:
-            pass
+        self.assertRaises(
+            ValidationError,
+            ProjectWaitList.objects.create_project_wait_list,
+            self.project,
+            self.project,
+        )
 

@@ -69,3 +69,23 @@ def create_keystone_account(keystone, user, password, project_name):
         raise InternalServerError("User creation failed, check your user name and project name are not duplicated.")
 
     return user
+
+
+def create_container_swift():
+    # Not implemented
+    pass
+
+
+def list_objects_in_container_swift():
+    # Not implemented
+    pass
+
+
+def list_containers_swift():
+    # Not implemented
+    pass
+
+
+def store_object_into_container_swift():
+    # Not implemented
+    pass

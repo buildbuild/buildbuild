@@ -21,6 +21,9 @@ warnings.filterwarnings(
         'ignore', r"DateTimeField .* received a naive datetime",
         RuntimeWarning, r'django\.db\.models\.fields')
 
+# DJcelery setting. setting loader
+import djcelery
+djcelery.setup_loader()
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -172,6 +175,8 @@ EMAIL_HOST_USER = "buildbuildteam@gmail.com"
 
 CELERY_ALWAYS_EAGER = True
 TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
+BROKER_URL = 'django://'
+BROKER_BACKEND = 'memory'
 
 if "BUILDBUILD_PASSWORD" in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']

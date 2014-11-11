@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from keystoneclient.v2_0 import client
-from keystoneclient.exceptions import AuthSystemNotFound
+from keystoneclient.exceptions import AuthSystemNotFound,InternalServerError
 from celery import shared_task
 
 @shared_task
@@ -26,3 +26,46 @@ def login_keystone_with_bypass():
         raise AuthSystemNotFound("With this information, we can not use keystone service, check information")
 
     return keystone
+
+
+@shared_task
+def create_keystone_account(keystone, user, password, project_name):
+
+    # for user custom object tenant, some steps maybe need
+    # 1. create tenant.
+    # 2. get tenant_id
+    # 3. user creation
+    # 4. user role add to this tenant. this tenant will be used for uploading user custom files
+
+    # project name is equal to tenant name in swift, keystone
+    tenant_name = user + "__" + project_name
+
+    tenant = keystone.tenants.create(tenant_name=tenant_name,
+                                 description=tenant_name +
+                                             "tenant name consists of user name and project name", enabled=True)
+
+    # Getting tenant_id
+    tenant_id = tenant.id
+    tenant_id = tenant_id.encode('ascii', 'ignore')
+
+    # user creation
+    user = keystone.users.create(name = user,
+                             password = password,
+                             tenant_id = tenant_id
+                            )
+
+    # get member role in role list
+    member_role = None
+
+    for token in keystone.roles.list():
+        if token.name == 'member':
+            member_role = token
+
+    keystone.roles.add_user_role(user = user,
+                             role = member_role,
+                             tenant = tenant)
+
+    if user is None:
+        raise InternalServerError("User creation failed, check your user name and project name are not duplicated.")
+
+    return user

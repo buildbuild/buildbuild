@@ -1,48 +1,53 @@
 from django.test import TestCase
 from teams.models import Team,TeamManager
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 class TestTeamManager(TestCase):
     def setUp(self):
         self.team = Team()
-        self.team.name = "Team1"
+        self.team.name = "firstTeam"
 
-        self.valid_team_name = "TeamTeam"
-        self.valid_second_team_name = "TeamTeam2"
-        self.invalid_long_length_name = "a" * 31
+        self.valid_team_name = "TeamTeam-_0"
+        self.valid_second_team_name = "SecondTeam"
+        self.invalid_long_length_name = "a" * 65
         self.invalid_long_length_contact_number = "a" * 21
-        self.invalid_long_length_website_url = "a" * 256
-
-    def test_team_should_be_generated_using_create_team(self):
-        try:
-            team = Team.objects.create_team(
-                name = self.valid_team_name
-            )
-        except:
-            self.fail("Create Team must create team object successfully")
-
-    def test_teams_should_be_get_using_get_all_teams(self):
-        team = Team.objects.create_team(
+        self.invalid_long_length_team_url = "a" * 201
+            
+        self.team = Team.objects.create_team(
             name = self.valid_team_name
         )
-        second_team = Team.objects.create_team(
+
+        self.second_team = Team.objects.create_team(
             name = self.valid_second_team_name
         )
 
-        teams = Team.objects.get_all_team()
-
-        self.assertQuerysetEqual(teams, ["<Team: "+team.name+">",
-                                          "<Team: "+second_team.name+">"],
-                                 ordered=False)
-
-    def test_get_team_should_be_equal_to_proper_team(self):
-        proper_team = Team.objects.create_team(
-        name = self.valid_team_name
+    def test_create_team_must_contain_name(self):
+        self.assertraises(
+            ValidationError,
+            team = team.objects.create_team,
         )
-        test_team = Team.objects.get_team(self.valid_team_name)
-        self.assertEqual(proper_team.name, test_team.name, "get_team should be equal to same team name")
 
-    def test_more_than_30_letters_team_name_must_raise_validation_error(self):
+    def test_create_team_must_contain_name(self):
+        self.assertRaises(
+            ValidationError,
+            Team.objects.create_team,
+            name = "",
+        )
+# Validation
+    def test_team_name_is_restricted_to_64_characters(self):
+        try:
+            team = Team.objects.create_team(
+                name = self.invalid_long_length_name
+            )
+        except ValidationError:
+            pass
+
+    def test_get_all_teams(self):
+        teams = Team.objects.all()
+        self.assertEqual(teams[0].name, self.team.name)
+        self.assertEqual(teams[1].name, self.second_team.name)
+
+    def test_more_than_64_letters_team_name_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
                    name = self.invalid_long_length_name
@@ -50,28 +55,48 @@ class TestTeamManager(TestCase):
         except ValidationError:
             pass
         else:
-            self.fail("More than 30 letters name should raise ValidationError")
+            self.fail("More than 64 letters name should raise ValidationError")
 
     def test_more_than_20_digits_team_contact_number_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
-                    name = self.valid_team_name,
-                    contact_number = self.invalid_long_length_contact_number
-                )
+                name = self.valid_team_name,
+                contact_number = self.invalid_long_length_contact_number
+            )
         except ValidationError:
             pass
         else:
             self.fail("More than 20 digits phonenumber should raise ValidationError")
 
-    def test_more_than_255_letters_team_website_url_must_raise_validation_error(self):
+    def test_more_than_200_letters_team_website_url_must_raise_validation_error(self):
         try:
             team = Team.objects.create_team(
-                    name = self.valid_team_name,
-                    website_url = self.invalid_long_length_website_url
-                )
+                name = self.valid_team_name,
+                team_url = self.invalid_long_length_team_url
+            )
         except ValidationError:
             pass
         else:
-            self.fail("More than 255 letters website_url should raise ValidationError")
+            self.fail("More than 200 letters website_url should raise ValidationError")
+    
+    # ObjectDoesNotExist
+    def test_team_manager_could_delete_team(self):
+        self.team.delete()
+        try:
+            Team.objects.get_team(id = self.team.id), 
+        except ObjectDoesNotExist:
+            pass 
 
+    def test_get_team(self):
+        self.assertIsNotNone(
+            Team.objects.get_team(self.team.id),
+        )
 
+    def test_get_team_equal_to_team_targetted(self):
+        get_team = Team.objects.get_team(self.team.id)
+        self.assertEqual(
+                self.team, 
+                get_team, 
+                "get_team  should be equal to target team",
+        )
+   

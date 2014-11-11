@@ -60,7 +60,7 @@ class TestAPITeamUserList(TestCase):
     def test_api_teamuser_list_request_should_return_200(self):
         self.assertEqual(self.response.status_code, 200)
 
-    def test_api_teamuser_list_request_with_not_exist_teamname_should_return_200(self):
+    def test_api_teamuser_list_request_with_not_exist_teamname_should_return_404(self):
         self.assertEqual(self.response_with_not_exist_teamname.status_code, 404)
 
     def test_api_teamuser_list_request_should_return_json(self):

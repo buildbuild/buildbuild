@@ -12,6 +12,19 @@ from __future__ import absolute_import
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
+# exception message handling
+# when we are attempt to save a naive datetime, warning occurs
+# During development, such warnings into ignore status
+import warnings 
+warnings.filterwarnings(
+        'ignore', r"DateTimeField .* received a naive datetime",
+        RuntimeWarning, r'django\.db\.models\.fields')
+
+# DJcelery setting. setting loader
+import djcelery
+djcelery.setup_loader()
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # Quick-start development settings - unsuitable for production
@@ -29,7 +42,16 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates'),
 )
 
+# Docker text form files is located in /media/
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 ALLOWED_HOSTS = []
+
+# For additional fixture path
+FIXTURES_DIRS = (
+    os.path.join(BASE_DIR, 'fixtures')
+)
 
 # Application definition
 
@@ -47,13 +69,15 @@ INSTALLED_APPS = (
     'rest_framework',
 
     # Kombu transport using the Django database as a message store.
-#    'kombu.transport.django',
+    'kombu.transport.django',
 
     # Custom Apps
     'api',
     'users',
     'teams',
     'projects',
+    'deploys',
+    'properties',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -69,19 +93,30 @@ ROOT_URLCONF = 'buildbuild.urls'
 
 WSGI_APPLICATION = 'buildbuild.wsgi.application'
 
+"""
+# for postgresql
+if "BUILDBUILD_PASSWORD" in os.environ:
+    DB_PASSWORD = os.environ['BUILDBUILD_PASSWORD']
+else:
+    DB_PASSWORD = ""
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'buildbuildDB',
+        'USER': 'buildbuild',
+        'PASSWORD': DB_PASSWORD,
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -119,8 +154,8 @@ BOWER_INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_URL = "/login/"
-LOGIN_REDIRECT_URL = "/account/" # Not Implemented : should have chnage to /profile or /dashboard stuff
+LOGIN_URL = "/users/login/"
+LOGIN_REDIRECT_URL = "/users/account/" # Not Implemented : should have chnage to /profile or /dashboard stuff
 
 
 # Celery Integration
@@ -133,10 +168,15 @@ CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 EMAIL_BACKEND = 'django_smtp_ssl.SSLEmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465  #for submission 
+EMAIL_PORT = 465  #for submission
 EMAIL_HOST_USER = "buildbuildteam@gmail.com"
 
+# Celery Unit Testing
+
 CELERY_ALWAYS_EAGER = True
+TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
+BROKER_URL = 'django://'
+BROKER_BACKEND = 'memory'
 
 if "BUILDBUILD_PASSWORD" in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']

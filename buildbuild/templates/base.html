@@ -10,26 +10,17 @@
     </title>
   </head>
   <body>
+    <script src="{% static 'jquery/jquery-1.11.1.min.js' %}"></script>  
     <script src="{% static 'angular/angular.min.js' %}"></script>
     <script src="{% static 'js/buildbuild.js' %}"></script>
+    <p><a href="/">Main</a></p>
 
     {% verbatim angular %}
-      {{ "angularjs" + " works!" }}
+    <!-- {{ "angularjs" + " works!" }} -->
     {% endverbatim angular %}
   <header>
     <h1>BuildBuild</h1>
   </header>
-
-  <nav>
-    {% if user.is_authenticated %}
-    <div>Welcome, {{ user.email }}</div>
-      <a href="/logout/">Logout</a>
-      <a href="/account/">Account info</a>
-    {% else %}
-      <a href="/login/">Login</a>
-	  <a href="/signup/">SignUp</a>
-    {% endif %}
-  </nav>
 
   <div class="container">
     <div class="messages">
@@ -42,12 +33,31 @@
     {% endif %}
     </div>
 
+  <nav>
+    {% if user.is_authenticated %}
+    <div>Welcome, {{ user.email }}</div>
+      <a href="{% url 'users:logout' %}">Logout</a>
+      <a href="{% url 'users:account' %}">Account info</a>
+      <a href="{% url 'teams:maketeam' %}">Make a Team</a>
+      <p>
+      {% block search_team %}
+      {% endblock %}
+      </p>
+      <p>
+      {% block team_list %}
+      {% endblock %}
+      </p>
+    {% else %}
+      <a href="{% url 'users:login' %}">Login</a>
+      <a href="{% url 'users:signup' %}">SignUp</a>
+    {% endif %}
+  </nav>
+
     {% block content %}
     {% endblock %}
   </div>
 
   <footer>
-    buildbuild footer ( not implemented )
   </footer>
   </body>
 </html>

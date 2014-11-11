@@ -2,51 +2,62 @@ from django.test import TestCase
 from django.test.client import Client
 
 from users.models import User
+from buildbuild import custom_msg
 
 class LoginPageTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.valid_email = "test@example.com"
-        self.valid_password = "test_password"
+        self.user_email = "test@example.com"
+        self.user_password = "test_password"
         self.invalid_password = "a"*5
 
         self.user = User.objects.create_user(
-                email = self.valid_email,
-                password = self.valid_password,
+                email = self.user_email,
+                password = self.user_password,
                 )
 
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
 
-    def test_get_login_page_request_should_return_200(self):
-        response = self.client.get("/login/")
+    # Default Set function, These are not Unit Test function
+    def post_login_set(self, user_email="", user_password="", follow = False):
+        response = self.client.post(
+                   "/users/login/", {
+                       "email" : user_email,
+                       "password" : user_password,
+                       },
+                       follow = follow
+                   )
+        return response
+
+    # Test Code for Default Set function
+    def test_post_login_set(self):
+        self.post_login_set(self.user_email, self.user_password)
+
+    def test_get_login_return_200(self):
+        response = self.client.get("/users/login/")
         self.assertEqual(response.status_code, 200)
 
     # POST with valid user information
-    def test_post_login_page_with_valid_user_information_should_return_302(self):
-        response = self.client.post("/login/", {
-            "email": self.valid_email,
-            "password": self.valid_password,
-            })
-        self.assertEqual(response.status_code, 302)
+    def test_post_with_valid_user_redirects_main_page_with_message(self):
+        response = self.post_login_set(self.user_email, self.user_password, follow = True)
+        self.assertRedirects(response, "/",)
+        self.assertContains(response, custom_msg.user_login_success)
 
-    # POST with invalid user information
-    def test_post_login_page_with_invalid_user_information_should_return_302(self):
-        response = self.client.post("/login/", {
-            "email": self.valid_email,
-            "password": self.invalid_password,
-            })
-        self.assertEqual(response.status_code, 302)
+    def test_post_with_invalid_password_redirects_to_login_with_message(self):
+        response = self.post_login_set(self.user_email, self.invalid_password, follow = True)
+        self.assertRedirects(response, "/users/login/",)
+        self.assertContains(response, custom_msg.user_invalid)
 
-    def test_post_login_page_with_invalid_user_information_should_redirect_to_login(self):
-        response = self.client.post("/login/", {
-            "email": self.valid_email,
-            "password": self.invalid_password,
-            })
-        self.assertEqual(response["Location"], self.TEST_SERVER_URL + "/login/")
+    def test_post_with_no_user_information_error_message(self):
+        response = self.post_login_set()
+        self.assertContains(response, custom_msg.this_field_is_required)
 
-    # POST with no user information
-    def test_post_login_page_with_no_user_information_should_have_error_message(self):
-        response = self.client.post("/login/", {})
-        self.assertContains(response, "This field is required.")
+    def test_post_login_page_with_email_and_without_password_should_have_error_message(self):
+        response = self.post_login_set(user_email = self.user_email)
+        self.assertContains(response, custom_msg.this_field_is_required)
+
+    def test_post_login_page_with_password_and_without_email_should_have_error_message(self):
+        response = self.post_login_set(user_password = self.user_password)
+        self.assertContains(response, custom_msg.this_field_is_required)
 

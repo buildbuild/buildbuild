@@ -12,7 +12,7 @@ class TestAPIUserList(TestCase):
         )
         self.project = Project.objects.create_project(
             name="test_project_name",
-            team=self.team,
+            team_name=self.team.name
         )
 
         self.client = Client()

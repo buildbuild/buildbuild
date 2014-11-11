@@ -1,0 +1,28 @@
+- fields: {contact_number: '', name: buildbuildteam, team_url: ''}
+  model: teams.team
+  pk: 8
+- fields: {contact_number: '', name: buildbuildteam2, team_url: ''}
+  model: teams.team
+  pk: 9
+- fields: {contact_number: '', name: buildbuildteam3, team_url: ''}
+  model: teams.team
+  pk: 10
+- fields: {contact_number: '', name: buildbuildteam4, team_url: ''}
+  model: teams.team
+  pk: 11
+- fields: {date_joined: !!timestamp '2014-11-03 23:16:05.078534+00:00', is_admin: true,
+    member: 1, team: 8}
+  model: teams.membership
+  pk: 8
+- fields: {date_joined: !!timestamp '2014-11-03 23:16:08.863335+00:00', is_admin: true,
+    member: 1, team: 9}
+  model: teams.membership
+  pk: 9
+- fields: {date_joined: !!timestamp '2014-11-03 23:16:15.579041+00:00', is_admin: true,
+    member: 1, team: 10}
+  model: teams.membership
+  pk: 10
+- fields: {date_joined: !!timestamp '2014-11-03 23:16:30.584293+00:00', is_admin: true,
+    member: 2, team: 11}
+  model: teams.membership
+  pk: 11

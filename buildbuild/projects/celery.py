@@ -130,3 +130,8 @@ def store_object_into_container_swift():
 def get_object_from_container_swift():
     # Not implemented
     pass
+
+
+def delete_object_from_container_swift():
+    # Not implemented
+    pass

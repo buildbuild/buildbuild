@@ -1,7 +1,9 @@
 from __future__ import absolute_import
 
 from keystoneclient.v2_0 import client
-from keystoneclient.exceptions import AuthSystemNotFound,InternalServerError
+from keystoneclient.exceptions import AuthSystemNotFound, InternalServerError
+
+from swiftclient import client as swift_client
 from celery import shared_task
 
 @shared_task
@@ -71,8 +73,17 @@ def create_keystone_account(keystone, user, password, project_name):
     return user
 
 
-def create_container_swift():
-    # Not implemented
+def create_container_swift(user_name, user_pass, tenant_name):
+    #This will be deprecated.
+    swift_auth_url = "http://61.43.139.143:5000/v2.0"
+    # This info will be used in real
+    # swift_auth_url = "http://172.16.100.169:5000/v2.0"
+    swift_conn = swift_client.Connection(authurl=swift_auth_url,
+                                     user=user_name,
+                                     key=user_pass,
+                                     tenant_name=tenant_name,
+                                     auth_version=2)
+
     pass
 
 
@@ -81,11 +92,11 @@ def list_objects_in_container_swift():
     pass
 
 
-def list_containers_swift():
+def store_object_into_container_swift():
     # Not implemented
     pass
 
 
-def store_object_into_container_swift():
+def get_object_from_container_swift():
     # Not implemented
     pass

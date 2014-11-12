@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from keystoneclient.v2_0 import client
-from keystoneclient.exceptions import AuthSystemNotFound, InternalServerError
+from keystoneclient.exceptions import AuthSystemNotFound, InternalServerError, ClientException
 
 from swiftclient import client as swift_client
 from celery import shared_task
@@ -87,7 +87,14 @@ def create_container_swift(user_name, user_pass, tenant_name):
                                      tenant_name=tenant_name,
                                      auth_version=2)
 
-    pass
+    container_name = user_name + '__' + tenant_name
+
+    try:
+        swift_conn.put_container(
+                            container=container_name
+                            )
+    except:
+        raise ClientException('swift container is duplicated or cannot create.')
 
 
 def list_objects_in_container_swift():

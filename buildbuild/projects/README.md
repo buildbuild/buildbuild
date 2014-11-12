@@ -3,7 +3,7 @@ Project modeling
 
 naming rule
 Open stack - swift custom container name = team_name__tenant_name(equals to project_name)
-    ma_length = 130 (team : 64 + __ 2 + project 64)
+    max_length = 130 (team : 64 + __ 2 + project 64)
 
 ---
 

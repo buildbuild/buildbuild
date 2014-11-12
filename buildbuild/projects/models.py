@@ -18,10 +18,14 @@ class ProjectManager(models.Manager):
                 "team name field is not specified"
             )
 
+        project.swift_container = kwargs['team_name'] + "__" + name
+        self.validate_swift_container_name(project.swift_container,
+                                           project.name,
+                                           kwargs['team_name'])
+
         if "team_name" in kwargs:
             Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
-
         
         # Language & Version
         if "properties" in kwargs:
@@ -102,6 +106,20 @@ class ProjectManager(models.Manager):
     
     def validate_branch_name(self, branch_name):
         pass
+
+    def validate_swift_container_name(self, swift_container_name, project_name, team_name):
+        if len(swift_container_name) < 1:
+            raise ValidationError(
+                "swift container name must have more than 1 character"
+            )
+        if len(swift_container_name) > 130:
+            raise ValidationError(
+                'swift container name is too long'
+            )
+        if swift_container_name != (team_name + "__" + project_name):
+            raise ValueError(
+                'swift container name is not in rule'
+            )
 
     def get_project(self, id):
         try:

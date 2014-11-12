@@ -6,6 +6,9 @@ from keystoneclient.exceptions import AuthSystemNotFound, InternalServerError
 from swiftclient import client as swift_client
 from celery import shared_task
 
+# NOTES
+# These tasks are only used in internal server. keystone service is only suitable in internal servert
+
 @shared_task
 def login_keystone_with_bypass():
     # For out_network access, this will be deprecated, because we will use this app in intranet.

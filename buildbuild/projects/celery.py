@@ -97,6 +97,26 @@ def create_container_swift(user_name, user_pass, tenant_name):
         raise ClientException('swift container is duplicated or cannot create.')
 
 
+def delete_container_swift(user_name, user_pass, tenant_name):
+    #This will be deprecated.
+    swift_auth_url = "http://61.43.139.143:5000/v2.0"
+    # This info will be used in real
+    # swift_auth_url = "http://172.16.100.169:5000/v2.0"
+    swift_conn = swift_client.Connection(authurl=swift_auth_url,
+                                     user=user_name,
+                                     key=user_pass,
+                                     tenant_name=tenant_name,
+                                     auth_version=2)
+
+    container_name = user_name + '__' + tenant_name
+
+    try:
+        swift_conn.delete_container(
+                            container=container_name
+                            )
+    except:
+        raise ClientException('swift container cannot delete. It does not exist.')
+
 def list_objects_in_container_swift():
     # Not implemented
     pass

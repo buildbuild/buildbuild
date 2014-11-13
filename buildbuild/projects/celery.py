@@ -117,10 +117,6 @@ def delete_container_swift(user_name, user_pass, tenant_name):
     except:
         raise ClientException('swift container cannot delete. It does not exist.')
 
-def list_objects_in_container_swift():
-    # Not implemented
-    pass
-
 
 def store_object_into_container_swift():
     # Not implemented

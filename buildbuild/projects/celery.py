@@ -118,6 +118,32 @@ def delete_container_swift(user_name, user_pass, tenant_name):
         raise ClientException('swift container cannot delete. It does not exist.')
 
 
+# Warning : It need to parsing object in container, it just return http response as a whole
+def list_objects_in_container_swift(user_name, user_pass, tenant_name, container):
+    #This will be deprecated.
+    swift_auth_url = "http://61.43.139.143:5000/v2.0"
+    # This info will be used in real
+    # swift_auth_url = "http://172.16.100.169:5000/v2.0"
+    swift_conn = swift_client.Connection(authurl=swift_auth_url,
+                                     user=user_name,
+                                     key=user_pass,
+                                     tenant_name=tenant_name,
+                                     auth_version=2)
+
+    container_name = user_name + '__' + tenant_name
+
+    if container != container_name:
+        raise ValueError('swift container name is not valid in rule. check administrator for this.')
+
+    try:
+        objects = swift_conn.get_container(
+                                    container=container
+                                    )
+    except:
+        raise ClientException('Listing Objects is failed.')
+
+    return objects
+
 def store_object_into_container_swift():
     # Not implemented
     pass

@@ -21,10 +21,12 @@ class project_manager_test(TestCase):
 
         self.project = Project.objects.create_project(
             name = self.project_name,
+            team_name = self.team_name
         )
         
         self.second_project = Project.objects.create_project(
             name = self.second_project_name,
+            team_name = self.team_name_2
         )
         
         self.project_wait_list = ProjectWaitList.objects.create_project_wait_list(

@@ -21,10 +21,12 @@ class project_membership_test(TestCase):
 
         self.project = Project.objects.create_project(
             name = self.project_name,
+            team_name = self.team_name
         )
         
         self.project_2 = Project.objects.create_project(
             name = self.second_project,
+            team_name = self.second_team
         )
         
         self.project_membership = ProjectMembership.objects.create_project_membership(

@@ -2,6 +2,8 @@
 this_field_is_required =  "This field is required."
 max_value_exception = "Ensure this value has at most"
 forbidden = "Forbidden"
+url_invalid = "This URL invalid"
+url_unicode_invalid = "This URL has invalid domain part"
 
 ### users app msg
 ## login
@@ -47,6 +49,8 @@ project_lang_invalid = "ERROR : The language is not supported"
 project_ver_invalid = "ERROR : The version is not suppoerted"
 project_both_lang_and_ver_is_needed = \
     "ERROR : Both Language and Version should be submitted"
+project_both_git_url_and_branch_name_is_needed = \
+    "ERROR : Both Git URL and Branch name should be submitted"
 project_make_success = "Project created successfully"
 
 

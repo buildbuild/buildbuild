@@ -4,6 +4,8 @@ from teams.models import Team
 from jsonfield import JSONField
 import re
 from properties.models import AvailableLanguage, VersionList, DockerText
+from django.core.validators import URLValidator
+from buildbuild import custom_msg
 
 class ProjectManager(models.Manager):
     def create_project(self, name, **kwargs):
@@ -11,29 +13,63 @@ class ProjectManager(models.Manager):
         self.validate_name(name)
         project.name = name
 
+        if "team_name" not in kwargs:
+            raise AttributeError(
+                "team name field is not specified"
+            )
+
+        project.swift_container = kwargs['team_name'] + "__" + name
+        self.validate_swift_container_name(project.swift_container,
+                                           project.name,
+                                           kwargs['team_name'])
+
         if "team_name" in kwargs:
             Team.objects.validate_name(kwargs['team_name'])
             project.team_name = kwargs['team_name']
         
         # Language & Version
         if "properties" in kwargs:
+            # properties value must be dict 
             self.validate_properties(kwargs['properties'])
             properties = kwargs['properties']
-            # Check validation about language & version
-            VersionList.objects.validate_lang(properties['language'])
-            self.validate_version_of_language(
-                properties['language'], 
-                properties['version']
-            )
 
-            # Make custom docker text
-            docker_text = self.customize_docker_text(
-                              properties['language'], 
-                              properties['version'],
+            if ('language' in properties.iterkeys()) or \
+               ('version' in properties.iterkeys()):
+                if ('language' in properties.iterkeys()) and \
+                   ('version' in properties.iterkeys()):
+                   # Check validation about language & version
+                    VersionList.objects.validate_lang(properties['language'])                
+                    self.validate_version_of_language(
+                        properties['language'], 
+                        properties['version']
+                    )
+                else:
+                    raise ValidationError(
+                              custom_msg.project_both_lang_and_ver_is_needed
                           )
-            
-            project.properties = properties
-            project.docker_text = docker_text
+
+        # Git URL & Git Branch
+            if ('git_url' in properties.iterkeys()) or \
+               ('branch_name' in properties.iterkeys()):
+                if ('git_url' in properties.iterkeys()) and \
+                   ('branch_name' in properties.iterkeys()):
+                    # It checks validation, scheme, unicode
+                    validate_git_url = URLValidator()
+                    validate_git_url(properties['git_url'])
+                    
+                    # Test for branch name should be needed.
+                    # It's just empty validator
+                    self.validate_branch_name(properties['branch_name'])
+                else:
+                    raise ValidationError(
+                              project_both_git_url_and_branch_name_is_needed
+                          )
+                # all validate passed? then, save
+                project.properties = properties
+
+            # Test for Docker text should be needed
+            if ('docker_text' in properties.iterkeys()):
+                project.docker_text = docker_text
 
         project.save(using = self.db)
 
@@ -48,6 +84,11 @@ class ProjectManager(models.Manager):
             raise ValidationError(
                 "project name max length is 64",
             )
+       # test code, not yet
+       if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:
+            raise ValidationError(
+                     "team name cannot contain things but alphabet, '_', number"
+                  )
     
     # Check if the version for language is in DB
     # Be aware it checks only validate about version, not language
@@ -62,6 +103,23 @@ class ProjectManager(models.Manager):
     def validate_properties(self, properties):
         if type(properties) is not dict:
             raise TypeError("properties must be dict")
+    
+    def validate_branch_name(self, branch_name):
+        pass
+
+    def validate_swift_container_name(self, swift_container_name, project_name, team_name):
+        if len(swift_container_name) < 1:
+            raise ValidationError(
+                "swift container name must have more than 1 character"
+            )
+        if len(swift_container_name) > 130:
+            raise ValidationError(
+                'swift container name is too long'
+            )
+        if swift_container_name != (team_name + "__" + project_name):
+            raise ValueError(
+                'swift container name is not in rule'
+            )
 
     def get_project(self, id):
         try:
@@ -76,8 +134,15 @@ class ProjectManager(models.Manager):
         project = Project.objects.get_project(id)
         if "properties" in kwargs:
             project.properties = kwargs['properties']
+
         if "docker_text" in kwargs:
             project.docker_text = kwargs['docker_text']
+
+        if "git_url" in kwargs:
+            project.git_url = kwargs['git_url']
+
+        if "branch_name" in kwargs:
+            project.branch_name = kwargs['branch_name']
 
         project.save(using = self.db)
 
@@ -90,13 +155,16 @@ class ProjectManager(models.Manager):
         else:
             raise OperationalError("delete project failed")
 
+    # deprecated 
     # Be aware it only creates docker text, not check valid language & version
+    """
     def customize_docker_text(self, lang, ver):
         docker_text_query = DockerText.objects.get(lang = lang)
         docker_text = docker_text_query.docker_text
         docker_text = docker_text.replace("<x.y>", ver[:3])
         docker_text = docker_text.replace("<x.y.z>", ver)
         return docker_text
+    """
 
 class Project(models.Model):
     name = models.CharField(
@@ -108,13 +176,22 @@ class Project(models.Model):
                      help_text = "Project language and version",
                      default = {
                                    'language' : '',
-                                   'version' : ''
+                                   'version' : '',
+                                   'git_url' : '',
+                                   'branch_name' : '',
                                },
                  )
     docker_text = models.TextField(
                       help_text = "Project docker_text for project environment",
                       default = ''
                   )
+
+    swift_container = models.CharField(
+                    help_text = 'Open stack swift container name',
+                    max_length = 130,
+                    default = '',
+                )
+
     objects = ProjectManager()
     
     project_wait_teams = models.ManyToManyField(

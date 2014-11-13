@@ -9,17 +9,20 @@ class TestProjectName(TestCase):
     def setUp(self):
         self.name = "test_project_name"
         self.second_name = "test_second_project_name"
+        self.create_name = "test_project"
         self.invalid_long_length_name = "a" * 65
         self.team_name = "test_team_name"
+        self.invalid_swift_container_name = self.team_name + "__" + self.second_name
         self.lang_python = "python"
         self.ver_python_278 = "2.7.8"
-
+        self.valid_name_with_characters = "TestProject0-_"
         self.project = Project.objects.create_project(
             name = self.name,
+            team_name = self.team_name
         )
         self.second_project = Project.objects.create_project(
             name = self.second_name,
-    
+            team_name = self.team_name
         )
 
     def test_create_project_must_contain_name(self):
@@ -30,11 +33,19 @@ class TestProjectName(TestCase):
             properties = {self.lang_python : self.ver_python_278}
         )
 
+    def test_create_project_name_with_available(self):
+        Project.objects.create_project(
+            name = self.valid_name_with_characters,
+            team_name = self.team_name,
+            properties = {self.lang_python : self.ver_python_278}
+        )
+
     def test_create_project_name_min_length_1(self):
         self.assertRaises(
             ValidationError,
             Project.objects.create_project,
             name = "",
+            team_name = self.team_name
         )
 
     def test_project_name_max_length_64(self):
@@ -42,6 +53,7 @@ class TestProjectName(TestCase):
             ValidationError,
             Project.objects.create_project,
             name = self.invalid_long_length_name,
+            team_name = self.team_name
         )
 
     def test_get_all_projects(self):
@@ -53,7 +65,8 @@ class TestProjectName(TestCase):
         self.assertRaises(
             IntegrityError,
             Project.objects.create_project,
-            name = self.name, 
+            name = self.name,
+            team_name = self.team_name
         )
 
     def test_get_project_equal_to_project_targetted(self):
@@ -72,4 +85,16 @@ class TestProjectName(TestCase):
             team_name = self.team_name,
             properties = (self.lang_python, self.ver_python_278)
         )
-         
+
+    def test_project_team_name_in_kwargs(self):
+        self.assertRaises(
+            AttributeError,
+            Project.objects.create_project,
+            name = self.create_name
+        )
+
+    def test_swift_container_name_should_be_in_rule(self):
+        #Rule : team_name + __ + project_name
+        self.assertNotEqual(self.project.swift_container,
+                         self.invalid_swift_container_name,
+                         "Invalid swift container name must be not equal with model member")

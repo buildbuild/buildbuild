@@ -37,12 +37,15 @@ class TestAPITeamUserListSearch(TestCase):
         # Generate Projects
         self.project_in_first_team_with_test_string = Project.objects.create_project(
             name="in_team_with" + self.test_string,
+            team_name=self.first_team.name
         )
         self.project_in_first_team_without_test_string = Project.objects.create_project(
             name="in_team_without",
+            team_name=self.first_team.name
         )
         self.project_in_second_team_with_test_string = Project.objects.create_project(
             name="not_in_team_with" + self.test_string,
+            team_name=self.second_team.name
         )
 
         # Generate Project Membership

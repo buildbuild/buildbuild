@@ -173,9 +173,41 @@ def store_object_into_container_swift(user_name, user_pass, tenant_name, contain
         raise ClientException('Post into container is failed. Please ask this about administrator')
 
 
-def get_object_from_container_swift():
-    # Not implemented
-    pass
+def get_object_from_container_swift(user_name, user_pass, tenant_name, container, file_name):
+    #This will be deprecated.
+    swift_auth_url = "http://61.43.139.143:5000/v2.0"
+    # This info will be used in real
+    # swift_auth_url = "http://172.16.100.169:5000/v2.0"
+    swift_conn = swift_client.Connection(authurl=swift_auth_url,
+                                     user=user_name,
+                                     key=user_pass,
+                                     tenant_name=tenant_name,
+                                     auth_version=2)
+
+    container_name = user_name + '__' + tenant_name
+
+    return_obj = []
+    return_obj.append(file_name)
+
+    if container != container_name:
+        raise ValueError('swift container name is not valid in rule. check administrator for this.')
+
+    if len(file_name) < 1:
+        raise ValueError('File name is invalid')
+    elif len(file_name) > 255:
+        raise ValueError('File name length is too long.')
+
+    try:
+        contents = swift_conn.get_object(container=container,
+                              obj=file_name)
+        return_obj.append(contents[1]) # Contents of the file
+
+    except:
+        raise ClientException('Getting objects failed.')
+
+    #[0] = File Name
+    #[1] = File Contents
+    return return_obj
 
 
 def delete_object_from_container_swift():

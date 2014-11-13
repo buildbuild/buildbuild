@@ -76,6 +76,7 @@ def create_keystone_account(keystone, user, password, project_name):
     return user
 
 
+@shared_task
 def create_container_swift(user_name, user_pass, tenant_name):
     #This will be deprecated.
     swift_auth_url = "http://61.43.139.143:5000/v2.0"
@@ -97,6 +98,7 @@ def create_container_swift(user_name, user_pass, tenant_name):
         raise ClientException('swift container is duplicated or cannot create.')
 
 
+@shared_task
 def delete_container_swift(user_name, user_pass, tenant_name):
     #This will be deprecated.
     swift_auth_url = "http://61.43.139.143:5000/v2.0"
@@ -118,7 +120,9 @@ def delete_container_swift(user_name, user_pass, tenant_name):
         raise ClientException('swift container cannot delete. It does not exist.')
 
 
+
 # Warning : It need to parsing object in container, it just return http response as a whole
+@shared_task
 def list_objects_in_container_swift(user_name, user_pass, tenant_name, container):
     #This will be deprecated.
     swift_auth_url = "http://61.43.139.143:5000/v2.0"
@@ -144,6 +148,7 @@ def list_objects_in_container_swift(user_name, user_pass, tenant_name, container
     return objects
 
 
+@shared_task
 def store_object_into_container_swift(user_name, user_pass, tenant_name, container, file_name, contents):
     #This will be deprecated.
     swift_auth_url = "http://61.43.139.143:5000/v2.0"
@@ -173,6 +178,7 @@ def store_object_into_container_swift(user_name, user_pass, tenant_name, contain
         raise ClientException('Post into container is failed. Please ask this about administrator')
 
 
+@shared_task
 def get_object_from_container_swift(user_name, user_pass, tenant_name, container, file_name):
     #This will be deprecated.
     swift_auth_url = "http://61.43.139.143:5000/v2.0"
@@ -210,6 +216,7 @@ def get_object_from_container_swift(user_name, user_pass, tenant_name, container
     return return_obj
 
 
+@shared_task
 def delete_object_from_container_swift(user_name, user_pass, tenant_name, container, file_name):
     #This will be deprecated.
     swift_auth_url = "http://61.43.139.143:5000/v2.0"

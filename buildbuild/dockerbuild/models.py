@@ -36,7 +36,7 @@ class BuildManager(models.Manager):
     def validate_tag(self, tag):
         if len(tag) < 1:
             raise ValidationError("project tag length should be at most 15", )
-        if len(tag) >15:
+        if len(tag) > 15:
             raise ValidationError("project tag max length is 15" , )
 
     def get_build(self, id):
@@ -56,7 +56,7 @@ class BuildManager(models.Manager):
             raise OperationalError("delete build failed")
 
 class Build(models.Model):
-    tag = models.CharField(max_length = 15, unique = True)
+    tag = models.CharField(max_length = 84, unique = True)
     objects = BuildManager()
     project = models.ForeignKey(Project)
     is_active = models.BooleanField(default=True)

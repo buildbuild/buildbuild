@@ -14,9 +14,10 @@ class BuildManager(models.Manager):
         build.project = Project.objects.get_project(project_id)
         Dockerfile = self.optimize_docker_text(project_id = project_id)
         docker_client = Client(base_url='192.168.59.103:2375')
-        response = [line for line in 
-               docker_client.build(fileobj=Dockerfile, tag=build.tag) ]
+        build.response = [line for line in 
+               docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=build.tag) ]
         build.save(using = self.db)
+        return build
     
     def optimize_docker_text(self, project_id):
         project = Project.objects.get_project(id = project_id)
@@ -61,3 +62,4 @@ class Build(models.Model):
     project = models.ForeignKey(Project)
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
+    response = models.TextField(default="")

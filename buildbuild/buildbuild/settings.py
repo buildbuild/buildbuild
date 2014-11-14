@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     'projects',
     'deploys',
     'properties',
+    'dockerbuild',
 )
 
 MIDDLEWARE_CLASSES = (

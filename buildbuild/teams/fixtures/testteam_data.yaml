@@ -1,0 +1,7 @@
+- fields: {contact_number: '', name: testteam, website_url: ''}
+  model: teams.team
+  pk: 12
+- fields: {date_joined: !!timestamp '2014-11-05 13:13:06.833233+00:00', is_admin: true,
+    member: 6, team: 12}
+  model: teams.membership
+  pk: 12

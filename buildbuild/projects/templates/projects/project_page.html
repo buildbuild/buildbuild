@@ -5,3 +5,9 @@
     {{ key }} : {{ value }} 
   <br>
   {% endfor %}
+
+<h1>{{ project.name }} - Make New Version</h1>
+<form action="{% url 'dockerbuild:build' project.id %}" method="get">
+  <input type = "text" name="tag_name">
+  <input type = "submit" value="Build">
+</form>

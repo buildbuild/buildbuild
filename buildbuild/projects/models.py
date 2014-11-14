@@ -67,10 +67,6 @@ class ProjectManager(models.Manager):
                 # all validate passed? then, save
                 project.properties = properties
 
-            # Test for Docker text should be needed
-            if ('docker_text' in properties.iterkeys()):
-                project.docker_text = docker_text
-
         project.save(using = self.db)
 
         return project
@@ -135,9 +131,6 @@ class ProjectManager(models.Manager):
         if "properties" in kwargs:
             project.properties = kwargs['properties']
 
-        if "docker_text" in kwargs:
-            project.docker_text = kwargs['docker_text']
-
         if "git_url" in kwargs:
             project.git_url = kwargs['git_url']
 
@@ -155,17 +148,6 @@ class ProjectManager(models.Manager):
         else:
             raise OperationalError("delete project failed")
 
-    # deprecated 
-    # Be aware it only creates docker text, not check valid language & version
-    """
-    def customize_docker_text(self, lang, ver):
-        docker_text_query = DockerText.objects.get(lang = lang)
-        docker_text = docker_text_query.docker_text
-        docker_text = docker_text.replace("<x.y>", ver[:3])
-        docker_text = docker_text.replace("<x.y.z>", ver)
-        return docker_text
-    """
-
 class Project(models.Model):
     name = models.CharField(
                help_text = "Project name",
@@ -181,10 +163,6 @@ class Project(models.Model):
                                    'branch_name' : '',
                                },
                  )
-    docker_text = models.TextField(
-                      help_text = "Project docker_text for project environment",
-                      default = ''
-                  )
 
     swift_container = models.CharField(
                     help_text = 'Open stack swift container name',

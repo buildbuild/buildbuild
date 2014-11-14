@@ -10,18 +10,12 @@ class BuildManager(models.Manager):
     def build_project(self, project_id, tag, **kwargs):
         build = self.model()
         self.validate_tag(tag)
-    
         build.tag = "soma.buildbuild.io:4000/" + Project.objects.get(id = project_id).name + "-" + tag
-        
         build.project = Project.objects.get_project(project_id)
-    
         Dockerfile = self.optimize_docker_text(project_id = project_id)
-
         docker_client = Client(base_url='192.168.59.103:2375')
-
         response = [line for line in 
                docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=build.tag) ]
-
         build.save(using = self.db)
     
     def optimize_docker_text(self, project_id):
@@ -56,7 +50,6 @@ class BuildManager(models.Manager):
     def delete_build(self, id): 
         build = Build.objects.get_build(id)
         build.delete()
-
         if build.id is None:
             return True
         else:

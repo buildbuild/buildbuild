@@ -15,7 +15,7 @@ class BuildManager(models.Manager):
         Dockerfile = self.optimize_docker_text(project_id = project_id)
         docker_client = Client(base_url='192.168.59.103:2375')
         response = [line for line in 
-               docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=build.tag) ]
+               docker_client.build(fileobj=Dockerfile, tag=build.tag) ]
         build.save(using = self.db)
     
     def optimize_docker_text(self, project_id):

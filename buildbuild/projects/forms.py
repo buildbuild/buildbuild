@@ -12,24 +12,24 @@ class MakeProjectForm(forms.Form):
 
     language = forms.CharField(
                    max_length = 20,
-                   required = False,
+                   required = True,
                    label = "Language",
                )
 
     version = forms.CharField(
                   max_length = 20,
-                  required = False,
+                  required = True,
                   label = "Language Version",
               )
 
     git_url = forms.URLField(
-                  required = False,
+                  required = True,
                   label = "Git Clone URL",
               )
 
     branch_name = forms.CharField(
                       max_length = 20,
-                      required = False,
+                      required = True,
                       label = "Git Branch Name",
                   )
 

@@ -43,10 +43,12 @@ def project_page(request, project_id):
     cpu_usage = (query[0]['points'][0][8] - query[0]['points'][1][8])
 
     project = Project.objects.get_project(project_id)
+    team = Team.objects.get_team(team_id)
     return render(
                request,
                "projects/project_page.html",
                {
+                   "team" : team,
                    "project" : project,
                    "memory_usage" : memory_usage,
                    "requested_bytes" : rx_used,

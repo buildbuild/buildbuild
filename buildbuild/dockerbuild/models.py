@@ -5,17 +5,20 @@ from properties.models import DockerText
 
 from docker import Client
 from io import BytesIO
+import json
 
 class BuildManager(models.Manager):
     def build_project(self, project_id, tag, **kwargs):
         build = self.model()
         self.validate_tag(tag)
-        build.tag = "soma.buildbuild.io:4000/" + Project.objects.get(id = project_id).name + "-" + tag
+        build.tag = tag
+        tag = "soma.buildbuild.io:4000/" + Project.objects.get(id = project_id).name + "-" + tag
         build.project = Project.objects.get_project(project_id)
         Dockerfile = self.optimize_docker_text(project_id = project_id)
         docker_client = Client(base_url='192.168.59.103:2375')
-        build.response = [line for line in 
-               docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=build.tag) ]
+        build.response = "".join([json.loads(line)["stream"] for line in 
+#          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
+           docker_client.build(fileobj=Dockerfile, tag=tag) ])
         build.save(using = self.db)
         return build
     
@@ -57,7 +60,7 @@ class BuildManager(models.Manager):
             raise OperationalError("delete build failed")
 
 class Build(models.Model):
-    tag = models.CharField(max_length = 84, unique = True)
+    tag = models.CharField(max_length = 15, unique = True)
     objects = BuildManager()
     project = models.ForeignKey(Project)
     is_active = models.BooleanField(default=True)

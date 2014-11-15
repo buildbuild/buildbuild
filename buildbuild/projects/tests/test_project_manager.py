@@ -3,6 +3,7 @@ from projects.models import Project
 from teams.models import Team
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from buildbuild import attributes_for_tests
 
 class TestProjectName(TestCase):
     fixtures = ['properties_data.yaml']
@@ -16,13 +17,18 @@ class TestProjectName(TestCase):
         self.lang_python = "python"
         self.ver_python_278 = "2.7.8"
         self.valid_name_with_characters = "TestProject0-_"
+
+        Team.objects.create_team(self.team_name)
+
         self.project = Project.objects.create_project(
             name = self.name,
-            team_name = self.team_name
+            team_name = self.team_name,
+            properties = attributes_for_tests.properties_for_test,
         )
         self.second_project = Project.objects.create_project(
             name = self.second_name,
-            team_name = self.team_name
+            team_name = self.team_name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
     def test_create_project_must_contain_name(self):
@@ -37,7 +43,7 @@ class TestProjectName(TestCase):
         Project.objects.create_project(
             name = self.valid_name_with_characters,
             team_name = self.team_name,
-            properties = {self.lang_python : self.ver_python_278}
+            properties = attributes_for_tests.properties_for_test,
         )
 
     def test_create_project_name_min_length_1(self):
@@ -53,7 +59,8 @@ class TestProjectName(TestCase):
             ValidationError,
             Project.objects.create_project,
             name = self.invalid_long_length_name,
-            team_name = self.team_name
+            team_name = self.team_name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
     def test_get_all_projects(self):
@@ -66,7 +73,8 @@ class TestProjectName(TestCase):
             IntegrityError,
             Project.objects.create_project,
             name = self.name,
-            team_name = self.team_name
+            team_name = self.team_name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
     def test_get_project_equal_to_project_targetted(self):
@@ -90,7 +98,8 @@ class TestProjectName(TestCase):
         self.assertRaises(
             TypeError,
             Project.objects.create_project,
-            name = self.create_name
+            name = self.create_name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
     def test_swift_container_name_should_be_in_rule(self):
@@ -98,3 +107,4 @@ class TestProjectName(TestCase):
         self.assertNotEqual(self.project.swift_container,
                          self.invalid_swift_container_name,
                          "Invalid swift container name must be not equal with model member")
+

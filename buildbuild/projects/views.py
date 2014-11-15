@@ -24,18 +24,34 @@ from properties.models import AvailableLanguage, VersionList, DockerText
 from buildbuild import custom_msg
 from django.core.validators import URLValidator
 
+from influxdb import client as influxdb
+
 
 # when User click a project in team page, 
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html 
 # with the fields of project
 def project_page(request, project_id):
+    db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
+                                database='cadvisor')
+
+    query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
+
+    memory_usage = query[0]['points'][0][2]
+    rx used = query[0]['points'][0][10]
+    tx used = query[0]['points'][0][6]
+    cpu_usage = query[0]['points'][0][8] - query[0]['points'][1][8]
+
     project = Project.objects.get_project(project_id)
     return render(
                request,
                "projects/project_page.html",
                {
                    "project" : project,
+                   "memory_usage" : memory_usage,
+                   "requested_bytes" : rx_used,
+                   "transferred_bytes" : tx_used,
+                   "cpu_usage" : cpu_usage,
                },
            )            
 

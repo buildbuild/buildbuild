@@ -38,9 +38,9 @@ def project_page(request, project_id):
     query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
 
     memory_usage = query[0]['points'][0][2]
-    rx used = query[0]['points'][0][10]
-    tx used = query[0]['points'][0][6]
-    cpu_usage = query[0]['points'][0][8] - query[0]['points'][1][8]
+    rx_used = (query[0]['points'][0][10])
+    tx_used = (query[0]['points'][0][6])
+    cpu_usage = (query[0]['points'][0][8] - query[0]['points'][1][8])
 
     project = Project.objects.get_project(project_id)
     return render(

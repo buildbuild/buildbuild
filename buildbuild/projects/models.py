@@ -1,5 +1,7 @@
 from django.db import models
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist,\
+        MultipleObjectsReturned
+from django.db import IntegrityError
 from teams.models import Team
 from jsonfield import JSONField
 import re
@@ -25,7 +27,9 @@ class ProjectManager(models.Manager):
                
         self.properties_in_kwargs_is_required(kwargs)
         self.check_exist_team_name(team_name)
-#        self.check_uniqueness_project_name(name, team_name)
+
+        # Notice : project name must be unique in one team, not all teams
+        self.check_uniqueness_project_name(name, team_name)
 
         project.name = name
         project.team_name = team_name
@@ -164,11 +168,27 @@ class ProjectManager(models.Manager):
                 "The submitted team does not exist"
             )
 
+    def check_uniqueness_project_name(self, project_name, team_name):
+        team = Team.objects.get(name = team_name)
+
+        try:
+            project = Project.objects.get(
+                          name = project_name, 
+                          project_teams = team,
+                      )
+        # If project does not exist in all project list, no problem.
+        except ObjectDoesNotExist:
+            pass
+        # But if exist, the team already have the same project name
+        else:
+            raise IntegrityError(
+                "the project name exist in project list in your team "
+            )
+        
 class Project(models.Model):
     name = models.CharField(
                help_text = "Project name",
                max_length = 64,
-               unique = True
            )
     properties = JSONField(
                      help_text = "Project language and version",

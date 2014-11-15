@@ -112,7 +112,8 @@ class MakeProjectPageTest(TestCase):
             "/login/"
         )
 
-    # following tests are needed to modify 
+    # following tests are needed to modify
+    # because test method problem, ( not real server problem )
     """
     # Notice : project name is unique in one team, not all teams 
     def test_check_uniqueness_of_project_name(self):

@@ -8,25 +8,23 @@ from django.core.validators import URLValidator
 from buildbuild import custom_msg
 
 class ProjectManager(models.Manager):
-    def create_project(self, name, **kwargs):
+    def create_project(self, name, team_name, **kwargs):
         project = self.model()
         self.validate_name(name)
         project.name = name
 
-        if "team_name" not in kwargs:
-            raise AttributeError(
-                "team name field is not specified"
-            )
-
-        project.swift_container = kwargs['team_name'] + "__" + name
-        self.validate_swift_container_name(project.swift_container,
-                                           project.name,
-                                           kwargs['team_name'])
-
-        if "team_name" in kwargs:
-            Team.objects.validate_name(kwargs['team_name'])
-            project.team_name = kwargs['team_name']
+        Team.objects.validate_name(team_name)
+        project.team_name = team_name
         
+        swift_container = team_name + "__" + name
+
+        self.validate_swift_container_name(
+            swift_container,
+            project.name,
+            team_name,
+        )
+        project.swift_container = swift_container
+
         # Language & Version
         if "properties" in kwargs:
             # properties value must be dict 

@@ -86,9 +86,9 @@ class TestProjectName(TestCase):
             properties = (self.lang_python, self.ver_python_278)
         )
 
-    def test_project_team_name_in_kwargs(self):
+    def test_project_team_name_required(self):
         self.assertRaises(
-            AttributeError,
+            TypeError,
             Project.objects.create_project,
             name = self.create_name
         )

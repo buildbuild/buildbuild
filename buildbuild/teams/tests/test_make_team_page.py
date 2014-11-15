@@ -34,7 +34,7 @@ class MakeTeamPageTest(TestCase):
      # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/users/login/", {
+                   "/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -71,7 +71,7 @@ class MakeTeamPageTest(TestCase):
  
     def test_get_make_team_page_without_login_redirect_to_login_page(self):
         response = self.client.get("/teams/maketeam/", follow = True)
-        self.assertEqual(response.wsgi_request.path, "/users/login/")
+        self.assertEqual(response.wsgi_request.path, "/login/")
  
     def test_check_uniqueness_of_name(self):
         self.post_login_set(self.user_email, self.user_password)

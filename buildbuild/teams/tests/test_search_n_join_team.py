@@ -40,7 +40,7 @@ class MakeTeamPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/users/login/", {
+                   "/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },

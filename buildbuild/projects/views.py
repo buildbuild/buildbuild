@@ -83,12 +83,14 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_invalid)
             return HttpResponseRedirect(reverse("home"))
         
-        # Check uniqueness of project
+        
+        # Notice : project name must be unique in one team, not all teams
         try:
-            Project.objects.get(name = project_name)
-        except ObjectDoesNotExist:
-            pass
-        else:
+            Project.objects.check_uniqueness_project_name(
+                project_name = project_name,
+                team_name = team_name,
+            )
+        except IntegrityError:
             messages.error(self.request, custom_msg.project_already_exist)
             return HttpResponseRedirect(reverse("home"))
         

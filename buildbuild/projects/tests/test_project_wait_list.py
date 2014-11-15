@@ -4,8 +4,10 @@ from teams.models import Team
 from users.models import User
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from buildbuild import attributes_for_tests
 
 class ProjectWaitList_test(TestCase):
+    fixtures = ['properties_data.yaml']
     def setUp(self):
         self.first_team_name = "Team1"
         self.second_team_name = "Second_Team1234"
@@ -22,12 +24,14 @@ class ProjectWaitList_test(TestCase):
 
         self.project = Project.objects.create_project(
             name = self.project_name,
-            team_name = self.first_team_name
+            team_name = self.first_team_name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
         self.second_project = Project.objects.create_project(
             name = self.second_project_name,
-            team_name = self.second_team_name
+            team_name = self.second_team_name,
+            properties = attributes_for_tests.properties_for_test,
         )
        
         self.project_wait_list = ProjectWaitList.objects.create_project_wait_list(

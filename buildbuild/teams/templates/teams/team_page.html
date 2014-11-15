@@ -18,7 +18,7 @@
 {% if project_list %}
     <h3>Project list</h3>
     {% for project in project_list %}
-      <a href="{% url 'projects:project_page' project.id %}">{{ project.name }}</a>
+      <a href="{% url 'project_page' team.id project.id %}">{{ project.name }}</a>
       <br>
     {% endfor %}
 {% else %}

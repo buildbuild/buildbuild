@@ -26,5 +26,24 @@ class LoginForm(forms.Form):
 
 
 class SignUpForm(forms.Form):
-    email = forms.EmailField(max_length=50, required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
+    email = forms.EmailField(
+        label="",
+        max_length=50,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input-large col-xs-12',
+                'placeholder': 'Enter Email'
+            }
+        )
+    )
+    password = forms.CharField(
+        label="",
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'input-large col-xs-12',
+                'placeholder': 'Enter Password'
+            }
+        )
+    )

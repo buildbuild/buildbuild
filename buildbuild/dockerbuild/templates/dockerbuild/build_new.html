@@ -1,0 +1,3 @@
+<h1>{{ project.name }}-{{build.tag}}</h1> 
+{{ build.response|linebreaks }}
+<h2><a href="{% url 'dockerbuild:build_page' project.id %}">Go Back</a></h2>

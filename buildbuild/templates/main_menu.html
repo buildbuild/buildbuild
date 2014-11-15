@@ -6,16 +6,18 @@
   <div class="nav-collapse sidebar-nav collapse navbar-collapse bs-navbar-collapse">
     <ul class="nav nav-tabs nav-stacked main-menu">
       <li><a href="index.html"><i class="fa fa-bar-chart-o"></i><span class="hidden-sm"> Dashboard</span></a></li>	
-      <li>
-        <a class="dropmenu" href="index.html#"><i class="fa fa-eye"></i><span class="hidden-sm"> UI Features</span> <span class="label">3</span></a>
-        <ul>
-          <li><a class="submenu" href="ui-sliders-progress.html"><i class="fa fa-eye"></i><span class="hidden-sm"> Sliders & Progress</span></a></li>
-          <li><a class="submenu" href="ui-nestable-list.html"><i class="fa fa-eye"></i><span class="hidden-sm"> Nestable Lists</span></a></li>
-          <li><a class="submenu" href="ui-elements.html"><i class="fa fa-eye"></i><span class="hidden-sm"> Elements</span></a></li>
-        </ul>
-      </li>
-      <li><a href="widgets.html"><i class="fa fa-dashboard"></i><span class="hidden-sm"> Widgets</span></a></li>
-      <li><a href="login.html"><i class="fa fa-lock"></i><span class="hidden-sm"> Login Page</span></a></li>
+
+      {% for team in user.member.all %}
+        <li>
+          <a class="dropmenu" href="#"><i class="fa fa-users"></i><span class="hidden-sm">{{ team.name }}</span> <span class="label">{{ team.project_teams.all.count }}</span></a>
+          <ul>
+            {% for project in team.project_teams.all %}
+            <li><a class="submenu" href="#"><i class="fa fa-gear"></i><span class="hidden-sm">{{ project.name }}</span></a></li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+
     </ul>
   </div>
 </div>

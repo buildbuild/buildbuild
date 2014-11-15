@@ -36,19 +36,30 @@
 
   </head>
   <body>
-    {% include 'header.html' %}
+    {% block header %}
+      {% include 'header.html' %}
+    {% endblock %}
 
     <div class="container">
       <div class="row">
-        {% include 'main_menu.html' %}
+        {% block main_menu %}
+          {% include 'main_menu.html' %}
+        {% endblock %}
 
-        {% include 'content.html' %}
+        {% block content %}
+          {% include 'content.html' %}
+        {% endblock %}
       </div>
     </div>
 
-    {% include 'modal.html' %}
+    {% block modal %}
+      {% include 'modal.html' %}
+    {% endblock %}
 
-    {% include 'footer.html' %}
+    {% block footer %}
+      {% include 'footer.html' %}
+    {% endblock %}
+
     {% include 'javascript.html' %}
 
   <!-- for passing test purpose -->
@@ -83,8 +94,6 @@
     {% endif %}
   </nav>
 
-    {% block content %}
-    {% endblock %}
   </div>
   </body>
 </html>

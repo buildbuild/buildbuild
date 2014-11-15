@@ -51,7 +51,7 @@ class MakeTeamPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_make_team_set(self, team_name="", follow=False):
         response = self.client.post(
-                       "/teams/maketeam/", {
+                       "/teams/new/", {
                        "teams_team_name": team_name,
                        },
                        follow = follow

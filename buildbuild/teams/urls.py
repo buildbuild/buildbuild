@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from teams.views import MakeTeamView
 
 urlpatterns = patterns('',
-    url(r'^maketeam/', login_required(MakeTeamView.as_view()), name="maketeam"),
+    url(r'^new/', login_required(MakeTeamView.as_view()), name="maketeam"),
     url(r'^search_team/$', 'teams.views.search_team', name='search_team'),
     url(r'^join_team/([0-9]+)/$', 'teams.views.join_team', name="join_team"),
     url(

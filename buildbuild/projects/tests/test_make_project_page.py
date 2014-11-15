@@ -9,7 +9,7 @@ from projects.models import Project
 from teams.models import Team
 from users.models import User
 from buildbuild import custom_msg
-
+from buildbuild import attributes_for_tests
 
 class MakeProjectPageTest(TestCase):
     def setUp(self):
@@ -29,11 +29,12 @@ class MakeProjectPageTest(TestCase):
             email = self.user_email,
             password = self.user_password,
         )
+        self.team = Team.objects.create_team(self.team_name)
 
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                       "/users/login/", {
+                       "/login/", {
                            "email" : user_email,
                            "password" : user_password,
                        },
@@ -44,20 +45,21 @@ class MakeProjectPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_make_team_set(self, team_name="", follow=False):
         response = self.client.post(
-                       "/teams/maketeam/", {
+                       "/teams/new/", {
                        "teams_team_name": team_name,
                        },
                        follow = follow
                    )
         return response
-
+    
     # Default Set function, These are not Unit Test function
     def post_make_project_set(self, name="", team_name="", follow=False, **kwargs):
+        team = Team.objects.get(name = team_name)
 
         if "properties" in kwargs:
             properties = kwargs["properties"]
             response = self.client.post(
-                           "/projects/makeproject/" + self.team_name, {
+                           "/teams/" + str(self.team.id) + "/projects/new/", {
                                "projects_project_name" : name,
                                "language" : properties['language'],
                                "version" : properties['version'],
@@ -68,13 +70,14 @@ class MakeProjectPageTest(TestCase):
                        )
         else:
             response = self.client.post(
-                           "/projects/makeproject/" + self.team_name, {
+                           "/teams/" + str(self.team.id) + "/projects/new/", {
                                "projects_project_name" : name,
                            },
                            follow = follow
                        )
-        return response  
 
+        return response  
+    
     # Test Code for Default Set function
     def test_post_make_project_set(self):
         self.post_make_project_set(self.project_name, team_name = self.team_name)
@@ -88,32 +91,57 @@ class MakeProjectPageTest(TestCase):
         self.post_make_team_set(self.team_name)
 
     def test_get_make_project_page_request_with_login(self):
-        self.post_login_set()
-        response = self.client.get("/projects/makeproject/" + self.team_name, status_code=301,)
-        self.assertEqual(response.wsgi_request.path, "/projects/makeproject/" + self.team_name)
+        self.post_login_set(self.user_email, self.user_password)
+        response = self.client.get(
+                       "/teams/" + str(self.team.id) + "/projects/new/", 
+                       follow = True,
+                   )
+        self.assertEqual(
+            response.wsgi_request.path, 
+            "/teams/" + str(self.team.id) + "/projects/new/"
+        )
    
-    
     def test_get_make_project_page_without_login_redirect_to_login_page(self):
-        response = self.client.get("/projects/makeproject/" + self.team_name, status_code=301, follow = True)
-        self.assertEqual(response.wsgi_request.path, "/login/")
-    """    
+        response = self.client.get(
+                       "/teams/" + str(self.team.id) + "/projects/new/", 
+                       status_code=301,
+                       follow = True,
+                   )
+        self.assertEqual(
+            response.wsgi_request.path, 
+            "/login/"
+        )
+
+    # following tests are needed to modify 
+    """
+    # Notice : project name is unique in one team, not all teams 
     def test_check_uniqueness_of_project_name(self):
         self.post_login_set(self.user_email, self.user_password)
-        self.post_make_team_set(self.team_name)
-        self.post_make_team_set(self.second_team_name)
+        self.post_make_team_set(
+            self.second_team_name
+        )
+
         response = self.post_make_project_set(
                        name = self.project_name, 
-                       team_name = self.team_name,
+                       team_name = self.second_team_name,
+                       proeprties = attributes_for_tests.properties_for_test,
                        follow = True
                    )
+
         response = self.post_make_project_set(
-                       self.project_name, 
-                       team_name = self.second_team_name, 
+                       name = self.project_name, 
+                       team_name = self.second_team_name,
+                       proeprties = attributes_for_tests.properties_for_test,
                        follow = True
                    )
-        self.assertRedirects(response, "/projects/makeproject/" + self.team_name + "/", status_code=301,)
+        
+        self.assertRedirects(
+            response, 
+            "/projects/makeproject/" + self.team_name + "/", 
+            status_code=301,
+        )
         self.assertContains(response, custom_msg.project_already_exist)
-    
+        
     def test_post_project_with_valid_informations_should_redirect_to_home(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name, follow = True)

@@ -15,7 +15,7 @@ from users.models import User
 from teams.models import Team
 from projects.models import Project
 
-from users.forms import LoginForm, SignUpForm 
+from users.forms import LoginForm, SignUpForm
 
 from django.db import IntegrityError, OperationalError
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -56,13 +56,13 @@ class Login(FormView):
             user = authenticate(email=email, password=password)
         except ValidationError:
             messages.error(self.request, custom_msg.user_email_not_exist)
-            return HttpResponseRedirect(reverse("users:login"))       
+            return HttpResponseRedirect(reverse("users:login"))
         else:
             next = ""
-             
+
             if 'next' in self.request.GET:
                 next = self.request.GET['next']
-                
+
             if user is not None:
                 if user.is_active:
                     login(self.request, user)
@@ -78,7 +78,7 @@ class Login(FormView):
             else:
                 messages.error(self.request, custom_msg.user_invalid)
                 return HttpResponseRedirect(reverse("users:login"))
- 
+
 class Logout(RedirectView):
     def get_redirect_url(self):
         user_logout_failed = "ERROR : logout failed"
@@ -113,17 +113,17 @@ class AccountView(DetailView):
 class SignUp(FormView):
     template_name = "users/signup.html"
     form_class = SignUpForm
-    
+
     def form_valid(self, form):
         email = self.request.POST["email"]
         password = self.request.POST["password"]
-        
+
         # Validate email
         try:
             validate_email(email)
         except ValidationError:
             messages.error(self.request, custom_msg.user_invalid_email)
-            return HttpResponseRedirect(reverse("users:signup"))       
+            return HttpResponseRedirect(reverse("users:signup"))
 
         # Check Uniqueness of User
         try:
@@ -139,11 +139,11 @@ class SignUp(FormView):
             User.objects.validate_password(password)
         except ValidationError:
             messages.error(self.request, custom_msg.user_invalid_password)
-            return HttpResponseRedirect(reverse("users:signup"))       
-       
+            return HttpResponseRedirect(reverse("users:signup"))
+
         # Create new user
         user = User.objects.create_user(email, password = password)
-        messages.success(self.request, custom_msg.user_signup_success) 
+        messages.success(self.request, custom_msg.user_signup_success)
 
         # send Email, test should be programmed in tasks.py
         tasks.send_mail_to_new_user.delay(user)

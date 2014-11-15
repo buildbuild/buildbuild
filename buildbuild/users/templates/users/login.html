@@ -1,15 +1,45 @@
 {% extends "base.html" %}
 
-{% block content %}
-  <h1>Login Page</h1>
+{% block header %}
+{% endblock %}
 
-  {% if next %}
-    <form action="/login/?next={{next}}" method="post" >
-  {%else%}
-  <form method="POST">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" name="next" value="{{ NEXT }}" />
-    <input type="submit" value="Login" />
-  </form>
-   {% endif %}
+{% block main_menu %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="login-box">
+      <h2>Login to BuildBuild</h2>
+
+        <fieldset>
+          {% if next %}
+            <form class="form-horizontal" action="/login/?next={{next}}" method="post" >
+          {% else %}
+          <form method="POST">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="next" value="{{ NEXT }}" />
+
+            <label class="remember" for="remember"><input type="checkbox" id="remember" />Remember me</label>
+
+            <div class="clearfix"></div>
+            <button type="submit" class="btn btn-primary col-xs-12">Login</button>
+          {% endif %}
+        </fieldset>	
+
+      </form>
+      <hr>
+      <h3>Forgot Password?</h3>
+      <p>
+        No problem, <a href="login.html#">click here</a> to get a new password.
+      </p>	
+    </div>
+  </div><!--/row-->
+
+{% endblock %}
+
+{% block modal %}
+{% endblock %}
+
+{% block footer %}
 {% endblock %}

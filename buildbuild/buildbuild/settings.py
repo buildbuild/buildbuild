@@ -157,7 +157,7 @@ BOWER_INSTALLED_APPS = (
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_URL = "/users/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/users/account/" # Not Implemented : should have chnage to /profile or /dashboard stuff
 
 

@@ -95,7 +95,7 @@ class MakeProjectPageTest(TestCase):
     
     def test_get_make_project_page_without_login_redirect_to_login_page(self):
         response = self.client.get("/projects/makeproject/" + self.team_name, status_code=301, follow = True)
-        self.assertEqual(response.wsgi_request.path, "/users/login/")
+        self.assertEqual(response.wsgi_request.path, "/login/")
     """    
     def test_check_uniqueness_of_project_name(self):
         self.post_login_set(self.user_email, self.user_password)

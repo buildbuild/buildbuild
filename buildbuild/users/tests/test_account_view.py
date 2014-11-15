@@ -23,7 +23,7 @@ class TestAccountView(TestCase):
     # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/users/login/", {
+                   "/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -59,7 +59,7 @@ class TestAccountView(TestCase):
 
     def test_after_login_user_should_redirect_to_account_page(self):
         self.post_login_set(self.user_email, self.user_password)
-        response = self.client.post("/users/login/?next=/users/account/", {
+        response = self.client.post("/login/?next=/users/account/", {
             "email": self.user_email,
             "password": self.user_password,
             })

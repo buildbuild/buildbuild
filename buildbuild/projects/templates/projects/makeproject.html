@@ -2,11 +2,12 @@
 
 {% block content %}
 <div id="content" class="col-lg-10 col-sm-11">
+  {% if is_team_member %} 
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="box">
 						<div class="box-header">
-							<h2><i class="fa fa-edit"></i>Form Elements</h2>
+							<h2><i class="fa fa-edit"></i>Create a Project</h2>
 							<div class="box-icon">
 								<a href="form-elements.html#" class="btn-setting"><i class="fa fa-wrench"></i></a>
 								<a href="form-elements.html#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
@@ -14,17 +15,17 @@
 							</div>
 						</div>
 						<div class="box-content">
-							<form class="form-horizontal">	
+							<form class="form-horizontal" method="POST">{% csrf_token %}	
 								  <div class="form-group">
 									<label class="control-label" for="focusedInput">Project Name</label>
 									<div class="controls">
-									  <input class="form-control focused" id="focusedInput" type="text" value="">
+									  <input id="projects_project_name" name="projects_project_name" class="form-control focused" id="focusedInput" type="text" value="">
 									</div>
 								  </div>
 								  <div class="form-group">
 									<label class="control-label" for="selectError">Language</label>
 									<div class="controls">
-									  <select id="selectError" class="form-control" data-rel="chosen">
+									  <select id="language" name="language" id="selectError" class="form-control" data-rel="chosen">
 										<option>Java</option>
 										<option>Python</option>
 										<option>Ruby</option>
@@ -35,7 +36,32 @@
 								  <div class="form-group">
 									<label class="control-label" for="selectError2">Frameworks</label>
 									<div class="controls">
-										<select class="form-control" data-placeholder="Web Frameworks" id="selectError2" data-rel="chosen">
+										<select id="id_version" name="version" class="form-control" data-placeholder="Language Version" id="selectError2" data-rel="chosen">
+											<option value=""></option>
+											<optgroup label="Java">
+											</optgroup>
+											<optgroup label="Python">
+											  <option>2.7.1</option>
+											  <option>2.7.2</option>
+											  <option>2.7.3</option>
+											  <option>2.7.4</option>
+											  <option>2.7.5</option>
+											  <option>2.7.6</option>
+											  <option>2.7.7</option>
+											  <option>2.7.8</option>
+											</optgroup>
+											<optgroup label="Ruby">
+											  <option>2.0.0-p481</option>
+											</optgroup>
+											<optgroup label="Node.js">
+											</optgroup>
+									  </select>
+									</div>
+								  </div>
+								  <div class="form-group">
+									<label class="control-label" for="selectError2">Frameworks</label>
+									<div class="controls">
+										<select id="id_framework" name="framework" class="form-control" data-placeholder="Web Frameworks" id="selectError2" data-rel="chosen">
 											<option value=""></option>
 											<optgroup label="Java">
 											  <option>Spring</option>
@@ -57,17 +83,17 @@
 								  <div class="form-group">
 									<label class="control-label" for="focusedInput">Github Repository</label>
 									<div class="controls">
-									  <input class="form-control focused" id="focusedInput" type="text" placeholder="https://github.com/buildbuild/buildbuild">
+                    <input id="id_git_url" name="git_url" class="form-control focused" id="focusedInput" type="text" value="https://github.com/">
 									</div>
 								  </div>
 								  <div class="form-group">
 									<label class="control-label" for="focusedInput">Github Branch Name</label>
 									<div class="controls">
-									  <input class="form-control focused" id="focusedInput" type="text" placeholder="develop">
+									  <input id="id_branch_name" name="branch_name" class="form-control focused" id="focusedInput" type="text" value="develop">
 									</div>
 								  </div>
 								  <div class="form-actions">
-									<button type="submit" class="btn btn-primary">Create a Project</button>
+									<input type="submit" class="btn btn-primary" value="Create a Project"></input>
 									<button class="btn">Cancel</button>
 								  </div>
 							  </form>
@@ -78,12 +104,6 @@
 
 			</div><!--/row-->
 
-  {% if is_team_member %} 
-    <h1>Make Project Page</h1>
-      <form method="POST">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="MakeProject" />
-      </form>
   {% else %}
    <h1>You're not the team member</h1>
   {% endif %}  

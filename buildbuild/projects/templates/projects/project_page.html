@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div id="content" class="col-lg-10 col-sm-11">
 <!-- PROJECT SUMMARY -->
 			<div class="row">
 				
@@ -42,7 +43,6 @@
 			
 			</div><!--/row-->
 <!-- PROJECT SUMMARY -->
-
 <h1>{{ project.name }}'s Page</h1>
   <p><a href="{% url 'home' %}">Go back</a></p>
   <h1>{{ project.name }}</h1>
@@ -52,4 +52,7 @@
   {% endfor %}
 
 <p><a href="{% url 'dockerbuild:build_page' project.id %}">Build Page</a></p>
+
+  </div>
+
 {% endblock %}

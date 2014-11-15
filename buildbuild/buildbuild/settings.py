@@ -16,7 +16,7 @@ import os
 # exception message handling
 # when we are attempt to save a naive datetime, warning occurs
 # During development, such warnings into ignore status
-import warnings 
+import warnings
 warnings.filterwarnings(
         'ignore', r"DateTimeField .* received a naive datetime",
         RuntimeWarning, r'django\.db\.models\.fields')
@@ -78,6 +78,7 @@ INSTALLED_APPS = (
     'projects',
     'deploys',
     'properties',
+    'dockerbuild',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -142,13 +143,15 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
+
+    # 'djangobower.finders.BowerFinder'
+    # currently not using bower for client dependency
+    # after web client implementation, should change to static to using bower
 )
 
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 BOWER_INSTALLED_APPS = (
-    'angular#1.2.23',
 )
 
 

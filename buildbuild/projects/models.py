@@ -1,5 +1,7 @@
 from django.db import models
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError, ObjectDoesNotExist,\
+        MultipleObjectsReturned
+from django.db import IntegrityError
 from teams.models import Team
 from jsonfield import JSONField
 import re
@@ -8,70 +10,66 @@ from django.core.validators import URLValidator
 from buildbuild import custom_msg
 
 class ProjectManager(models.Manager):
-    def create_project(self, name, **kwargs):
+    def create_project(self, name, team_name, **kwargs):
+        # Initial setting
         project = self.model()
+        swift_container = team_name + "__" + name
+
+        # Validate first
+        # project name, team name, swift container name
         self.validate_name(name)
+        Team.objects.validate_name(team_name)
+        self.validate_swift_container_name(
+            swift_container,
+            name,
+            team_name,
+        )
+               
+        self.properties_in_kwargs_is_required(kwargs)
+        team = self.check_exist_team_name(team_name)
+
+        # Notice : project name must be unique in one team, not all teams
+        self.check_uniqueness_project_name(name, team_name)
+
         project.name = name
+        project.team_name = team_name
+        project.swift_container = swift_container
 
-        if "team_name" not in kwargs:
-            raise AttributeError(
-                "team name field is not specified"
-            )
+        # 'properties' value is passed by kwargs, but it is possible to change
+        # properties value must be dict
+        # properties must have following keys ->
+        # language, version, git url, branch name
+        properties = kwargs['properties']
+        self.validate_properties(properties)
+        self.check_keys_in_properties(properties)
 
-        project.swift_container = kwargs['team_name'] + "__" + name
-        self.validate_swift_container_name(project.swift_container,
-                                           project.name,
-                                           kwargs['team_name'])
-
-        if "team_name" in kwargs:
-            Team.objects.validate_name(kwargs['team_name'])
-            project.team_name = kwargs['team_name']
-        
-        # Language & Version
-        if "properties" in kwargs:
-            # properties value must be dict 
-            self.validate_properties(kwargs['properties'])
-            properties = kwargs['properties']
-
-            if ('language' in properties.iterkeys()) or \
-               ('version' in properties.iterkeys()):
-                if ('language' in properties.iterkeys()) and \
-                   ('version' in properties.iterkeys()):
-                   # Check validation about language & version
-                    VersionList.objects.validate_lang(properties['language'])                
-                    self.validate_version_of_language(
-                        properties['language'], 
-                        properties['version']
-                    )
-                else:
-                    raise ValidationError(
-                              custom_msg.project_both_lang_and_ver_is_needed
-                          )
+        # Check validation about language & version
+        VersionList.objects.validate_lang(properties['language'])       
+        self.validate_version_of_language(
+            properties['language'], 
+            properties['version']
+        )
 
         # Git URL & Git Branch
-            if ('git_url' in properties.iterkeys()) or \
-               ('branch_name' in properties.iterkeys()):
-                if ('git_url' in properties.iterkeys()) and \
-                   ('branch_name' in properties.iterkeys()):
-                    # It checks validation, scheme, unicode
-                    validate_git_url = URLValidator()
-                    validate_git_url(properties['git_url'])
+        validate_git_url = URLValidator()
+        validate_git_url(properties['git_url'])
                     
-                    # Test for branch name should be needed.
-                    # It's just empty validator
-                    self.validate_branch_name(properties['branch_name'])
-                else:
-                    raise ValidationError(
-                              project_both_git_url_and_branch_name_is_needed
-                          )
-                # all validate passed? then, save
-                project.properties = properties
-
-            # Test for Docker text should be needed
-            if ('docker_text' in properties.iterkeys()):
-                project.docker_text = docker_text
+        # Test for branch name should be needed.
+        # It's just empty validator
+        self.validate_branch_name(properties['branch_name'])
+        
+        # All validate & all check available attributes test passed? then, save
+        project.properties = properties
 
         project.save(using = self.db)
+
+        # link team to project using ProjectMembership
+        project_membership = ProjectMembership.objects.create_project_membership(
+                                 project = project,
+                                 team = team,
+                             )
+        project_membership.is_admin = True
+        project_membership.save()
 
         return project
 
@@ -99,6 +97,12 @@ class ProjectManager(models.Manager):
             raise ObjectDoesNotExist(
                       "The version for " + lang + " is not supported"
                   )
+
+    def properties_in_kwargs_is_required(self, kwargs):
+        if "properties" not in kwargs:
+            raise AttributeError(
+                "'properties' in kwargs must be required"
+            )
 
     def validate_properties(self, properties):
         if type(properties) is not dict:
@@ -135,9 +139,6 @@ class ProjectManager(models.Manager):
         if "properties" in kwargs:
             project.properties = kwargs['properties']
 
-        if "docker_text" in kwargs:
-            project.docker_text = kwargs['docker_text']
-
         if "git_url" in kwargs:
             project.git_url = kwargs['git_url']
 
@@ -155,23 +156,53 @@ class ProjectManager(models.Manager):
         else:
             raise OperationalError("delete project failed")
 
-    # deprecated 
-    # Be aware it only creates docker text, not check valid language & version
-    """
-    def customize_docker_text(self, lang, ver):
-        docker_text_query = DockerText.objects.get(lang = lang)
-        docker_text = docker_text_query.docker_text
-        docker_text = docker_text.replace("<x.y>", ver[:3])
-        docker_text = docker_text.replace("<x.y.z>", ver)
-        return docker_text
-    """
+    def check_keys_in_properties(self, properties):
+        if 'language' not in properties:
+            raise KeyError("Language information was not submitted")
 
+        if 'version' not in properties:
+            raise KeyError("Version information was not submitted")
+
+        if 'git_url' not in properties:
+            raise KeyError("Git URL information was not submitted")
+
+        if 'branch_name' not in properties:
+            raise KeyError("Git Branch name information was not submitted")
+
+    def check_exist_team_name(self, team_name):
+        try:
+            team = Team.objects.get(name = team_name)
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                "The submitted team does not exist"
+            )
+        return team
+
+    def check_uniqueness_project_name(self, project_name, team_name):
+        team = Team.objects.get(name = team_name)
+
+        try:
+            project = Project.objects.get(
+                          name = project_name, 
+                          project_teams = team,
+                      )
+        # If project does not exist in all project list, no problem.
+        except ObjectDoesNotExist:
+            pass
+        # But if exist, the team already have the same project name
+        else:
+            raise IntegrityError(
+                "the project name exist in project list in your team "
+            )
+        
 class Project(models.Model):
+    objects = ProjectManager()
+ 
     name = models.CharField(
                help_text = "Project name",
                max_length = 64,
-               unique = True
            )
+
     properties = JSONField(
                      help_text = "Project language and version",
                      default = {
@@ -181,18 +212,12 @@ class Project(models.Model):
                                    'branch_name' : '',
                                },
                  )
-    docker_text = models.TextField(
-                      help_text = "Project docker_text for project environment",
-                      default = ''
-                  )
 
     swift_container = models.CharField(
                     help_text = 'Open stack swift container name',
                     max_length = 130,
                     default = '',
                 )
-
-    objects = ProjectManager()
     
     project_wait_teams = models.ManyToManyField(
                              Team,
@@ -249,26 +274,30 @@ class ProjectMembershipManager(models.Manager):
             project_teamship.delete()        
 
 class ProjectMembership(models.Model):
+    objects = ProjectMembershipManager()
+
     project = models.ForeignKey(
             Project,
             verbose_name = "projectMembership project",
             related_name="project_membership_project",
             )
+
     project_team = models.ForeignKey(
             Team,
             verbose_name = "projectMembership project_team",
             related_name="project_membership_project_team",
             default = None,
             )
+
     date_joined = models.DateField(
                       help_text = "ProjectMembership date_joined when team joined the project",
                       auto_now_add=True
                   )
+
     is_admin = models.BooleanField(
                    help_text = "ProjectMembership is_admin",
                    default=False
                )
-    objects = ProjectMembershipManager()
 
 class ProjectWaitListManager(models.Manager):
     def create_project_wait_list(self, project, team):

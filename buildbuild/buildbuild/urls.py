@@ -19,5 +19,5 @@ urlpatterns = patterns('',
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^teams/', include('teams.urls', namespace='teams')),
     url(r'^projects/', include('projects.urls', namespace='projects')),
-
+    url(r'^dockerbuild/', include('dockerbuild.urls', namespace='dockerbuild')),
 )

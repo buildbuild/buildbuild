@@ -8,6 +8,9 @@ from teams.views import MakeTeamView
 from projects.views import MakeProjectView
 from django.contrib.auth.decorators import login_required
 from teams import views
+from users.views import Login, Logout, \
+    SignUp
+
 
 urlpatterns = patterns('',
     # Examples:
@@ -20,4 +23,8 @@ urlpatterns = patterns('',
     url(r'^teams/', include('teams.urls', namespace='teams')),
     url(r'^projects/', include('projects.urls', namespace='projects')),
     url(r'^dockerbuild/', include('dockerbuild.urls', namespace='dockerbuild')),
+    url(r'^login/', Login.as_view(), name="login"),
+    url(r'^logout/', Logout.as_view(), name="logout"),
+    url(r'^signup/', SignUp.as_view(), name="signup"),
+
 )

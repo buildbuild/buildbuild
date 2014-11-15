@@ -26,7 +26,7 @@ class ProjectManager(models.Manager):
         )
                
         self.properties_in_kwargs_is_required(kwargs)
-        self.check_exist_team_name(team_name)
+        team = self.check_exist_team_name(team_name)
 
         # Notice : project name must be unique in one team, not all teams
         self.check_uniqueness_project_name(name, team_name)
@@ -60,7 +60,16 @@ class ProjectManager(models.Manager):
         
         # All validate & all check available attributes test passed? then, save
         project.properties = properties
+
         project.save(using = self.db)
+
+        # link team to project using ProjectMembership
+        project_membership = ProjectMembership.objects.create_project_membership(
+                                 project = project,
+                                 team = team,
+                             )
+        project_membership.is_admin = True
+        project_membership.save()
 
         return project
 
@@ -162,11 +171,12 @@ class ProjectManager(models.Manager):
 
     def check_exist_team_name(self, team_name):
         try:
-            Team.objects.get(name = team_name)
+            team = Team.objects.get(name = team_name)
         except ObjectDoesNotExist:
             raise ObjectDoesNotExist(
                 "The submitted team does not exist"
             )
+        return team
 
     def check_uniqueness_project_name(self, project_name, team_name):
         team = Team.objects.get(name = team_name)
@@ -186,10 +196,13 @@ class ProjectManager(models.Manager):
             )
         
 class Project(models.Model):
+    objects = ProjectManager()
+ 
     name = models.CharField(
                help_text = "Project name",
                max_length = 64,
            )
+
     properties = JSONField(
                      help_text = "Project language and version",
                      default = {
@@ -205,8 +218,6 @@ class Project(models.Model):
                     max_length = 130,
                     default = '',
                 )
-
-    objects = ProjectManager()
     
     project_wait_teams = models.ManyToManyField(
                              Team,
@@ -263,26 +274,30 @@ class ProjectMembershipManager(models.Manager):
             project_teamship.delete()        
 
 class ProjectMembership(models.Model):
+    objects = ProjectMembershipManager()
+
     project = models.ForeignKey(
             Project,
             verbose_name = "projectMembership project",
             related_name="project_membership_project",
             )
+
     project_team = models.ForeignKey(
             Team,
             verbose_name = "projectMembership project_team",
             related_name="project_membership_project_team",
             default = None,
             )
+
     date_joined = models.DateField(
                       help_text = "ProjectMembership date_joined when team joined the project",
                       auto_now_add=True
                   )
+
     is_admin = models.BooleanField(
                    help_text = "ProjectMembership is_admin",
                    default=False
                )
-    objects = ProjectMembershipManager()
 
 class ProjectWaitListManager(models.Manager):
     def create_project_wait_list(self, project, team):

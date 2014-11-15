@@ -3,9 +3,11 @@ from django.test.client import Client
 
 from teams.models import Team
 from projects.models import Project, ProjectMembership
-
+from buildbuild import attributes_for_tests
 
 class TestAPITeamUserListSearch(TestCase):
+    fixtures = ['properties_data.yaml']
+    
     """
     * Test Scenario
 
@@ -37,15 +39,18 @@ class TestAPITeamUserListSearch(TestCase):
         # Generate Projects
         self.project_in_first_team_with_test_string = Project.objects.create_project(
             name="in_team_with" + self.test_string,
-            team_name=self.first_team.name
+            team_name=self.first_team.name,
+            properties = attributes_for_tests.properties_for_test,
         )
         self.project_in_first_team_without_test_string = Project.objects.create_project(
             name="in_team_without",
-            team_name=self.first_team.name
+            team_name=self.first_team.name,
+            properties = attributes_for_tests.properties_for_test,
         )
         self.project_in_second_team_with_test_string = Project.objects.create_project(
             name="not_in_team_with" + self.test_string,
-            team_name=self.second_team.name
+            team_name=self.second_team.name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
         # Generate Project Membership

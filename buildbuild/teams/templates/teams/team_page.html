@@ -18,33 +18,33 @@
 							<table class="table table-striped bootstrap-datatable datatable">
 							  <thead>
 								  <tr>
-									  <th>Username</th>
-									  <th>Date registered</th>
-									  <th>Role</th>
+									  <th>#</th>
+									  <th>Email</th>
 									  <th>Status</th>
 									  <th>Actions</th>
 								  </tr>
 							  </thead>   
 							  <tbody>
-								<tr>
-									<td>Anton Phunihel</td>
-									<td class="center">2012/01/01</td>
-									<td class="center">Member</td>
-									<td class="center">
-										<span class="label label-success">Active</span>
-									</td>
-									<td class="center">
-										<a class="btn btn-success" href="table.html#">
-											<i class="fa fa-search-plus "></i>  
-										</a>
-										<a class="btn btn-info" href="table.html#">
-											<i class="fa fa-edit "></i>  
-										</a>
-										<a class="btn btn-danger" href="table.html#">
-											<i class="fa fa-trash-o "></i> 
-										</a>
-									</td>
-								</tr>
+                  {% for member in team.members.all %}
+                  <tr>
+                    <td class="center">{{ member.id }}</td>
+                    <td class="center">{{ member.email }}</td>
+                    <td class="center">
+                      <span class="label label-success">Active</span>
+                    </td>
+                    <td class="center">
+                      <a class="btn btn-success" href="{% url 'users:user_page' member.id %}">
+                        <i class="fa fa-search-plus "></i>  
+                      </a>
+                      <a class="btn btn-info" href="#">
+                        <i class="fa fa-edit "></i>  
+                      </a>
+                      <a class="btn btn-danger" href="#">
+                        <i class="fa fa-trash-o "></i> 
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
 							  </tbody>
 						  </table>            
 						</div>
@@ -63,12 +63,6 @@
     <a href="{% url 'users:user_page' wait_member.id %}">{{ wait_member.email }}</a>
     <a href="{% url 'teams:accept_request_to_join_team' team.id wait_member.id %}"> Accept</a>
     <br>
-    {% endfor %}
-
-    <h3>Member list </h3>
-    {% for member in team.members.all %}
-      <a href="{% url 'users:user_page' member.id %}">{{ member.email }}</a>
-      <br>
     {% endfor %}
 
   {% if project_list %}

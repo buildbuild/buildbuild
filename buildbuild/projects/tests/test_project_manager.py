@@ -13,18 +13,25 @@ class TestProjectName(TestCase):
         self.create_name = "test_project"
         self.invalid_long_length_name = "a" * 65
         self.team_name = "test_team_name"
+        self.team_name_does_not_have_any_project_yet = "test_second_team_name"
         self.invalid_swift_container_name = self.team_name + "__" + self.second_name
         self.lang_python = "python"
         self.ver_python_278 = "2.7.8"
         self.valid_name_with_characters = "TestProject0-_"
 
-        Team.objects.create_team(self.team_name)
+        self.team = Team.objects.create_team(self.team_name)
+        self.team_name_does_not_have_any_project_yet = \
+            Team.objects.create_team(
+                self.team_name_does_not_have_any_project_yet
+            )
+
 
         self.project = Project.objects.create_project(
             name = self.name,
             team_name = self.team_name,
             properties = attributes_for_tests.properties_for_test,
         )
+
         self.second_project = Project.objects.create_project(
             name = self.second_name,
             team_name = self.team_name,
@@ -90,7 +97,7 @@ class TestProjectName(TestCase):
             TypeError,
             Project.objects.create_project,
             name = self.project.name,
-            team_name = self.team_name,
+            team_name = self.team_name_does_not_have_any_project_yet,
             properties = (self.lang_python, self.ver_python_278)
         )
 

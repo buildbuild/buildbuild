@@ -31,11 +31,8 @@ class Membership_team_to_member_test(TestCase):
             team_name = self.second_team_name,
              properties = attributes_for_tests.properties_for_test,
         )
-        
-        self.project_membership = ProjectMembership.objects.create_project_membership(
-            project = self.project,
-            team = self.team
-        )
+
+        # second team has two projects :
         self.project_membership = ProjectMembership.objects.create_project_membership(
             project = self.second_project,
             team = self.team

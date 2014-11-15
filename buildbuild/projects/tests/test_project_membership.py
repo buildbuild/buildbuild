@@ -22,20 +22,20 @@ class ProjectMembership_test(TestCase):
 
         self.project = Project.objects.create_project(
             name = self.project_name,
-            team_name = self.team_name,
+            team_name = self.team.name,
             properties = attributes_for_tests.properties_for_test,
         )
 
         self.second_project = Project.objects.create_project(
             name = self.second_project_name,
-            team_name = self.second_team_name,
+            team_name = self.second_team.name,
             properties = attributes_for_tests.properties_for_test,
         )
-       
-        self.project_membership = ProjectMembership.objects.create_project_membership(
-            project = self.project,
-            team = self.team,
-        )
+
+        self.project_membership = ProjectMembership.objects.get(
+                                      project = self.project,
+                                      project_team = self.team,
+                                  )
 
 # Attribute
     def test_project_membership_must_have_date_joined(self):

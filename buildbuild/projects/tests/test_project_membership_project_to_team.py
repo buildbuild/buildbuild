@@ -23,7 +23,7 @@ class project_membership_test(TestCase):
 
         self.project = Project.objects.create_project(
             name = self.project_name,
-            team_name = self.team_name,
+            team_name = self.team.name,
             properties = attributes_for_tests.properties_for_test,
         )
         
@@ -32,12 +32,6 @@ class project_membership_test(TestCase):
             team_name = self.second_team,
             properties = attributes_for_tests.properties_for_test,
         )
-        
-        self.project_membership = ProjectMembership.objects.create_project_membership(
-            project = self.project,
-            team = self.team,
-        )
-        self.project_membership.save()
         
     def test_project_could_get_all_project_teams(self):
         try:
@@ -50,9 +44,4 @@ class project_membership_test(TestCase):
         except:
             self.fail("getting a team from team list failed")
 
-    def test_project_membership_must_have_date_joined(self):
-        try:
-            self.project_membership.date_joined
-        except AttributeError:
-            self.fail("project_membership doesn't  have date_joined")
 

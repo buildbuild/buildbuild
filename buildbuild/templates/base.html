@@ -50,5 +50,41 @@
 
     {% include 'footer.html' %}
     {% include 'javascript.html' %}
+
+  <!-- for passing test purpose -->
+  <div class="container">
+    <div class="messages">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    </div>
+
+  <nav>
+    {% if user.is_authenticated %}
+    <div>Welcome, {{ user.email }}</div>
+      <a href="{% url 'users:logout' %}">Logout</a>
+      <a href="{% url 'users:account' %}">Account info</a>
+      <a href="{% url 'teams:maketeam' %}">Make a Team</a>
+      <p>
+      {% block search_team %}
+      {% endblock %}
+      </p>
+      <p>
+      {% block team_list %}
+      {% endblock %}
+      </p>
+    {% else %}
+      <a href="{% url 'users:login' %}">Login</a>
+      <a href="{% url 'users:signup' %}">SignUp</a>
+    {% endif %}
+  </nav>
+
+    {% block content %}
+    {% endblock %}
+  </div>
   </body>
 </html>

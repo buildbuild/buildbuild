@@ -56,7 +56,7 @@
 
   <h1>{{ team.name }}'s Page</h1>
     <p><a href="{% url 'home' %}">Go back</a></p>
-    <p><a href="{% url 'projects:makeproject' team.name %}">Make a Project</a></p>
+    <p><a href="{% url 'makeproject' team.id %}">Make a Project</a></p>
 
   <h3>Wait list</h3>
   {% for wait_member in team.wait_members.all %}

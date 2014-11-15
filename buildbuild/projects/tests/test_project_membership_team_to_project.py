@@ -38,10 +38,10 @@ class Membership_team_to_member_test(TestCase):
             team = self.team
         )
        
-    def test_get_all_project_teams(self):
+    def test_get_all_project(self):
         self.assertIsNotNone(self.team.project_teams.all())
  
-    def test_project_could_get_all_project_teams(self):
+    def test_team_could_get_all_project_list(self):
         project_teams = self.team.project_teams.all()
         self.assertEqual(project_teams[0], self.project)
         self.assertEqual(project_teams[1], self.second_project)

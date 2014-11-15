@@ -29,12 +29,14 @@ from django.core.validators import URLValidator
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html 
 # with the fields of project
-def project_page(request, project_id):
+def project_page(request, team_id, project_id):
     project = Project.objects.get_project(project_id)
+    team = Team.objects.get_team(team_id)
     return render(
                request,
                "projects/project_page.html",
                {
+                   "team" : team,
                    "project" : project,
                },
            )            

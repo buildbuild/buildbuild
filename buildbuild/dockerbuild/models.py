@@ -35,11 +35,10 @@ class BuildManager(models.Manager):
             image=image_name,
             name=tag,
             detach=True,
-            port = [ 8080 ]
+            ports = [ 8080 ]
         )
         build.port = 10000 + build.project.id
         docker_client.start(container = container.get('Id'), port_bindings = {8080 : build.port})
-        build.tag = Dockerfile 
         build.save(using = self.db)
         return build
     

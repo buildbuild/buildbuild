@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+<!--
+The block (teamlist) can make user see user's team list
+And This is allowed to the user who is user.authenticated, 
+so only login user can access user's tem list
+-->
+{% block team_list %}
+<h1>Team list</h1>
+  {% for team in team_list %}
+    <a href="{% url 'team_page' team.id %}">{{ team.name }}</a>
+    <br>
+  {% endfor %}
+{% endblock %}

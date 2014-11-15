@@ -36,20 +36,44 @@
 
   </head>
   <body>
-    {% include 'header.html' %}
+    {% block header %}
+      {% include 'header.html' %}
+    {% endblock %}
 
     <div class="container">
       <div class="row">
-        {% include 'main_menu.html' %}
+        {% block main_menu %}
+          {% include 'main_menu.html' %}
+        {% endblock %}
 
-        {% include 'content.html' %}
+        {% block content %}
+          {% include 'content.html' %}
+        {% endblock %}
       </div>
     </div>
 
-    {% include 'modal.html' %}
+    {% block modal %}
+      {% include 'modal.html' %}
+    {% endblock %}
 
-    {% include 'footer.html' %}
+    {% block footer %}
+      {% include 'footer.html' %}
+    {% endblock %}
+
     {% include 'javascript.html' %}
+
+
+  <!-- test purpose : showing all informations -->
+  {{ user.email }}
+  <ul>
+  {% for team in user.member.all %}
+  <li>{{ team.name }}</li>
+    {% for project in team.project_teams.all %}
+      ${{ project.name }}
+    {% endfor %}
+  {% endfor %}
+  </ul>
+  <!-- test purpose : showing all informations -->
 
   <!-- for passing test purpose -->
   <div class="container">
@@ -66,7 +90,7 @@
   <nav>
     {% if user.is_authenticated %}
     <div>Welcome, {{ user.email }}</div>
-      <a href="{% url 'users:logout' %}">Logout</a>
+      <a href="{% url 'logout' %}">Logout</a>
       <a href="{% url 'users:account' %}">Account info</a>
       <a href="{% url 'teams:maketeam' %}">Make a Team</a>
       <p>
@@ -78,13 +102,11 @@
       {% endblock %}
       </p>
     {% else %}
-      <a href="{% url 'users:login' %}">Login</a>
-      <a href="{% url 'users:signup' %}">SignUp</a>
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'signup' %}">SignUp</a>
     {% endif %}
   </nav>
 
-    {% block content %}
-    {% endblock %}
   </div>
   </body>
 </html>

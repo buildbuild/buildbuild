@@ -2,23 +2,44 @@ from django.db import models
 from projects.models import Project, ProjectManager
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from properties.models import DockerText
+import os
 
 from docker import Client
+from docker.tls import TLSConfig
+
 from io import BytesIO
 import json
 
 class BuildManager(models.Manager):
     def build_project(self, project_id, tag, **kwargs):
+        DOCKER_HOST = os.environ['DOCKER_HOST']
+        DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
+        DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
+        cert_dir = os.environ['DOCKER_CERT_PATH'] + '/'
+        tls_config = TLSConfig(
+            client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
+        )
+        docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)
+
         build = self.model()
         self.validate_tag(tag)
         build.tag = tag
-        tag = "soma.buildbuild.io:4000/" + Project.objects.get(id = project_id).name + "-" + tag
+        image_name = "soma.buildbuild.io:4000/" + Project.objects.get(id = project_id).name + "-" + tag
         build.project = Project.objects.get_project(project_id)
         Dockerfile = self.optimize_docker_text(project_id = project_id)
-        docker_client = Client(base_url='192.168.59.103:2375')
-        build.response = "".join([json.loads(line)["stream"] for line in 
+#        build.response = "".join([json.loads(line)["stream"] for line in 
+        build.response = ([ line for line in 
 #          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
-           docker_client.build(fileobj=Dockerfile, tag=tag) ])
+           docker_client.build(fileobj=Dockerfile, tag=image_name) ])
+        container = docker_client.create_container(
+            image=image_name,
+            name=tag,
+            detach=True,
+            port = [ 8080 ]
+        )
+        build.port = 10000 + build.project.id
+        docker_client.start(container = container.get('Id'), port_bindings = {8080 : build.port})
+        build.tag = Dockerfile 
         build.save(using = self.db)
         return build
     
@@ -66,3 +87,4 @@ class Build(models.Model):
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
     response = models.TextField(default="")
+    port = models.IntegerField(default=10000)

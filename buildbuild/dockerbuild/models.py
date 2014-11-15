@@ -14,9 +14,10 @@ class BuildManager(models.Manager):
         build.project = Project.objects.get_project(project_id)
         Dockerfile = self.optimize_docker_text(project_id = project_id)
         docker_client = Client(base_url='192.168.59.103:2375')
-        response = [line for line in 
-               docker_client.build(fileobj=Dockerfile, tag=build.tag) ]
+        build.response = [line for line in 
+               docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=build.tag) ]
         build.save(using = self.db)
+        return build
     
     def optimize_docker_text(self, project_id):
         project = Project.objects.get_project(id = project_id)
@@ -36,7 +37,7 @@ class BuildManager(models.Manager):
     def validate_tag(self, tag):
         if len(tag) < 1:
             raise ValidationError("project tag length should be at most 15", )
-        if len(tag) >15:
+        if len(tag) > 15:
             raise ValidationError("project tag max length is 15" , )
 
     def get_build(self, id):
@@ -56,8 +57,9 @@ class BuildManager(models.Manager):
             raise OperationalError("delete build failed")
 
 class Build(models.Model):
-    tag = models.CharField(max_length = 15, unique = True)
+    tag = models.CharField(max_length = 84, unique = True)
     objects = BuildManager()
     project = models.ForeignKey(Project)
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
+    response = models.TextField(default="")

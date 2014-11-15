@@ -75,14 +75,14 @@ class MakeProjectView(FormView):
     form_class = MakeProjectForm
 
     def get_queryset(self):
-        return self.kwargs['team_name']
+        return self.kwargs['team_id']
 
     # context['var'] in views -> {{var}} in html
     def get_context_data(self, **kwargs):
         context = super(MakeProjectView, self).get_context_data(**kwargs)
         user = self.request.user
-        team_name = self.get_queryset()
-        team = Team.objects.get(name = team_name)
+        team_id = self.get_queryset()
+        team = Team.objects.get_team(team_id)
 
         # user who doesn't belong the team cannot access makeproject page
         try:
@@ -97,7 +97,9 @@ class MakeProjectView(FormView):
     def form_valid(self, form):
         project = Project()
         project_name = self.request.POST["projects_project_name"]
-        team_name = self.get_queryset()
+        team_id = self.get_queryset()
+
+        team = Team.objects.get_team(team_id)
 
         # empty space value, for simple short name
         language = ""
@@ -105,6 +107,13 @@ class MakeProjectView(FormView):
         git_url = ""
         branch_name = ""
         properties = dict()
+
+        # Check the team is in <teams DB>
+        try:
+            team = Team.objects.get_team(team_id)
+        except ObjectDoesNotExist:
+            messages.error(self.request, custom_msg.project_non_exist_team)
+            return HttpResponseRedirect(reverse("home"))
 
         # Check valid project name
         try:
@@ -118,7 +127,7 @@ class MakeProjectView(FormView):
         try:
             Project.objects.check_uniqueness_project_name(
                 project_name = project_name,
-                team_name = team_name,
+                team_name = team.name,
             )
         except IntegrityError:
             messages.error(self.request, custom_msg.project_already_exist)
@@ -126,16 +135,9 @@ class MakeProjectView(FormView):
         
         # Check valid team name
         try:
-            Team.objects.validate_name(team_name)
+            Team.objects.validate_name(team.name)
         except ValidationError:
             messages.error(self.request, custom_msg.project_invalid_team_name)
-            return HttpResponseRedirect(reverse("home"))
-  
-        # Check the team is in <teams DB>
-        try:
-            team = Team.objects.get(name = team_name)
-        except ObjectDoesNotExist:
-            messages.error(self.request, custom_msg.project_non_exist_team)
             return HttpResponseRedirect(reverse("home"))
 
         # Login check is programmed in buildbuild/urls.py

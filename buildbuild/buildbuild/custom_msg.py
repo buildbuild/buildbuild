@@ -11,9 +11,9 @@ user_login_error = "ERROR : Login"
 user_login_success = "SUCCESS : Login"
 user_email_not_exist = "The user email not exist"
 user_login_success_info = "Successfully Login"
-user_deactivated = "ERROR : Deactivated User"
-user_invalid = "ERROR : invalid email or password" 
-user_invalid_password = "ERROR : invalid user password"
+user_deactivated = "Deactivated User"
+user_invalid = "Invalid email or password" 
+user_invalid_password = "Invalid user password"
 
 ## logout
 user_logout_error = "ERROR : Logout"
@@ -43,34 +43,36 @@ already_team_member = "My team"
 team_make_team_error = "ERROR : Make Team"
 team_make_team_success = "SUCCESS : Make Team"
 team_invalid = "Invalid team name"
-team_already_exist = "ERROR : The team name already exists"
+team_already_exist = "The team name already exists"
 team_make_team_success_info = "Team created successfully"
 
 ## team page
-not_belonged_team = "ERROR : You are not the team member"
+not_belonged_team = "You are not the team member"
 
 # join team
 team_join_team_error = "ERROR : Join Team"
 team_join_team_success = "SUCCESS : Join Team"
 
 ## accept_request_to_join_team
-team_accept_member_success = "SUCCESS : ACCEPT MEMBER"
+team_accept_member_success = "SUCCESS : Accept Member"
 team_accept_member_success_info = \
     "The user accepted to your team member successfully"
 
 ### projects app msg
 ## make project view
-project_invalid = "ERROR : invalid project name"
-project_already_exist = "ERROR : The project name already exists" 
-project_invalid_team_name = "ERROR : invalid team name"
-project_non_exist_team = "ERROR : The team name is not in teams DB"
-project_user_does_not_belong_team = "ERROR : The user doesn't belong the team"
-project_lang_invalid = "ERROR : The language is not supported"
-project_ver_invalid = "ERROR : The version is not suppoerted"
+project_make_project_error = "ERROR : Make Project"
+project_make_project_success = "SUCCESS : Make Project"
+project_invalid = "Invalid project name"
+project_already_exist = "The project name already exists" 
+project_invalid_team_name = "Invalid team name"
+project_non_exist_team = "The team name is not in teams DB"
+project_user_does_not_belong_team = "The user doesn't belong the team"
+project_lang_invalid = "The language is not supported"
+project_ver_invalid = "The version is not suppoerted"
 project_both_lang_and_ver_is_needed = \
-    "ERROR : Both Language and Version should be submitted"
+    "Both Language and Version should be submitted"
 project_both_git_url_and_branch_name_is_needed = \
-    "ERROR : Both Git URL and Branch name should be submitted"
+    "Both Git URL and Branch name should be submitted"
 project_make_success = "Project created successfully"
 
 

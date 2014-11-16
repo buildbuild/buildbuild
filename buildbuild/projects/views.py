@@ -35,7 +35,13 @@ def project_page(request, project_id, team_id):
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
                                 database='cadvisor')
 
-    query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
+    project_name = Project.objects.get_project(id=project_id).name
+    team_name = Team.objects.get_team(id=team_id).name
+
+    container_name = "'/docker/"+team_name + "_" + project_name + "'"
+
+
+    query = db.query("select * from /.*/ where container_name =  " + container_name + "limit 2")
     cpu_index = 0
     memory_index = 0
     rx_index = 0

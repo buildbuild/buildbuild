@@ -5,6 +5,7 @@ from django.core.validators import validate_email
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 import re
 from django.db import OperationalError
+from buildbuild import custom_msg
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **kwargs):
@@ -61,7 +62,7 @@ class UserManager(BaseUserManager):
 
     def validate_name(self, name):
         if len(name) > 30:
-            raise ValidationError(("user name length should be at most 30"),
+            raise ValidationError((custom_msg.user_name_max_length_error),
                                     code = 'invalid')
 
         if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:

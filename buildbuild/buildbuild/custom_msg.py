@@ -17,6 +17,7 @@ user_invalid_password = "ERROR : invalid user password"
 ## signup
 user_signup_success = "Successfully SignUp"
 user_already_exist = "ERROR : The user email already exist"
+user_name_max_length_error = "user name length should be at most 30"
 
 # escape ignoring is needed following line
 user_password_confirmation_error = "ERROR : submitted password doesn't match the confirmation"

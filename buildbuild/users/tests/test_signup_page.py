@@ -16,6 +16,8 @@ class SignUpPageTest(TestCase):
         self.user_password = "test_password"
         self.user_second_password = "test_second_password"
         self.invalid_password = "a"*5
+        self.available_name = "available_user_name123-"
+
 
         # need to find more eloquent way to test redirect url.
         self.TEST_SERVER_URL = "http://testserver"
@@ -106,4 +108,23 @@ class SignUpPageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, custom_msg.this_field_is_required)
 
-    
+    def test_post_signup_with_available_user_name(self):
+        response = self.client.post(
+                       "/signup/", {
+                           "email" : self.user_email,
+                           "password" : self.user_password,
+                           "password_confirmation" : self.user_password,
+                           "user_name" : self.available_name,
+                       },
+                       follow = True
+                   )
+        # signup success? then, redirect to login
+        self.assertRedirects(response, "/login/",)
+
+        # and it must pass a message about sign up success
+        self.assertContains(response, custom_msg.user_signup_success)
+
+        # and get user from name should be possible
+        user = User.objects.get(name = self.available_name)
+        self.assertEqual(user.name, self.available_name)
+

@@ -117,33 +117,24 @@
 									  <tr>
 										  <th>#</th>
 										  <th>Project Name</th>
-										  <th>Role</th>
 										  <th>Build Status</th>
 									  </tr>
 								  </thead>   
 								  <tbody>
-									<tr>
-										<td>Yiorgos Avraamu</td>
-										<td class="center">2012/01/01</td>
-										<td class="center">Member</td>
+                  {% for project in project_list %}
+                  <tr>
+                    <td class="center">{{ project.id }}</td>
+                    <td class="center">
+                      <a href="{% url 'project_page' team.id project.id %}">{{ project.name }}</a>
+                    </td>
 										<td class="center">
 											<span class="label label-success">Active</span>
-										</td>                                       
-									</tr>
+										</td>
+                    <br>
+                  </tr>
+                  {% endfor %}
 								  </tbody>
 							 </table>  
-							 <div class="pagination pagination-centered">
-							  <ul class="pagination">
-								<li><a href="table.html#">Prev</a></li>
-								<li class="active">
-								  <a href="table.html#">1</a>
-								</li>
-								<li><a href="table.html#">2</a></li>
-								<li><a href="table.html#">3</a></li>
-								<li><a href="table.html#">4</a></li>
-								<li><a href="table.html#">Next</a></li>
-							  </ul>
-							</div>     
 						</div>
 					</div>
 				</div><!--/col-->
@@ -159,16 +150,5 @@
     <br>
     {% endfor %}
 
-  {% if project_list %}
-      <h3>Project list</h3>
-      {% for project in project_list %}
-        <a href="{% url 'project_page' team.id project.id %}">{{ project.name }}</a>
-        <br>
-      {% endfor %}
-  {% else %}
-    <h1>You don't have a project yet</h1>
-    {% endif %}
-
-</div >
 </div>
 {% endblock %}

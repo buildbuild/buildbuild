@@ -11,6 +11,7 @@ from teams import views
 from users.views import Login, Logout, \
     SignUp
 from teams.views import TeamList
+from projects.views import MakeProjectView
 
 urlpatterns = patterns('',
     # Examples:
@@ -39,7 +40,11 @@ urlpatterns = patterns('',
         'projects.views.project_page', 
         name='project_page',
     ),
-    
+    url(
+        r'^teams/(?P<team_id>[0-9]+)/projects/new/$',
+        login_required(MakeProjectView.as_view()),
+        name="makeproject"
+    ),    
     # dockerbuild's urls
     url(
         r'^dockerbuild/', 

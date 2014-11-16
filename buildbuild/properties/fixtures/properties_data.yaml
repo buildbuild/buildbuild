@@ -1,223 +1,223 @@
-- fields: {lang: python}
+- fields: {lang: Python}
   model: properties.availablelanguage
   pk: 3
-- fields: {lang: ruby}
+- fields: {lang: Ruby}
   model: properties.availablelanguage
   pk: 4
-- fields: {lang: python, ver: 3.4.2}
+- fields: {lang: Python, ver: 3.4.2}
   model: properties.versionlist
   pk: 99
-- fields: {lang: python, ver: 3.3.6}
+- fields: {lang: Python, ver: 3.3.6}
   model: properties.versionlist
   pk: 100
-- fields: {lang: python, ver: 3.2.6}
+- fields: {lang: Python, ver: 3.2.6}
   model: properties.versionlist
   pk: 101
-- fields: {lang: python, ver: 2.7.8}
+- fields: {lang: Python, ver: 2.7.8}
   model: properties.versionlist
   pk: 102
-- fields: {lang: python, ver: 2.7.7}
+- fields: {lang: Python, ver: 2.7.7}
   model: properties.versionlist
   pk: 103
-- fields: {lang: python, ver: 3.4.1}
+- fields: {lang: Python, ver: 3.4.1}
   model: properties.versionlist
   pk: 104
-- fields: {lang: python, ver: 3.4.0}
+- fields: {lang: Python, ver: 3.4.0}
   model: properties.versionlist
   pk: 105
-- fields: {lang: python, ver: 3.3.5}
+- fields: {lang: Python, ver: 3.3.5}
   model: properties.versionlist
   pk: 106
-- fields: {lang: python, ver: 3.3.4}
+- fields: {lang: Python, ver: 3.3.4}
   model: properties.versionlist
   pk: 107
-- fields: {lang: python, ver: 3.3.3}
+- fields: {lang: Python, ver: 3.3.3}
   model: properties.versionlist
   pk: 108
-- fields: {lang: python, ver: 2.7.6}
+- fields: {lang: Python, ver: 2.7.6}
   model: properties.versionlist
   pk: 109
-- fields: {lang: python, ver: 2.6.9}
+- fields: {lang: Python, ver: 2.6.9}
   model: properties.versionlist
   pk: 110
-- fields: {lang: python, ver: 3.2.5}
+- fields: {lang: Python, ver: 3.2.5}
   model: properties.versionlist
   pk: 111
-- fields: {lang: python, ver: 3.3.2}
+- fields: {lang: Python, ver: 3.3.2}
   model: properties.versionlist
   pk: 112
-- fields: {lang: python, ver: 2.7.5}
+- fields: {lang: Python, ver: 2.7.5}
   model: properties.versionlist
   pk: 113
-- fields: {lang: python, ver: 3.2.4}
+- fields: {lang: Python, ver: 3.2.4}
   model: properties.versionlist
   pk: 114
-- fields: {lang: python, ver: 3.3.1}
+- fields: {lang: Python, ver: 3.3.1}
   model: properties.versionlist
   pk: 115
-- fields: {lang: python, ver: 3.2.3}
+- fields: {lang: Python, ver: 3.2.3}
   model: properties.versionlist
   pk: 117
-- fields: {lang: python, ver: 2.7.3}
+- fields: {lang: Python, ver: 2.7.3}
   model: properties.versionlist
   pk: 118
-- fields: {lang: python, ver: 3.1.5}
+- fields: {lang: Python, ver: 3.1.5}
   model: properties.versionlist
   pk: 119
-- fields: {lang: python, ver: 3.2.2}
+- fields: {lang: Python, ver: 3.2.2}
   model: properties.versionlist
   pk: 120
-- fields: {lang: python, ver: 3.2.1}
+- fields: {lang: Python, ver: 3.2.1}
   model: properties.versionlist
   pk: 121
-- fields: {lang: python, ver: 3.1.4}
+- fields: {lang: Python, ver: 3.1.4}
   model: properties.versionlist
   pk: 122
-- fields: {lang: python, ver: 2.7.2}
+- fields: {lang: Python, ver: 2.7.2}
   model: properties.versionlist
   pk: 123
-- fields: {lang: python, ver: 2.6.7}
+- fields: {lang: Python, ver: 2.6.7}
   model: properties.versionlist
   pk: 124
-- fields: {lang: python, ver: 2.5.6}
+- fields: {lang: Python, ver: 2.5.6}
   model: properties.versionlist
   pk: 125
-- fields: {lang: python, ver: 3.2.0}
+- fields: {lang: Python, ver: 3.2.0}
   model: properties.versionlist
   pk: 126
-- fields: {lang: python, ver: 3.1.3}
+- fields: {lang: Python, ver: 3.1.3}
   model: properties.versionlist
   pk: 127
-- fields: {lang: python, ver: 2.7.1}
+- fields: {lang: Python, ver: 2.7.1}
   model: properties.versionlist
   pk: 128
-- fields: {lang: python, ver: 2.6.6}
+- fields: {lang: Python, ver: 2.6.6}
   model: properties.versionlist
   pk: 129
-- fields: {lang: python, ver: 2.7.0}
+- fields: {lang: Python, ver: 2.7.0}
   model: properties.versionlist
   pk: 130
-- fields: {lang: python, ver: 3.1.2}
+- fields: {lang: Python, ver: 3.1.2}
   model: properties.versionlist
   pk: 131
-- fields: {lang: python, ver: 2.6.5}
+- fields: {lang: Python, ver: 2.6.5}
   model: properties.versionlist
   pk: 132
-- fields: {lang: python, ver: 2.5.5}
+- fields: {lang: Python, ver: 2.5.5}
   model: properties.versionlist
   pk: 133
-- fields: {lang: python, ver: 2.6.4}
+- fields: {lang: Python, ver: 2.6.4}
   model: properties.versionlist
   pk: 134
-- fields: {lang: python, ver: 2.6.3}
+- fields: {lang: Python, ver: 2.6.3}
   model: properties.versionlist
   pk: 135
-- fields: {lang: python, ver: 3.1.1}
+- fields: {lang: Python, ver: 3.1.1}
   model: properties.versionlist
   pk: 136
-- fields: {lang: python, ver: 3.1.0}
+- fields: {lang: Python, ver: 3.1.0}
   model: properties.versionlist
   pk: 137
-- fields: {lang: python, ver: 2.6.2}
+- fields: {lang: Python, ver: 2.6.2}
   model: properties.versionlist
   pk: 138
-- fields: {lang: python, ver: 3.0.1}
+- fields: {lang: Python, ver: 3.0.1}
   model: properties.versionlist
   pk: 139
-- fields: {lang: python, ver: 2.5.4}
+- fields: {lang: Python, ver: 2.5.4}
   model: properties.versionlist
   pk: 140
-- fields: {lang: python, ver: 2.4.6}
+- fields: {lang: Python, ver: 2.4.6}
   model: properties.versionlist
   pk: 141
-- fields: {lang: python, ver: 2.5.3}
+- fields: {lang: Python, ver: 2.5.3}
   model: properties.versionlist
   pk: 142
-- fields: {lang: python, ver: 2.6.1}
+- fields: {lang: Python, ver: 2.6.1}
   model: properties.versionlist
   pk: 143
-- fields: {lang: python, ver: 3.0.0}
+- fields: {lang: Python, ver: 3.0.0}
   model: properties.versionlist
   pk: 144
-- fields: {lang: python, ver: 2.6.0}
+- fields: {lang: Python, ver: 2.6.0}
   model: properties.versionlist
   pk: 145
-- fields: {lang: python, ver: 2.3.7}
+- fields: {lang: Python, ver: 2.3.7}
   model: properties.versionlist
   pk: 146
-- fields: {lang: python, ver: 2.4.5}
+- fields: {lang: Python, ver: 2.4.5}
   model: properties.versionlist
   pk: 147
-- fields: {lang: python, ver: 2.5.2}
+- fields: {lang: Python, ver: 2.5.2}
   model: properties.versionlist
   pk: 148
-- fields: {lang: python, ver: 2.5.1}
+- fields: {lang: Python, ver: 2.5.1}
   model: properties.versionlist
   pk: 149
-- fields: {lang: python, ver: 2.3.6}
+- fields: {lang: Python, ver: 2.3.6}
   model: properties.versionlist
   pk: 150
-- fields: {lang: python, ver: 2.4.4}
+- fields: {lang: Python, ver: 2.4.4}
   model: properties.versionlist
   pk: 151
-- fields: {lang: python, ver: 2.5.0}
+- fields: {lang: Python, ver: 2.5.0}
   model: properties.versionlist
   pk: 152
-- fields: {lang: python, ver: 2.4.3}
+- fields: {lang: Python, ver: 2.4.3}
   model: properties.versionlist
   pk: 153
-- fields: {lang: python, ver: 2.4.2}
+- fields: {lang: Python, ver: 2.4.2}
   model: properties.versionlist
   pk: 154
-- fields: {lang: python, ver: 2.4.1}
+- fields: {lang: Python, ver: 2.4.1}
   model: properties.versionlist
   pk: 155
-- fields: {lang: python, ver: 2.3.5}
+- fields: {lang: Python, ver: 2.3.5}
   model: properties.versionlist
   pk: 156
-- fields: {lang: python, ver: 2.4.0}
+- fields: {lang: Python, ver: 2.4.0}
   model: properties.versionlist
   pk: 157
-- fields: {lang: python, ver: 2.3.4}
+- fields: {lang: Python, ver: 2.3.4}
   model: properties.versionlist
   pk: 158
-- fields: {lang: python, ver: 2.3.3}
+- fields: {lang: Python, ver: 2.3.3}
   model: properties.versionlist
   pk: 159
-- fields: {lang: python, ver: 2.3.2}
+- fields: {lang: Python, ver: 2.3.2}
   model: properties.versionlist
   pk: 160
-- fields: {lang: python, ver: 2.3.1}
+- fields: {lang: Python, ver: 2.3.1}
   model: properties.versionlist
   pk: 161
-- fields: {lang: python, ver: 2.3.0}
+- fields: {lang: Python, ver: 2.3.0}
   model: properties.versionlist
   pk: 162
-- fields: {lang: python, ver: 2.2.3}
+- fields: {lang: Python, ver: 2.2.3}
   model: properties.versionlist
   pk: 163
-- fields: {lang: python, ver: 2.2.2}
+- fields: {lang: Python, ver: 2.2.2}
   model: properties.versionlist
   pk: 164
-- fields: {lang: python, ver: 2.2.1}
+- fields: {lang: Python, ver: 2.2.1}
   model: properties.versionlist
   pk: 165
-- fields: {lang: python, ver: 2.1.3}
+- fields: {lang: Python, ver: 2.1.3}
   model: properties.versionlist
   pk: 166
-- fields: {lang: python, ver: 2.2.0}
+- fields: {lang: Python, ver: 2.2.0}
   model: properties.versionlist
   pk: 167
-- fields: {lang: python, ver: 2.0.1}
+- fields: {lang: Python, ver: 2.0.1}
   model: properties.versionlist
   pk: 168
-- fields: {lang: ruby, ver: 1.9.1}
+- fields: {lang: Ruby, ver: 1.9.1}
   model: properties.versionlist
   pk: 169
-- fields: {lang: ruby, ver: 1.9.3}
+- fields: {lang: Ruby, ver: 1.9.3}
   model: properties.versionlist
   pk: 170
-- fields: {lang: ruby, ver: 2.0.0}
+- fields: {lang: Ruby, ver: 2.0.0}
   model: properties.versionlist
   pk: 171
 - fields: {docker_text: 'FROM ubuntu:14.04
@@ -270,11 +270,15 @@
 
       RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
 
+<<<<<<< HEAD
       RUN pip install -r $(find /opt/apps/<project_name> -name requirements.txt) 
 
       CMD /usr/bin/python $(find /opt/apps/<project_name> -name manage.py) runserver 0.0.0.0:8080 
 
-      ', lang: python}
+      ', lang: Python}
+=======
+      ', lang: Python}
+>>>>>>> ff6b08e84a5f84bcb9d7d5930fac1fc4ec43cbbb
   model: properties.dockertext
   pk: 1
 - fields: {docker_text: 'FROM ubuntu:14.04
@@ -296,6 +300,6 @@
 
       RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
 
-      ', lang: ruby}
+      ', lang: Ruby}
   model: properties.dockertext
   pk: 2

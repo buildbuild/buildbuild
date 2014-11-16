@@ -24,18 +24,53 @@ from properties.models import AvailableLanguage, VersionList, DockerText
 from buildbuild import custom_msg
 from django.core.validators import URLValidator
 
+from influxdb import client as influxdb
+
 
 # when User click a project in team page, 
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html 
 # with the fields of project
-def project_page(request, project_id):
+def project_page(request, team_id, project_id):
+    db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
+                                database='cadvisor')
+
+    query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
+    cpu_index = 0
+    memory_index = 0
+    rx_index = 0
+    tx_index = 0
+    for index, item in enumerate(query[0]['columns']):
+        if item == 'cpu_cumulative_usage':
+            cpu_index = index
+        elif item == 'memory_usage':
+            memory_index = index
+        elif item == 'tx_bytes':
+            tx_index = index
+        elif item == 'rx_bytes':
+            rx_index = index
+    memory_usage = query[0]['points'][0][memory_index]
+    rx_used = query[0]['points'][0][rx_index]
+    tx_used = (query[0]['points'][0][tx_index])
+    cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+
     project = Project.objects.get_project(project_id)
+    team = Team.objects.get_team(team_id)
+ 
     return render(
                request,
                "projects/project_page.html",
                {
+                   "team" : team,
                    "project" : project,
+                   "language" : project.properties['language'],
+                   "version" : project.properties['version'],
+                   "git_url" : project.properties['git_url'],
+                   "branch_name" : project.properties['branch_name'],
+                   "memory_usage" : memory_usage,
+                   "requested_bytes" : rx_used,
+                   "transferred_bytes" : tx_used,
+                   "cpu_usage" : cpu_usage,
                },
            )            
 
@@ -45,14 +80,14 @@ class MakeProjectView(FormView):
     form_class = MakeProjectForm
 
     def get_queryset(self):
-        return self.kwargs['team_name']
+        return self.kwargs['team_id']
 
     # context['var'] in views -> {{var}} in html
     def get_context_data(self, **kwargs):
         context = super(MakeProjectView, self).get_context_data(**kwargs)
         user = self.request.user
-        team_name = self.get_queryset()
-        team = Team.objects.get(name = team_name)
+        team_id = self.get_queryset()
+        team = Team.objects.get_team(team_id)
 
         # user who doesn't belong the team cannot access makeproject page
         try:
@@ -67,7 +102,9 @@ class MakeProjectView(FormView):
     def form_valid(self, form):
         project = Project()
         project_name = self.request.POST["projects_project_name"]
-        team_name = self.get_queryset()
+        team_id = self.get_queryset()
+
+        team = Team.objects.get_team(team_id)
 
         # empty space value, for simple short name
         language = ""
@@ -75,6 +112,13 @@ class MakeProjectView(FormView):
         git_url = ""
         branch_name = ""
         properties = dict()
+
+        # Check the team is in <teams DB>
+        try:
+            team = Team.objects.get_team(team_id)
+        except ObjectDoesNotExist:
+            messages.error(self.request, custom_msg.project_non_exist_team)
+            return HttpResponseRedirect(reverse("home"))
 
         # Check valid project name
         try:
@@ -88,7 +132,7 @@ class MakeProjectView(FormView):
         try:
             Project.objects.check_uniqueness_project_name(
                 project_name = project_name,
-                team_name = team_name,
+                team_name = team.name,
             )
         except IntegrityError:
             messages.error(self.request, custom_msg.project_already_exist)
@@ -96,16 +140,9 @@ class MakeProjectView(FormView):
         
         # Check valid team name
         try:
-            Team.objects.validate_name(team_name)
+            Team.objects.validate_name(team.name)
         except ValidationError:
             messages.error(self.request, custom_msg.project_invalid_team_name)
-            return HttpResponseRedirect(reverse("home"))
-  
-        # Check the team is in <teams DB>
-        try:
-            team = Team.objects.get(name = team_name)
-        except ObjectDoesNotExist:
-            messages.error(self.request, custom_msg.project_non_exist_team)
             return HttpResponseRedirect(reverse("home"))
 
         # Login check is programmed in buildbuild/urls.py
@@ -134,10 +171,6 @@ class MakeProjectView(FormView):
                 messages.error(self.request, custom_msg.project_ver_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
-            # Add two dict(language, version) in properties 
-            properties.update({'language' : language})
-            properties.update({'version' : version})
-
         elif ("language" in self.request.POST) or ("version" in self.request.POST):
             messages.error(self.request, custom_msg.project_both_lang_and_ver_is_needed)
             return HttpResponseRedirect(reverse("home"))
@@ -163,13 +196,16 @@ class MakeProjectView(FormView):
             except:
                 pass
 
-            # Add two dict(git_url, branch_name) in properties
-            properties.update({'git_url' : git_url})
-            properties.update({'branch_name' : branch_name})
-
         elif ("git_url" in self.request.POST) or ("branch_name" in self.request.POST):
             messages.error(self.request, custom_msg.project_both_git_url_and_branch_name_is_needed)
             return HttpResponseRedirect(reverse("home"))
+
+        properties = {
+                         'language' : language,
+                         'version' : version,
+                         'git_url' : git_url,
+                         'branch_name' : branch_name,
+                     }
 
         project = Project.objects.create_project(
                       name = project_name,

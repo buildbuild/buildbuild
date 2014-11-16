@@ -9,20 +9,20 @@ class TestVersion(TestCase):
         self.non_exist_ver = "0.0.0.0.0.0"
         self.invalid_ver = "only numeric characters & . available"
        
-        self.lang_python = "python"
+        self.lang_python = "Python"
         file_handler = open("media/lang_ver/python_ver_available", "r")
         self.ver_list_python = file_handler.read()
         
-        self.lang_ruby = "ruby"
+        self.lang_ruby = "Ruby"
         file_handler = open("media/lang_ver/ruby_ver_available", "r")
         self.ver_list_ruby = file_handler.read()
  
 
     def test_get_all_available_python_versions(self):
-        self.assertIsNotNone(VersionList.objects.filter(lang="python"))
+        self.assertIsNotNone(VersionList.objects.filter(lang="Python"))
 
     def test_get_all_available_ruby_versions(self):
-        self.assertIsNotNone(VersionList.objects.filter(lang="ruby"))
+        self.assertIsNotNone(VersionList.objects.filter(lang="Ruby"))
 
     def test_get_non_exist_language_must_be_fail(self):
         self.assertRaises(

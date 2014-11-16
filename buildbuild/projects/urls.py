@@ -6,5 +6,4 @@ from django.contrib.auth.decorators import login_required
 from projects.views import MakeProjectView
 
 urlpatterns = patterns('',
-    url(r'^makeproject/(?P<team_name>[ a-zA-Z0-9_]+)/$', login_required(MakeProjectView.as_view()), name="makeproject"),
 )

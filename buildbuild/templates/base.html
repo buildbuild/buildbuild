@@ -46,9 +46,11 @@
           {% include 'main_menu.html' %}
         {% endblock %}
 
-        {% block content %}
-          {% include 'content.html' %}
-        {% endblock %}
+          {% block content %}
+            <!-- start: Content -->
+              {% include 'content.html' %}
+            <!-- end: Content -->
+          {% endblock %}
       </div>
     </div>
 

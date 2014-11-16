@@ -18,6 +18,8 @@ user_invalid_password = "ERROR : invalid user password"
 user_signup_success = "Successfully SignUp"
 user_already_exist = "ERROR : The user email already exist"
 
+# escape ignoring is needed following line
+user_password_confirmation_error = "ERROR : submitted password doesn't match the confirmation"
 
 ### teams apps msg
 ## search team, join team

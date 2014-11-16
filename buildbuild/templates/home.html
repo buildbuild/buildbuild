@@ -1,1 +1,13 @@
 {% extends "base.html" %}
+
+<!--
+The block (search_team) can make user finds teams
+And This is allowed to the user who is  user.authenticated, 
+so only login user can access this search text form
+-->
+{% block search_team %}
+  <form action="teams/search_team/" method="get">
+      <input type="text" name="search_team">
+      <input type="submit" value="Search team">
+  </form>
+{% endblock %}

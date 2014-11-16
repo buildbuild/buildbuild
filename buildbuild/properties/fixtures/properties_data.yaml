@@ -270,15 +270,12 @@
 
       RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
 
-<<<<<<< HEAD
-      RUN pip install -r $(find /opt/apps/<project_name> -name requirements.txt) 
+      RUN pip install -r $(find /opt/apps/<project_name> -name requirements.txt)
 
-      CMD /usr/bin/python $(find /opt/apps/<project_name> -name manage.py) runserver 0.0.0.0:8080 
+      CMD /usr/bin/python $(find /opt/apps/<project_name> -name manage.py) runserver
+      0.0.0.0:8080
 
       ', lang: Python}
-=======
-      ', lang: Python}
->>>>>>> ff6b08e84a5f84bcb9d7d5930fac1fc4ec43cbbb
   model: properties.dockertext
   pk: 1
 - fields: {docker_text: 'FROM ubuntu:14.04

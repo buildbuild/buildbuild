@@ -28,7 +28,11 @@ class BuildManager(models.Manager):
         build.project = Project.objects.get_project(project_id)
         Dockerfile = self.optimize_docker_text(project_id = project_id)
 
-        if Build.objects.get(project = build.project, is_active = True):
+        try:
+            Build.objects.get(project = build.project, is_active = True)
+        except ObjectDoesNotExist:
+            pass
+        else:  
             old_build = Build.objects.get(project = build.project, is_active = True)
             docker_client.stop(container = old_build.container)
 
@@ -46,7 +50,11 @@ class BuildManager(models.Manager):
         build.container = container.get('Id')
         build.port = 10000 + build.project.id
  
-        if Build.objects.get(project = build.project, is_active = True):
+        try:
+            Build.objects.get(project = build.project, is_active = True)
+        except ObjectDoesNotExist:
+            pass
+        else:
             old_build = Build.objects.get(project = build.project, is_active = True)
             docker_client.start(container = old_build.container , port_bindings = { 8080: old_build.port })
 
@@ -55,11 +63,6 @@ class BuildManager(models.Manager):
 
     def deploy_project(self, build_id, **kwargs):
         build = Build.objects.get(id=build_id)
-        if Build.objects.get(project = build.project, is_active = True):
-            old_build = Build.objects.get(project = build.project, is_active = True)
-            old_build.is_active = False
-            docker_client.stop(container = old_build.container)
-
         DOCKER_HOST = os.environ['DOCKER_HOST']
         DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
         DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
@@ -68,9 +71,21 @@ class BuildManager(models.Manager):
             client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
         )
         docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)  
-        docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
+ 
+        try:
+            Build.objects.get(project = build.project, is_active = True)
+        except ObjectDoesNotExist:
+            pass
+        else:  
+            old_build = Build.objects.get(project = build.project, is_active = True)
+            old_build.is_active = False
+            old_build.save()
+            docker_client.stop(container = old_build.container)
+
+        response = docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
         build.is_active = True
-        return build
+        build.save()
+        return response
 
     def optimize_docker_text(self, project_id):
         project = Project.objects.get_project(id = project_id)

@@ -57,4 +57,26 @@
 <p><a href="{% url 'dockerbuild:build_page' project.id %}"><h1>Build Page</h1></a></p>
 
   </div>
+=======
+<h1>{{ project.name }}'s Build Page</h1>
+<h2>Make a new version</h2>
+<form action="{% url 'dockerbuild:build_new' project.id %}" method="get">
+  Version Name</br>
+  <input type = "text" name="tag"></input>
+  <input type = "submit" value="Build"></input>
+</form>
+<h2>Versions List</h2>
+{% for build in project.build_set.all reversed %}
+  {{ build.tag }} 
+  ( {{ build.created_time }} )
+  {% if build.is_active %}
+    <a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">Now Running</a>
+  {% else %}
+    <a href = "{% url 'dockerbuild:deploy' build.id %}">Deploy</a>
+  {% endif %}
+  </br>
+{% endfor %}
+<h2><a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">My Project Page</a></h2>
+
+</div>
 {% endblock %}

@@ -117,6 +117,15 @@ class SignUp(FormView):
     def form_valid(self, form):
         email = self.request.POST["email"]
         password = self.request.POST["password"]
+        password_confirmation = self.request.POST["password_confirmation"]
+
+        if password != password_confirmation:
+            messages.error(
+                self.request, 
+                custom_msg.user_password_confirmation_error,
+            )
+            return HttpResponseRedirect(reverse("signup"))
+
 
         # Validate email
         try:

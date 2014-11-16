@@ -123,6 +123,10 @@ class SignUp(FormView):
         if password != password_confirmation:
             messages.error(
                 self.request, 
+                custom_msg.user_signup_error,
+            )           
+            messages.info(
+                self.request, 
                 custom_msg.user_password_confirmation_error,
             )
             return HttpResponseRedirect(reverse("signup"))
@@ -131,7 +135,8 @@ class SignUp(FormView):
         try:
             validate_email(email)
         except ValidationError:
-            messages.error(self.request, custom_msg.user_invalid_email)
+            messages.error(self.request, custom_msg.user_signup_error)
+            messages.info(self.request, custom_msg.user_invalid_email)
             return HttpResponseRedirect(reverse("signup"))
 
         # Check Uniqueness of User
@@ -140,14 +145,16 @@ class SignUp(FormView):
         except ObjectDoesNotExist:
             pass
         else:
-            messages.error(self.request, custom_msg.user_already_exist)
+            messages.error(self.request, custom_msg.user_signup_error)
+            messages.info(self.request, custom_msg.user_already_exist)
             return HttpResponseRedirect(reverse("signup"))
 
         # Validate password
         try:
             User.objects.validate_password(password)
         except ValidationError:
-            messages.error(self.request, custom_msg.user_invalid_password)
+            messages.error(self.request, custom_msg.user_signup_error)
+            messages.info(self.request, custom_msg.user_invalid_password)
             return HttpResponseRedirect(reverse("signup"))
 
         # Validate user name
@@ -157,7 +164,8 @@ class SignUp(FormView):
                     self.request.POST['user_name']
                 )
             except ValidationError:
-                messages.error(
+                messages.error(self.request, custom_msg.user_signup_error)
+                messages.info(
                     self.request, 
                     custom_msg.user_name_max_length_error
                 )
@@ -177,7 +185,8 @@ class SignUp(FormView):
             )
 
         messages.success(self.request, custom_msg.user_signup_success)
-
+        messages.info(self.request, custom_msg.user_signup_success_info)
+        
         # send Email, test should be programmed in tasks.py
         tasks.send_mail_to_new_user.delay(user)
         return HttpResponseRedirect(reverse("login"))

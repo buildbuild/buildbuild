@@ -27,21 +27,51 @@ class BuildManager(models.Manager):
         image_name = "soma.buildbuild.io:4000/" + Project.objects.get(id = project_id).name + "-" + tag
         build.project = Project.objects.get_project(project_id)
         Dockerfile = self.optimize_docker_text(project_id = project_id)
+
+        if Build.objects.get(project = build.project, is_active = True):
+            old_build = Build.objects.get(project = build.project, is_active = True)
+            docker_client.stop(container = old_build.container)
+
+
 #        build.response = "".join([json.loads(line)["stream"] for line in 
         build.response = ([ line for line in 
 #          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
-           docker_client.build(fileobj=Dockerfile, tag=image_name) ])
+           docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name) ])
         container = docker_client.create_container(
             image=image_name,
-            name=tag,
+            name= build.project.name+"_"+build.tag,
             detach=True,
             ports = [ 8080 ]
         )
+        build.container = container.get('Id')
         build.port = 10000 + build.project.id
-        docker_client.start(container = container.get('Id'), port_bindings = {8080 : build.port})
+ 
+        if Build.objects.get(project = build.project, is_active = True):
+            old_build = Build.objects.get(project = build.project, is_active = True)
+            docker_client.start(container = old_build.container , port_bindings = { 8080: old_build.port })
+
         build.save(using = self.db)
         return build
-    
+
+    def deploy_project(self, build_id, **kwargs):
+        build = Build.objects.get(id=build_id)
+        if Build.objects.get(project = build.project, is_active = True):
+            old_build = Build.objects.get(project = build.project, is_active = True)
+            old_build.is_active = False
+            docker_client.stop(container = old_build.container)
+
+        DOCKER_HOST = os.environ['DOCKER_HOST']
+        DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
+        DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
+        cert_dir = os.environ['DOCKER_CERT_PATH'] + '/'
+        tls_config = TLSConfig(
+            client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
+        )
+        docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)  
+        docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
+        build.is_active = True
+        return build
+
     def optimize_docker_text(self, project_id):
         project = Project.objects.get_project(id = project_id)
         language = project.properties['language']
@@ -86,4 +116,6 @@ class Build(models.Model):
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
     response = models.TextField(default="")
+    container = models.CharField(default="", max_length = 50)
     port = models.IntegerField(default=10000)
+    is_active = models.BooleanField(default=False)

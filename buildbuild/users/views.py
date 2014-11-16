@@ -119,13 +119,13 @@ class SignUp(FormView):
         password = self.request.POST["password"]
         password_confirmation = self.request.POST["password_confirmation"]
 
+        # Password confirmation
         if password != password_confirmation:
             messages.error(
                 self.request, 
                 custom_msg.user_password_confirmation_error,
             )
             return HttpResponseRedirect(reverse("signup"))
-
 
         # Validate email
         try:
@@ -150,8 +150,32 @@ class SignUp(FormView):
             messages.error(self.request, custom_msg.user_invalid_password)
             return HttpResponseRedirect(reverse("signup"))
 
+        # Validate user name
+        if 'user_name' in self.request.POST:
+            try:
+                User.objects.validate_name(
+                    self.request.POST['user_name']
+                )
+            except ValidationError:
+                messages.error(
+                    self.request, 
+                    custom_msg.user_name_max_length_error
+                )
+                return HttpResponseRedirect(reverse("signup"))
+
         # Create new user
-        user = User.objects.create_user(email, password = password)
+        user = User.objects.create_user(
+                   email, 
+                   password = password
+               )
+        
+        # User name update
+        if 'user_name' in self.request.POST:
+            User.objects.update_user(
+                id = user.id,
+                name = self.request.POST['user_name'],
+            )
+
         messages.success(self.request, custom_msg.user_signup_success)
 
         # send Email, test should be programmed in tasks.py

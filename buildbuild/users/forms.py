@@ -47,3 +47,15 @@ class SignUpForm(forms.Form):
             }
         )
     )
+
+    password_confirmation = forms.CharField(
+        label="",
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'input-large col-xs-12',
+                'placeholder': 'Confirm Your Password'
+            }
+        )
+    )
+

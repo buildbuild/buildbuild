@@ -56,12 +56,17 @@ def project_page(request, project_id, team_id):
 
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
+ 
     return render(
                request,
                "projects/project_page.html",
                {
                    "team" : team,
                    "project" : project,
+                   "language" : project.properties['language'],
+                   "version" : project.properties['version'],
+                   "git_url" : project.properties['git_url'],
+                   "branch_name" : project.properties['branch_name'],
                    "memory_usage" : memory_usage,
                    "requested_bytes" : rx_used,
                    "transferred_bytes" : tx_used,
@@ -166,10 +171,6 @@ class MakeProjectView(FormView):
                 messages.error(self.request, custom_msg.project_ver_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
-            # Add two dict(language, version) in properties 
-            properties.update({'language' : language})
-            properties.update({'version' : version})
-
         elif ("language" in self.request.POST) or ("version" in self.request.POST):
             messages.error(self.request, custom_msg.project_both_lang_and_ver_is_needed)
             return HttpResponseRedirect(reverse("home"))
@@ -195,13 +196,16 @@ class MakeProjectView(FormView):
             except:
                 pass
 
-            # Add two dict(git_url, branch_name) in properties
-            properties.update({'git_url' : git_url})
-            properties.update({'branch_name' : branch_name})
-
         elif ("git_url" in self.request.POST) or ("branch_name" in self.request.POST):
             messages.error(self.request, custom_msg.project_both_git_url_and_branch_name_is_needed)
             return HttpResponseRedirect(reverse("home"))
+
+        properties = {
+                         'language' : language,
+                         'version' : version,
+                         'git_url' : git_url,
+                         'branch_name' : branch_name,
+                     }
 
         project = Project.objects.create_project(
                       name = project_name,

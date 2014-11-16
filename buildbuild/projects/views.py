@@ -31,7 +31,7 @@ from influxdb import client as influxdb
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html 
 # with the fields of project
-def project_page(request, project_id, team_id):
+def project_page(request, team_id, project_id):
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
                                 database='cadvisor')
 

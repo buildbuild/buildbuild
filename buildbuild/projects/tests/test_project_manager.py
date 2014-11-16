@@ -17,7 +17,8 @@ class TestProjectName(TestCase):
         self.invalid_swift_container_name = self.team_name + "__" + self.second_name
         self.lang_python = "python"
         self.ver_python_278 = "2.7.8"
-        self.valid_name_with_characters = "TestProject0-_"
+        self.valid_name_with_characters = "testproject0-_"
+        self.project_name_with_capital_letters = "Projects" 
 
         self.team = Team.objects.create_team(self.team_name)
         self.team_name_does_not_have_any_project_yet = \
@@ -115,3 +116,12 @@ class TestProjectName(TestCase):
                          self.invalid_swift_container_name,
                          "Invalid swift container name must be not equal with model member")
 
+    def test_project_name_with_capital_letters_must_be_not_allowed(self):
+        self.assertRaises(
+            ValidationError,
+            Project.objects.create_project,
+            name = self.project_name_with_capital_letters,
+            team_name = self.team.name,
+            properties = attributes_for_tests.properties_for_test,
+        )
+        

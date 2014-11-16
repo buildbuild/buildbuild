@@ -83,9 +83,11 @@ class ProjectManager(models.Manager):
                 "project name max length is 64",
             )
        # test code, not yet
-       if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:
+       # Notice : project name cannot be Capital letters. 
+       # Becaust its name is used in docker image name
+       if bool(re.match('^[a-z0-9_-]+$', name)) is False:
             raise ValidationError(
-                     "team name cannot contain things but alphabet, '_', number"
+                     "project name cannot contain things but alphabet(lower case, '_', number"
                   )
     
     # Check if the version for language is in DB

@@ -23,7 +23,9 @@
 								<a class="quick-button">
 									<i class="fa fa-user"></i>
 									<p>Wait Member</p>
-                  <span class="notification orange">{{ team.wait_members.all.count }}</span>
+                  {% if team.wait_members.all.count == "0" %}
+                    <span class="notification orange"> {{ team.wait_members.all.count }} </span>
+                  {% endif %}
 								</a>
 							</div>
 							<div class="col-sm-3">

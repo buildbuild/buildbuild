@@ -49,7 +49,8 @@ def accept_request_to_join_team(request, team_id, wait_member_id):
     wait_list = WaitList.objects.get(team = team, wait_member = user)
     wait_list.delete()
     Membership.objects.create_membership(team = team, user = user)
-    messages.success(request, custom_msg.accept_request_to_join_team) 
+    messages.success(request, custom_msg.team_accept_member_success)
+    messages.info(request, custom_msg.accept_member_success_info) 
     return HttpResponseRedirect(reverse("home"))
 
 
@@ -84,13 +85,17 @@ def join_team(request, team_id):
     try:
         WaitList.objects.create_wait_list(team, wait_member)
     except AlreadyMemberError:
-        messages.error(request, custom_msg.already_member)
+        messages.error(request, custom_msg.team_join_team_error)
+        messages.info(request, custom_msg.already_member)
         return HttpResponseRedirect(reverse("home"))
     except AlreadyWaitMemberError:
-        messages.error(request, custom_msg.already_wait_member)
+        messages.error(request, custom_msg.team_join_team_error)
+        messages.info(request, custom_msg.already_wait_member)
         return HttpResponseRedirect(reverse("home"))
 
-    messages.success(request, custom_msg.request_join_team) 
+    messages.success(request, custom_msg.team_join_team_success)
+    messages.info(request, custom_msg.request_join_team)
+
     return HttpResponseRedirect(reverse("home"))
 
 def search_team(request):
@@ -120,7 +125,8 @@ class MakeTeamView(FormView):
         try:
             Team.objects.validate_name(name)
         except ValidationError:
-            messages.error(self.request, custom_msg.team_invalid)
+            messages.error(self.request, custom_msg.team_make_team_error)
+            messages.info(self.request, custom_msg.team_invalid)
             return HttpResponseRedirect(reverse("teams:maketeam")) 
 
         # unique team test
@@ -129,7 +135,8 @@ class MakeTeamView(FormView):
         except ObjectDoesNotExist:
             pass
         else:
-            messages.error(self.request, custom_msg.team_already_exist)
+            messages.error(self.request, custom_msg.team_make_team_error)
+            messages.info(self.request, custom_msg.team_already_exist)
             return HttpResponseRedirect(reverse("teams:maketeam"))          
  
         # Login check is programmed in buildbuild/urls.py
@@ -144,7 +151,8 @@ class MakeTeamView(FormView):
         membership.is_admin = True
         membership.save()
 
-        messages.success(self.request, custom_msg.team_make_success)
+        messages.success(self.request, custom_msg.team_make_team_success)
+        messages.info(self.request, custom_msg.team_make_team_success_info)
  
         return HttpResponseRedirect(reverse("home"))
 

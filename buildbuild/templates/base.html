@@ -77,17 +77,10 @@
   </ul>
   <!-- test purpose : showing all informations -->
 
+  {% include 'message.html' %}
+
   <!-- for passing test purpose -->
   <div class="container">
-    <div class="messages">
-    {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    </div>
 
   <nav>
     {% if user.is_authenticated %}

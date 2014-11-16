@@ -9,5 +9,11 @@
 {% for build in project.build_set.all reversed %}
   {{ build.tag }} 
   ( {{ build.created_time }} )
+  {% if build.is_active %}
+    <a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">Now Running</a>
+  {% else %}
+    <a href = "{% url 'dockerbuild:deploy' build.id %}">Deploy</a>
+  {% endif %}
   </br>
 {% endfor %}
+<h2><a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">My Project Page</a></h2>

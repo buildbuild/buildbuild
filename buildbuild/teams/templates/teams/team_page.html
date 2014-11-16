@@ -33,7 +33,7 @@
 								</a>
 							</div>
 							<div class="col-sm-3">
-								<a class="quick-button">
+                <a class="quick-button" href="{% url 'makeproject' team.id %}">
 									<i class="fa fa-github"></i>
 									<p>Create a Project</p>
 								</a>
@@ -98,9 +98,7 @@
 			</div><!--/row-->
 <!-- TABLE -->
 
-  <h1>{{ team.name }}'s Page</h1>
     <p><a href="{% url 'home' %}">Go back</a></p>
-    <p><a href="{% url 'makeproject' team.id %}">Make a Project</a></p>
 
   <h3>Wait list</h3>
   {% for wait_member in team.wait_members.all %}

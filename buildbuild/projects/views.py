@@ -24,12 +24,36 @@ from properties.models import AvailableLanguage, VersionList, DockerText
 from buildbuild import custom_msg
 from django.core.validators import URLValidator
 
+from influxdb import client as influxdb
+
 
 # when User click a project in team page, 
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html 
 # with the fields of project
-def project_page(request, team_id, project_id):
+def project_page(request, project_id, team_id):
+    db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
+                                database='cadvisor')
+
+    query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
+    cpu_index = 0
+    memory_index = 0
+    rx_index = 0
+    tx_index = 0
+    for index, item in enumerate(query[0]['columns']):
+        if item == 'cpu_cumulative_usage':
+            cpu_index = index
+        elif item == 'memory_usage':
+            memory_index = index
+        elif item == 'tx_bytes':
+            tx_index = index
+        elif item == 'rx_bytes':
+            rx_index = index
+    memory_usage = query[0]['points'][0][memory_index]
+    rx_used = query[0]['points'][0][rx_index]
+    tx_used = (query[0]['points'][0][tx_index])
+    cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
     return render(
@@ -38,6 +62,10 @@ def project_page(request, team_id, project_id):
                {
                    "team" : team,
                    "project" : project,
+                   "memory_usage" : memory_usage,
+                   "requested_bytes" : rx_used,
+                   "transferred_bytes" : tx_used,
+                   "cpu_usage" : cpu_usage,
                },
            )            
 

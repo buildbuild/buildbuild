@@ -52,7 +52,13 @@
   {% endfor %}
 
 <p><a href="{% url 'dockerbuild:build_page' project.id %}">Build Page</a></p>
+<ul>
+    <li>cpu : {{ cpu_usage }}</li>
+    <li>memory : {{ memory_usage }}</li>
+    <li>rx : {{ requested_bytes }}</li>
+    <li>tx : {{ transferred_bytes }}</li>
+</ul>
+
 
   </div>
-
 {% endblock %}

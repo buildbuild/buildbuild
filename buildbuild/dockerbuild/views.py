@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from dockerbuild.models import Build
 from projects.models import Project
@@ -27,3 +27,17 @@ def build_new(request, project_id):
                 "build" : build,
             }
     ) 
+
+def deploy(request, build_id):
+    Build.objects.deploy_project(build_id = build_id)
+    return render(
+            request,
+            'dockerbuild/deploy.html',
+            {
+                "project" : Build.objects.get(id = build_id).project, 
+                "build" : Build.objects.get(id = build_id) 
+            }
+    )
+def my_project(request, project_id):
+    my_project_address = "http://192.168.59.103:"+ str( int(project_id)+int(10000) )  
+    return redirect(my_project_address)

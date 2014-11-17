@@ -40,25 +40,30 @@ def project_page(request, team_id, project_id):
 
     container_name = "'/docker/"+team_name + "_" + project_name + "'"
 
-
-    query = db.query("select * from /.*/ where container_name =  " + container_name + "limit 2")
     cpu_index = 0
     memory_index = 0
     rx_index = 0
     tx_index = 0
-    for index, item in enumerate(query[0]['columns']):
-        if item == 'cpu_cumulative_usage':
-            cpu_index = index
-        elif item == 'memory_usage':
-            memory_index = index
-        elif item == 'tx_bytes':
-            tx_index = index
-        elif item == 'rx_bytes':
-            rx_index = index
-    memory_usage = query[0]['points'][0][memory_index]
-    rx_used = query[0]['points'][0][rx_index]
-    tx_used = (query[0]['points'][0][tx_index])
-    cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+    try:
+        query = db.query("select * from /.*/ where container_name =  " + container_name + "limit 2")
+        for index, item in enumerate(query[0]['columns']):
+            if item == 'cpu_cumulative_usage':
+                cpu_index = index
+            elif item == 'memory_usage':
+                memory_index = index
+            elif item == 'tx_bytes':
+                tx_index = index
+            elif item == 'rx_bytes':
+                rx_index = index
+        memory_usage = query[0]['points'][0][memory_index]
+        rx_used = query[0]['points'][0][rx_index]
+        tx_used = (query[0]['points'][0][tx_index])
+        cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+    except:
+        memory_usage = 'N/A'
+        rx_used = 'N/A'
+        tx_used = 'N/A'
+        cpu_usage = 'N/A'
 
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)

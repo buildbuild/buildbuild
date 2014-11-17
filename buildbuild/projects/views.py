@@ -50,7 +50,7 @@ def project_page(request, team_id, project_id):
     container_name = "'/docker/"+team_name + "_" + project_name + "'"
 
     # Get Client IP
-    # client_ip = request.META["REMOTE_ADDR"]
+    client_ip = request.META["REMOTE_ADDR"]
 
     # Access influxdb
     # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169

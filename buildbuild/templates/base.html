@@ -33,6 +33,16 @@
     <!-- start: Favicon and Touch Icons -->
     <!-- should implemnet later -->
     <!-- end: Favicon and Touch Icons -->	
+    
+  {# for self disappearing message #}
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script>  
+    $(document).ready(function(){  
+      setTimeout(function() {  
+        $('.gritter-item-wrapper').fadeOut('slow');  
+      }, 2000); // <-- time in milliseconds  
+    });  
+  </script>  
 
   </head>
   <body>

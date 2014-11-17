@@ -59,3 +59,14 @@ class SignUpForm(forms.Form):
         )
     )
 
+    user_name = forms.CharField(
+        label="",
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'input-large col-xs-12',
+                'placeholder': 'Enter Name ( Optional )'
+            }
+        )
+    )
+

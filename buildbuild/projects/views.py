@@ -39,11 +39,6 @@ import re
 # and project_page method in view render project_page.html
 # with the fields of project
 def project_page(request, team_id, project_id):
-    db = influxdb.InfluxDBClient(
-        host="buildbulid.io",
-        database='cadvisor',
-    )
-
     project_name = Project.objects.get_project(id=project_id).name
     team_name = Team.objects.get_team(id=team_id).name
 
@@ -58,10 +53,16 @@ def project_page(request, team_id, project_id):
 
     is_internal = re.match( "172.*", client_ip, re.I,)
 
-    # if is_internal:
-    #     influxdb_host = "soma.buildbuild.io"
-    # else:
-    #    influxdb_host = "buildbuild.io"
+    if is_internal:
+        influxdb_host = "soma.buildbuild.io"
+    else:
+        influxdb_host = "buildbuild.io"
+
+    db = influxdb.InfluxDBClient(
+        host="buildbuild.io",
+        # host="soma.buildbuild.io",
+        database='cadvisor',
+    )
 
     cpu_index = 0
     memory_index = 0

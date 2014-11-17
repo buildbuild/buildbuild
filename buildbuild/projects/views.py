@@ -94,6 +94,9 @@ def project_page(request, team_id, project_id):
     cpu_usage_in_Ghz = cpu_usage * 1.0 / (10**6)
     cpu_usage_percent = cpu_usage_in_Ghz / 2.8 * 100
 
+    memory_usage_in_GB = memory_usage * 1.0 / (10**9)
+    memory_usage_percent = memory_usage_in_GB / 1.0 * 100
+
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
 
@@ -108,6 +111,8 @@ def project_page(request, team_id, project_id):
                    "git_url" : project.properties['git_url'],
                    "branch_name" : project.properties['branch_name'],
                    "memory_usage" : memory_usage,
+                   "memory_usage_percent" : memory_usage_percent,
+                   "memory_usage_in_GB" : memory_usage_in_GB,
                    "requested_bytes" : rx_used,
                    "transferred_bytes" : tx_used,
                    "cpu_usage" : cpu_usage,

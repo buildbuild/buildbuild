@@ -95,8 +95,6 @@
   <nav>
     {% if user.is_authenticated %}
     <div>Welcome, {{ user.email }}</div>
-      <a href="{% url 'logout' %}">Logout</a>
-      <a href="{% url 'users:account' %}">Account info</a>
       <a href="{% url 'teams:maketeam' %}">Make a Team</a>
       <p>
       {% block team_list %}

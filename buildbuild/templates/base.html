@@ -93,17 +93,12 @@
   <div class="container">
 
   <nav>
-    {% if user.is_authenticated %}
     <div>Welcome, {{ user.email }}</div>
       <a href="{% url 'teams:maketeam' %}">Make a Team</a>
       <p>
       {% block team_list %}
       {% endblock %}
       </p>
-    {% else %}
-      <a href="{% url 'login' %}">Login</a>
-      <a href="{% url 'signup' %}">SignUp</a>
-    {% endif %}
   </nav>
 
   </div>

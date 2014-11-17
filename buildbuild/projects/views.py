@@ -26,6 +26,11 @@ from django.core.validators import URLValidator
 
 from influxdb import client as influxdb
 
+import json
+import pprint
+from elasticsearch import Elasticsearch
+from copy import deepcopy
+
 import re
 
 
@@ -34,6 +39,11 @@ import re
 # and project_page method in view render project_page.html
 # with the fields of project
 def project_page(request, team_id, project_id):
+    project_name = Project.objects.get_project(id=project_id).name
+    team_name = Team.objects.get_team(id=team_id).name
+
+    container_name = "'/docker/"+team_name + "_" + project_name + "'"
+
     # Get Client IP
     client_ip = request.META["REMOTE_ADDR"]
 
@@ -41,11 +51,7 @@ def project_page(request, team_id, project_id):
     # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
     # external                     to  61.43.139.143
 
-    is_internal = re.match(
-        "172.*",
-        client_ip,
-        re.I,
-    )
+    is_internal = re.match( "172.*", client_ip, re.I,)
 
     if is_internal:
         influxdb_host = "soma.buildbuild.io"
@@ -55,27 +61,46 @@ def project_page(request, team_id, project_id):
     db = influxdb.InfluxDBClient(
         host=influxdb_host,
         database='cadvisor',
+        timeout=2,
     )
 
-
-    query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
     cpu_index = 0
     memory_index = 0
     rx_index = 0
     tx_index = 0
-    for index, item in enumerate(query[0]['columns']):
-        if item == 'cpu_cumulative_usage':
-            cpu_index = index
-        elif item == 'memory_usage':
-            memory_index = index
-        elif item == 'tx_bytes':
-            tx_index = index
-        elif item == 'rx_bytes':
-            rx_index = index
-    memory_usage = query[0]['points'][0][memory_index]
-    rx_used = query[0]['points'][0][rx_index]
-    tx_used = (query[0]['points'][0][tx_index])
-    cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+    try:
+        query = db.query("select * from /.*/ where container_name =  '" + "/docker/registry" + "'limit 2")
+        for index, item in enumerate(query[0]['columns']):
+            if item == 'cpu_cumulative_usage':
+                cpu_index = index
+            elif item == 'memory_usage':
+                memory_index = index
+            elif item == 'tx_bytes':
+                tx_index = index
+            elif item == 'rx_bytes':
+                rx_index = index
+        memory_usage = query[0]['points'][0][memory_index]
+        rx_used = query[0]['points'][0][rx_index]
+        tx_used = (query[0]['points'][0][tx_index])
+        cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+    except:
+        memory_usage = 0
+        rx_used = 0
+        tx_used = 0
+        cpu_usage = 0
+
+    # Calculate Values
+    cpu_usage_in_Ghz = cpu_usage * 1.0 / (10**6)
+    cpu_usage_percent = cpu_usage_in_Ghz / 2.8 * 100
+
+    memory_usage_in_GB = memory_usage * 1.0 / (10**9)
+    memory_usage_percent = memory_usage_in_GB / 1.0 * 100
+
+    rx_used_in_GB = rx_used * 1.0 / (10**9)
+    rx_used_percent = rx_used_in_GB / 1.0 * 100
+
+    tx_used_in_GB = tx_used * 1.0 / (10**9)
+    tx_used_percent = tx_used_in_GB / 1.0 * 100
 
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
@@ -91,9 +116,17 @@ def project_page(request, team_id, project_id):
                    "git_url" : project.properties['git_url'],
                    "branch_name" : project.properties['branch_name'],
                    "memory_usage" : memory_usage,
+                   "memory_usage_percent" : memory_usage_percent,
+                   "memory_usage_in_GB" : memory_usage_in_GB,
                    "requested_bytes" : rx_used,
+                   "requested_bytes_percent" : rx_used_percent,
+                   "requested_bytes_in_GB" : rx_used_in_GB,
                    "transferred_bytes" : tx_used,
+                   "transferred_bytes_percent" : tx_used_percent,
+                   "transferred_bytes_in_GB" : tx_used_in_GB,
                    "cpu_usage" : cpu_usage,
+                   "cpu_usage_percent" : cpu_usage_percent,
+                   "cpu_usage_in_Ghz" : cpu_usage_in_Ghz,
                },
            )
 
@@ -245,6 +278,44 @@ class MakeProjectView(FormView):
                       team_name = team.name,
                       properties = properties,
                   )
+
+        # Create Elastic Search for grafana
+        es = Elasticsearch([{'host' : 'soma.buildbuild.io'}])
+
+        # Get templates as a docker - project
+        doc = es.get(index='docker-grafana-dash', doc_type='dashboard', id = 'dockerproject')
+
+        pr = team.name + "_" + project_name
+        name = '/docker/' + pr # As a query language
+        project_name = "container_name = '" + name + "'"
+        uni_name = unicode(project_name, 'unicode-escape')
+        _doc = deepcopy(doc)
+
+        _doc['_id'] = pr
+        loads = json.loads(_doc['_source']['dashboard'])
+
+        loads['title'] = pr
+        loads['originalTitle'] = pr
+        loads['rows'][0]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][0]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][1]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][1]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][2]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][2]['panels'][0]['targets'][1]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][1]['query'] = loads['rows'][0]['panels'][0]['targets'][1]['query'].replace('/docker/registry',name)
+
+        dumps = json.dumps(loads)
+
+        _doc['_source']['dashboard'] = dumps
+        _doc['_source']['title'] = pr
+        _doc['_version'] = 0
+
+        es.index(index = 'docker-grafana-dash', doc_type='dashboard', id=pr, body = _doc['_source'])
+
         messages.success(self.request, custom_msg.project_make_project_success)
         messages.info(self.request, custom_msg.project_make_success)
 

@@ -45,21 +45,21 @@ def project_page(request, team_id, project_id):
     container_name = "'/docker/"+team_name + "_" + project_name + "'"
 
     # Get Client IP
-    client_ip = request.META["REMOTE_ADDR"]
+    # client_ip = request.META["REMOTE_ADDR"]
 
     # Access influxdb
     # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
     # external                     to  61.43.139.143
 
-    is_internal = re.match( "172.*", client_ip, re.I,)
+    # is_internal = re.match( "172.*", client_ip, re.I,)
 
-    if is_internal:
-        influxdb_host = "soma.buildbuild.io"
-    else:
-        influxdb_host = "buildbuild.io"
+    # if is_internal:
+    #   influxdb_host = "soma.buildbuild.io"
+    # else:
+    #     influxdb_host = "buildbuild.io"
 
     db = influxdb.InfluxDBClient(
-        host="buildbuild.io",
+        host="soma.buildbuild.io",
         # host="soma.buildbuild.io",
         database='cadvisor',
     )
@@ -69,7 +69,7 @@ def project_page(request, team_id, project_id):
     rx_index = 0
     tx_index = 0
     try:
-        query = db.query("select * from /.*/ where container_name =  " + container_name + "limit 2")
+        query = db.query("select * from /.*/ where container_name =  " + "docker/registry" + "limit 2")
         for index, item in enumerate(query[0]['columns']):
             if item == 'cpu_cumulative_usage':
                 cpu_index = index
@@ -84,10 +84,10 @@ def project_page(request, team_id, project_id):
         tx_used = (query[0]['points'][0][tx_index])
         cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
     except:
-        memory_usage = 'N/A'
-        rx_used = 'N/A'
-        tx_used = 'N/A'
-        cpu_usage = 'N/A'
+        memory_usage = 0
+        rx_used = 0
+        tx_used = 0
+        cpu_usage = 0
 
     # Calculate Values
     cpu_usage_in_Ghz = cpu_usage * 1.0 / (10**6)

@@ -97,6 +97,9 @@ def project_page(request, team_id, project_id):
     memory_usage_in_GB = memory_usage * 1.0 / (10**9)
     memory_usage_percent = memory_usage_in_GB / 1.0 * 100
 
+    rx_used_in_GB = rx_used * 1.0 / (10**9)
+    rx_used_percent = rx_used_in_GB / 1.0 * 100
+
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
 
@@ -114,6 +117,8 @@ def project_page(request, team_id, project_id):
                    "memory_usage_percent" : memory_usage_percent,
                    "memory_usage_in_GB" : memory_usage_in_GB,
                    "requested_bytes" : rx_used,
+                   "requested_bytes_percent" : rx_used_percent,
+                   "requested_bytes_in_GB" : rx_used_in_GB,
                    "transferred_bytes" : tx_used,
                    "cpu_usage" : cpu_usage,
                    "cpu_usage_percent" : cpu_usage_percent,

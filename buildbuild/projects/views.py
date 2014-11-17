@@ -26,6 +26,10 @@ from django.core.validators import URLValidator
 
 from influxdb import client as influxdb
 
+import json
+import pprint
+from elasticsearch import Elasticsearch
+from copy import deepcopy
 
 # when User click a project in team page, 
 # team_page.html links to project_page url denoted in projects' urlconf
@@ -234,6 +238,45 @@ class MakeProjectView(FormView):
                       team_name = team.name,
                       properties = properties,
                   )
+
+        # Create Elastic Search for grafana
+        es = Elasticsearch([{'host' : 'soma.buildbuild.io'}])
+
+        # Get templates as a docker - project
+        doc = es.get(index='docker-grafana-dash', doc_type='dashboard', id = 'dockerproject')
+
+        pr = team.name + "_" + project_name
+        name = '/docker/' + pr # As a query language
+        project_name = "container_name = '" + name + "'"
+        uni_name = unicode(project_name, 'unicode-escape')
+        print uni_name
+        _doc = deepcopy(doc)
+
+        _doc['_id'] = pr
+        loads = json.loads(_doc['_source']['dashboard'])
+
+        loads['title'] = pr
+        loads['originalTitle'] = pr
+        loads['rows'][0]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][0]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][1]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][1]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][2]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][2]['panels'][0]['targets'][1]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][1]['query'] = loads['rows'][0]['panels'][0]['targets'][1]['query'].replace('/docker/registry',name)
+
+        dumps = json.dumps(loads)
+
+        _doc['_source']['dashboard'] = dumps
+        _doc['_source']['title'] = pr
+        _doc['_version'] = 0
+
+        es.index(index = 'docker-grafana-dash', doc_type='dashboard', id=pr, body = _doc['_source'])
+
         messages.success(self.request, custom_msg.project_make_project_success)
         messages.info(self.request, custom_msg.project_make_success)
 

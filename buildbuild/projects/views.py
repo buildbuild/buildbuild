@@ -56,7 +56,7 @@ def project_page(request, team_id, project_id):
     # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
     # external                     to  61.43.139.143
 
-    # is_internal = re.match( "172.*", client_ip, re.I,)
+    is_internal = re.match( "172.*", client_ip, re.I,)
 
     # if is_internal:
     #     influxdb_host = "soma.buildbuild.io"

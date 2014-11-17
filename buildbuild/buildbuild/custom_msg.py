@@ -7,12 +7,19 @@ url_unicode_invalid = "This URL has invalid domain part"
 
 ### users app msg
 ## login
-user_email_not_exist = "ERROR : the user email not exist"
-user_login_success = "Successfully Login"
+user_login_error = "ERROR : Login"
+user_login_success = "SUCCESS : Login"
+user_email_not_exist = "The user email not exist"
+user_login_success_info = "Successfully Login"
 user_deactivated = "ERROR : Deactivated User"
 user_invalid = "ERROR : invalid email or password" 
 user_invalid_password = "ERROR : invalid user password"
 
+## logout
+user_logout_error = "ERROR : Logout"
+user_logout_success = "SUCCESS : Logout"
+user_logout_error_info = "Logout failed"
+user_logout_success_info = "Successfully Logout"
 
 ## signup
 user_signup_error = "ERROR : Sign Up"

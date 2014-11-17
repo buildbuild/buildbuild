@@ -55,7 +55,8 @@ class Login(FormView):
         try:
             user = authenticate(email=email, password=password)
         except ValidationError:
-            messages.error(self.request, custom_msg.user_email_not_exist)
+            messages.error(self.request, custom_msg.user_signup_error)
+            messages.info(self.request, custom_msg.user_email_not_exist)
             return HttpResponseRedirect(reverse("login"))
         else:
             next = ""
@@ -66,39 +67,39 @@ class Login(FormView):
             if user is not None:
                 if user.is_active:
                     login(self.request, user)
-                    messages.success(self.request, custom_msg.user_login_success)
+                    messages.success(
+                        self.request, 
+                        custom_msg.user_login_success
+                    )
+                    messages.info(
+                        self.request, 
+                        custom_msg.user_login_success_info
+                    )
 
                     if next == "":
                         return HttpResponseRedirect(reverse("home"))
                     else:
                         return HttpResponseRedirect(next)
                 else:
-                    messages.error(self.request, custom_msg.user_deactivated)
+                    messages.error(self.request, custom_msg.user_signup_error)
+                    messages.info(self.request, custom_msg.user_deactivated)
                     return HttpResponseRedirect(reverse("login"))
             else:
-                messages.error(self.request, custom_msg.user_invalid)
+                messages.error(self.request, custom_msg.user_signup_error)
+                messages.info(self.request, custom_msg.user_invalid)
                 return HttpResponseRedirect(reverse("login"))
 
 class Logout(RedirectView):
     def get_redirect_url(self):
-        user_logout_failed = "ERROR : logout failed"
-        user_logout_success = "Successfully Logout"
-
         try:
             logout(self.request)
         except:
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                user_logout_failed
-            )
+            messages.error(self.request, custom_msg.user_logout_error)
+            messages.info(self.request, custom_msg.user_logout_error_info)
             return HttpResponseRedirect(reverse("home"))
         else:
-            messages.add_message(
-                self.request,
-                messages.SUCCESS,
-                user_logout_success
-            )
+            messages.success(self.request, custom_msg.user_logout_success)
+            messages.info(self.request, custom_msg.user_logout_success_info)
             return reverse("home")
 
 class AccountView(DetailView):

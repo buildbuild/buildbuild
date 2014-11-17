@@ -40,15 +40,23 @@ already_wait_member = "You already sent a request to join that team"
 already_team_member = "My team"
 
 ## make team view
-team_invalid = "ERROR : invalid team name"
+team_make_team_error = "ERROR : Make Team"
+team_make_team_success = "SUCCESS : Make Team"
+team_invalid = "Invalid team name"
 team_already_exist = "ERROR : The team name already exists"
-team_make_success = "Team created successfully"
+team_make_team_success_info = "Team created successfully"
 
 ## team page
-not_belonged_team = "ERROR : you are not the team member"
+not_belonged_team = "ERROR : You are not the team member"
+
+# join team
+team_join_team_error = "ERROR : Join Team"
+team_join_team_success = "SUCCESS : Join Team"
 
 ## accept_request_to_join_team
-accept_request_to_join_team = "The user accepted to team  successfully"
+team_accept_member_success = "SUCCESS : ACCEPT MEMBER"
+team_accept_member_success_info = \
+    "The user accepted to your team member successfully"
 
 ### projects app msg
 ## make project view

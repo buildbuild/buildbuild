@@ -83,7 +83,7 @@ class MakeTeamPageTest(TestCase):
         self.post_login_set(self.user_email, self.user_password)
         response = self.post_make_team_set(self.team_name, follow = True)
         self.assertRedirects(response, "/")
-        self.assertContains(response, custom_msg.team_make_success)
+        self.assertContains(response, custom_msg.team_make_team_success_info)
 
     def test_post_team_name_required(self):
         self.post_login_set(self.user_email, self.user_password)

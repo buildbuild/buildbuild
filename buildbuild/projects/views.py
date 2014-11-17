@@ -27,9 +27,9 @@ from django.core.validators import URLValidator
 from influxdb import client as influxdb
 
 
-# when User click a project in team page, 
+# when User click a project in team page,
 # team_page.html links to project_page url denoted in projects' urlconf
-# and project_page method in view render project_page.html 
+# and project_page method in view render project_page.html
 # with the fields of project
 def project_page(request, team_id, project_id):
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
@@ -54,9 +54,13 @@ def project_page(request, team_id, project_id):
     tx_used = (query[0]['points'][0][tx_index])
     cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
 
+    # Calculate Values
+    cpu_usage_in_Ghz = cpu_usage * 1.0 / (10**6)
+    cpu_usage_percent = cpu_usage_in_Ghz / 2.8 * 100
+
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
- 
+
     return render(
                request,
                "projects/project_page.html",
@@ -71,8 +75,10 @@ def project_page(request, team_id, project_id):
                    "requested_bytes" : rx_used,
                    "transferred_bytes" : tx_used,
                    "cpu_usage" : cpu_usage,
+                   "cpu_usage_percent" : cpu_usage_percent,
+                   "cpu_usage_in_Ghz" : cpu_usage_in_Ghz,
                },
-           )            
+           )
 
 
 class MakeProjectView(FormView):
@@ -96,7 +102,7 @@ class MakeProjectView(FormView):
             context['is_team_member'] = False
         else:
             context['is_team_member'] = True
- 
+
         return context
 
     def form_valid(self, form):
@@ -128,8 +134,8 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_make_project_error)
             messages.info(self.request, custom_msg.project_invalid)
             return HttpResponseRedirect(reverse("home"))
-        
-        # Check unique project name        
+
+        # Check unique project name
         # Notice : project name must be unique in one team, not all teams
         try:
             Project.objects.check_uniqueness_project_name(
@@ -140,7 +146,7 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_make_project_error)
             messages.info(self.request, custom_msg.project_already_exist)
             return HttpResponseRedirect(reverse("home"))
-        
+
         # Check valid team name
         try:
             Team.objects.validate_name(team.name)
@@ -158,7 +164,7 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_make_project_error)
             messages.info(self.request, custom_msg.project_user_does_not_belong_team)
             return HttpResponseRedirect(reverse("home"))
-       
+
         # Both Language & Version form is needed
         if ("language" in self.request.POST) and ("version" in self.request.POST):
             language = self.request.POST["language"]
@@ -226,5 +232,5 @@ class MakeProjectView(FormView):
         messages.info(self.request, custom_msg.project_make_success)
 
         # redirect url should be changed later
-        return HttpResponseRedirect(reverse("home")) 
+        return HttpResponseRedirect(reverse("home"))
 

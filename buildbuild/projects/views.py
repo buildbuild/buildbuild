@@ -26,6 +26,10 @@ from django.core.validators import URLValidator
 
 from influxdb import client as influxdb
 
+import json
+import pprint
+from elasticsearch import Elasticsearch
+from copy import deepcopy
 
 # when User click a project in team page,
 # team_page.html links to project_page url denoted in projects' urlconf
@@ -33,26 +37,38 @@ from influxdb import client as influxdb
 # with the fields of project
 def project_page(request, team_id, project_id):
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
-                                database='cadvisor')
+                                database='cadvisor',
+                                timeout=2)
 
-    query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
+    project_name = Project.objects.get_project(id=project_id).name
+    team_name = Team.objects.get_team(id=team_id).name
+
+    container_name = "'/docker/"+team_name + "_" + project_name + "'"
+
     cpu_index = 0
     memory_index = 0
     rx_index = 0
     tx_index = 0
-    for index, item in enumerate(query[0]['columns']):
-        if item == 'cpu_cumulative_usage':
-            cpu_index = index
-        elif item == 'memory_usage':
-            memory_index = index
-        elif item == 'tx_bytes':
-            tx_index = index
-        elif item == 'rx_bytes':
-            rx_index = index
-    memory_usage = query[0]['points'][0][memory_index]
-    rx_used = query[0]['points'][0][rx_index]
-    tx_used = (query[0]['points'][0][tx_index])
-    cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+    try:
+        query = db.query("select * from /.*/ where container_name =  " + container_name + "limit 2")
+        for index, item in enumerate(query[0]['columns']):
+            if item == 'cpu_cumulative_usage':
+                cpu_index = index
+            elif item == 'memory_usage':
+                memory_index = index
+            elif item == 'tx_bytes':
+                tx_index = index
+            elif item == 'rx_bytes':
+                rx_index = index
+        memory_usage = query[0]['points'][0][memory_index]
+        rx_used = query[0]['points'][0][rx_index]
+        tx_used = (query[0]['points'][0][tx_index])
+        cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
+    except:
+        memory_usage = 'N/A'
+        rx_used = 'N/A'
+        tx_used = 'N/A'
+        cpu_usage = 'N/A'
 
     # Calculate Values
     cpu_usage_in_Ghz = cpu_usage * 1.0 / (10**6)
@@ -228,6 +244,45 @@ class MakeProjectView(FormView):
                       team_name = team.name,
                       properties = properties,
                   )
+
+        # Create Elastic Search for grafana
+        es = Elasticsearch([{'host' : 'soma.buildbuild.io'}])
+
+        # Get templates as a docker - project
+        doc = es.get(index='docker-grafana-dash', doc_type='dashboard', id = 'dockerproject')
+
+        pr = team.name + "_" + project_name
+        name = '/docker/' + pr # As a query language
+        project_name = "container_name = '" + name + "'"
+        uni_name = unicode(project_name, 'unicode-escape')
+        print uni_name
+        _doc = deepcopy(doc)
+
+        _doc['_id'] = pr
+        loads = json.loads(_doc['_source']['dashboard'])
+
+        loads['title'] = pr
+        loads['originalTitle'] = pr
+        loads['rows'][0]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][0]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][1]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][1]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][2]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
+
+        loads['rows'][2]['panels'][0]['targets'][1]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][1]['query'] = loads['rows'][0]['panels'][0]['targets'][1]['query'].replace('/docker/registry',name)
+
+        dumps = json.dumps(loads)
+
+        _doc['_source']['dashboard'] = dumps
+        _doc['_source']['title'] = pr
+        _doc['_version'] = 0
+
+        es.index(index = 'docker-grafana-dash', doc_type='dashboard', id=pr, body = _doc['_source'])
+
         messages.success(self.request, custom_msg.project_make_project_success)
         messages.info(self.request, custom_msg.project_make_success)
 

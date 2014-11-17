@@ -16,11 +16,14 @@ import os
 # exception message handling
 # when we are attempt to save a naive datetime, warning occurs
 # During development, such warnings into ignore status
-import warnings 
+import warnings
 warnings.filterwarnings(
         'ignore', r"DateTimeField .* received a naive datetime",
         RuntimeWarning, r'django\.db\.models\.fields')
 
+# DJcelery setting. setting loader
+import djcelery
+djcelery.setup_loader()
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -75,6 +78,7 @@ INSTALLED_APPS = (
     'projects',
     'deploys',
     'properties',
+    'dockerbuild',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -139,19 +143,21 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
+
+    # 'djangobower.finders.BowerFinder'
+    # currently not using bower for client dependency
+    # after web client implementation, should change to static to using bower
 )
 
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 BOWER_INSTALLED_APPS = (
-    'angular#1.2.23',
 )
 
 
 AUTH_USER_MODEL = 'users.User'
 
-LOGIN_URL = "/users/login/"
+LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/users/account/" # Not Implemented : should have chnage to /profile or /dashboard stuff
 
 
@@ -168,7 +174,12 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465  #for submission
 EMAIL_HOST_USER = "buildbuildteam@gmail.com"
 
+# Celery Unit Testing
+
 CELERY_ALWAYS_EAGER = True
+TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner'
+BROKER_URL = 'django://'
+BROKER_BACKEND = 'memory'
 
 if "BUILDBUILD_PASSWORD" in os.environ:
     EMAIL_HOST_PASSWORD = os.environ['BUILDBUILD_PASSWORD']

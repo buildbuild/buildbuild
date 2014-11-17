@@ -1,41 +1,101 @@
-<html ng-app="buildbuild">
+<!DOCTYPE html>
+<html>
   <head>
+    <!-- start: Meta -->
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title> {% block title %} BuildBuild {% endblock %} </title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="keyword" content="">
+    <!-- end: Meta -->
+
+    <!-- start: Mobile Specific -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- end: Mobile Specific -->
+
     {% load staticfiles %}
 
-    <title>
-      {% block title %}
-      BuildBuild
-      {% endblock %}
-    </title>
+    <!-- start: CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/retina.min.css' %}" rel="stylesheet">
+    <!-- end: CSS -->
+
+    <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <script src="{% static 'js/respond.min.js' %}"></script>
+      <link href="{% static 'css/ie6-8.css' %}" rel="stylesheet">
+
+    <![endif]-->
+
+    <!-- start: Favicon and Touch Icons -->
+    <!-- should implemnet later -->
+    <!-- end: Favicon and Touch Icons -->	
+    
+  {# for self disappearing message #}
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script>  
+    $(document).ready(function(){  
+      setTimeout(function() {  
+        $('.gritter-item-wrapper').fadeOut('slow');  
+      }, 5000); // <-- time in milliseconds  
+    });  
+  </script>  
+
   </head>
   <body>
-    <script src="{% static 'angular/angular.min.js' %}"></script>
-    <script src="{% static 'js/buildbuild.js' %}"></script>
-    <p><a href="/">Main</a></p>
+    {% block header %}
+      {% include 'header.html' %}
+    {% endblock %}
 
-    {% verbatim angular %}
-    <!-- {{ "angularjs" + " works!" }} -->
-    {% endverbatim angular %}
-  <header>
-    <h1>BuildBuild</h1>
-  </header>
+    <div class="container">
+      <div class="row">
+        {% block main_menu %}
+          {% include 'main_menu.html' %}
+        {% endblock %}
 
-  <div class="container">
-    <div class="messages">
-    {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+          {% block content %}
+            <!-- start: Content -->
+              {% include 'content.html' %}
+            <!-- end: Content -->
+          {% endblock %}
+      </div>
     </div>
+
+    {% block modal %}
+      {% include 'modal.html' %}
+    {% endblock %}
+
+    {% block footer %}
+      {% include 'footer.html' %}
+    {% endblock %}
+
+    {% include 'javascript.html' %}
+
+
+  <!-- test purpose : showing all informations -->
+  {{ user.email }}
+  <ul>
+  {% for team in user.member.all %}
+  <li>{{ team.name }}</li>
+    {% for project in team.project_teams.all %}
+      ${{ project.name }}
+    {% endfor %}
+  {% endfor %}
+  </ul>
+  <!-- test purpose : showing all informations -->
+
+  {% include 'message.html' %}
+
+  <!-- for passing test purpose -->
+  <div class="container">
 
   <nav>
     {% if user.is_authenticated %}
     <div>Welcome, {{ user.email }}</div>
-      <a href="{% url 'users:logout' %}">Logout</a>
+      <a href="{% url 'logout' %}">Logout</a>
       <a href="{% url 'users:account' %}">Account info</a>
       <a href="{% url 'teams:maketeam' %}">Make a Team</a>
       <p>
@@ -47,16 +107,11 @@
       {% endblock %}
       </p>
     {% else %}
-      <a href="{% url 'users:login' %}">Login</a>
-      <a href="{% url 'users:signup' %}">SignUp</a>
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'signup' %}">SignUp</a>
     {% endif %}
   </nav>
 
-    {% block content %}
-    {% endblock %}
   </div>
-
-  <footer>
-  </footer>
   </body>
 </html>

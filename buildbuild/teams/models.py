@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.core.exceptions import ObjectDoesNotExist
 import re
+from django.core.validators import URLValidator
 
 class TeamManager(models.Manager):
     def create_team(self, name, **kwargs):
@@ -16,9 +17,11 @@ class TeamManager(models.Manager):
             self.validate_contact_number(kwargs["contact_number"])
             team.contact_number = kwargs["contact_number"]
 
-        if "website_url" in kwargs:
-            self.validate_website_url(kwargs["website_url"])
-            team.website_url = kwargs["website_url"]
+        if "team_url" in kwargs:
+            # It checks validation, scheme, unicode
+            validate_team_url = URLValidator()
+            validate_team_url(kwargs["team_url"])
+            team.team_url = kwargs["team_url"]
 
         team.save(using = self._db)
 
@@ -35,9 +38,9 @@ class TeamManager(models.Manager):
             )
         
         # test code, not yet
-        if bool(re.match('^[ a-zA-Z0-9_]+$', name)) is False:
+        if bool(re.match('^[a-zA-Z0-9_-]+$', name)) is False:
             raise ValidationError(
-                     "team name cannot contain things but alphabet, white space, '_', number"
+                     "team name cannot contain things but alphabet, '_', number"
                   )
         
 
@@ -66,10 +69,6 @@ class TeamManager(models.Manager):
         else:
             raise ValidationError(("team contact number should not be with character"))
 
-    def validate_website_url(self, website_url):
-        if len(website_url) > 255:
-            raise ValidationError("Website URL cannot contain more than 255 characters")
-    
     # get team from foreign key of MtoM
     def get_project_team(self, id):
         try:
@@ -102,9 +101,10 @@ class Team(models.Model):
                         help_text = "Team contact_number to inform something or contact",
                         max_length = 20,
                      )
-    website_url = models.URLField(
-                      help_text = "Team website_url",
-                      max_length = 255
+
+    team_url = models.URLField(
+                      help_text = "Team team_url",
+                      default = "",
                   )
 
     objects = TeamManager()

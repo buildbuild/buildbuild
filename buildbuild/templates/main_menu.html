@@ -1,0 +1,26 @@
+<!-- start: Main Menu -->
+<div id="sidebar-left" class="col-lg-2 col-sm-1">
+  
+  <input type="text" class="search hidden-sm" placeholder="..." />
+  
+  <div class="nav-collapse sidebar-nav collapse navbar-collapse bs-navbar-collapse">
+    <ul class="nav nav-tabs nav-stacked main-menu">
+      <li><a href="index.html"><i class="fa fa-bar-chart-o"></i><span class="hidden-sm"> Dashboard</span></a></li>	
+
+      {% for team in user.member.all %}
+        <li>
+          <a class="dropmenu" href="{% url 'team_page' team.id %}"><i class="fa fa-users"></i><span class="hidden-sm">{{ team.name }}</span> <span class="label">{{ team.project_teams.all.count }}</span></a>
+          <ul>
+            {% for project in team.project_teams.all %}
+            <li><a class="submenu" href="{% url 'project_page' team.id project.id %}"><i class="fa fa-github"></i><span class="hidden-sm">{{ project.name }}</span></a></li>
+            {% endfor %}
+
+            <li><a class="submenu" href="{% url 'team_page' team.id %}"><i class="fa fa-gear"></i><span class="hidden-sm">Manage Team</span></a></li>
+          </ul>
+        </li>
+      {% endfor %}
+
+    </ul>
+  </div>
+</div>
+<!-- end: Main Menu -->

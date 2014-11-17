@@ -3,15 +3,18 @@ from django.test.client import Client
 
 from projects.models import Project
 from teams.models import Team
-
+from buildbuild import attributes_for_tests
 
 class TestAPIUserList(TestCase):
+    fixtures = ['properties_data.yaml']
     def setUp(self):
         self.team = Team.objects.create_team(
             name="test_team_name",
         )
         self.project = Project.objects.create_project(
             name="test_project_name",
+            team_name=self.team.name,
+            properties = attributes_for_tests.properties_for_test,
         )
 
         self.client = Client()

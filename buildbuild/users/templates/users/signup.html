@@ -1,10 +1,39 @@
 {% extends "base.html" %}
 
-{% block content %}
-  <h1>SignUp Page</h1>
+{% block header %}
+{% endblock %}
 
-  <form method="POST">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="SignUp" />
-  </form>
+{% block main_menu %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="login-box">
+      <h2>Sign Up</h2>
+
+        <fieldset>
+          <form class="form-horizontal" method="POST">{% csrf_token %}
+            {{ form.as_p }}
+
+            <div class="clearfix"></div>
+            <input class="btn btn-primary col-xs-12" type="submit" value="SignUp" />
+          </form>
+        </fieldset>	
+
+      </form>
+      <hr>
+      <h3>Already BuildBuild user?</h3>
+      <p>
+        No problem, <a href="{% url 'login' %}">click here</a> to login this site.
+      </p>	
+    </div>
+  </div><!--/row-->
+{% endblock %}
+
+
+{% block modal %}
+{% endblock %}
+
+{% block footer %}
 {% endblock %}

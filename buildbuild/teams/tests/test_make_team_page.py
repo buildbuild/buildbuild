@@ -34,7 +34,7 @@ class MakeTeamPageTest(TestCase):
      # Default Set function, These are not Unit Test function
     def post_login_set(self, user_email="", user_password="", follow = False):
         response = self.client.post(
-                   "/users/login/", {
+                   "/login/", {
                        "email" : user_email,
                        "password" : user_password,
                        },
@@ -49,7 +49,7 @@ class MakeTeamPageTest(TestCase):
     # Default Set function, These are not Unit Test function
     def post_make_team_set(self, team_name="", follow=False):
         response = self.client.post(
-                       "/teams/maketeam/", {
+                       "/teams/new/", {
                        "teams_team_name": team_name,
                        },
                        follow = follow
@@ -66,12 +66,12 @@ class MakeTeamPageTest(TestCase):
 
     def test_get_make_team_page_request_with_login_response_to_maketeam(self):
         self.post_login_set(self.user_email, self.user_password)
-        response = self.client.get("/teams/maketeam/")
-        self.assertEqual(response._request.path, "/teams/maketeam/")
+        response = self.client.get("/teams/new/")
+        self.assertEqual(response._request.path, "/teams/new/")
  
     def test_get_make_team_page_without_login_redirect_to_login_page(self):
-        response = self.client.get("/teams/maketeam/", follow = True)
-        self.assertEqual(response.wsgi_request.path, "/users/login/")
+        response = self.client.get("/teams/new/", follow = True)
+        self.assertEqual(response.wsgi_request.path, "/login/")
  
     def test_check_uniqueness_of_name(self):
         self.post_login_set(self.user_email, self.user_password)
@@ -83,7 +83,7 @@ class MakeTeamPageTest(TestCase):
         self.post_login_set(self.user_email, self.user_password)
         response = self.post_make_team_set(self.team_name, follow = True)
         self.assertRedirects(response, "/")
-        self.assertContains(response, custom_msg.team_make_success)
+        self.assertContains(response, custom_msg.team_make_team_success_info)
 
     def test_post_team_name_required(self):
         self.post_login_set(self.user_email, self.user_password)

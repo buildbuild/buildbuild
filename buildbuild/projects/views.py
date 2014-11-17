@@ -33,7 +33,8 @@ from influxdb import client as influxdb
 # with the fields of project
 def project_page(request, team_id, project_id):
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
-                                database='cadvisor')
+                                database='cadvisor',
+                                timeout=2)
 
     project_name = Project.objects.get_project(id=project_id).name
     team_name = Team.objects.get_team(id=team_id).name

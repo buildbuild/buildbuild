@@ -74,19 +74,6 @@
 
     {% include 'javascript.html' %}
 
-
-  <!-- test purpose : showing all informations -->
-  {{ user.email }}
-  <ul>
-  {% for team in user.member.all %}
-  <li>{{ team.name }}</li>
-    {% for project in team.project_teams.all %}
-      ${{ project.name }}
-    {% endfor %}
-  {% endfor %}
-  </ul>
-  <!-- test purpose : showing all informations -->
-
   {% include 'message.html' %}
 
   <!-- for passing test purpose -->

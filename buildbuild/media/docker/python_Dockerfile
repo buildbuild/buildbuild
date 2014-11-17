@@ -26,4 +26,4 @@ RUN /bin/ln -s /usr/local/bin/python<x.y> /usr/local/bin/python
 # Git clone a Branch of Repo
 RUN /bin/mkdir -p /opt/apps/<project_name>
 RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
-
+CMD python $(find . -name manage.py) runserver 0.0.0.0:8080

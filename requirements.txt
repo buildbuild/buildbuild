@@ -17,6 +17,7 @@ ecdsa==0.11
 enum34==1.0.3
 gnureadline==6.3.3
 ipython==2.1.0
+influxdb==0.1.13
 kombu==3.0.23
 meld3==1.0.0
 paramiko==1.15.1

@@ -1,5 +1,5 @@
 ### project apps
-lang_python = 'python'
+lang_python = 'Python'
 ver_python_278 = '2.7.8'
 git_url_buildbuild = 'https://github.com/buildbuild/buildbuild.git'
 branch_name_master = 'master'

@@ -67,14 +67,7 @@ class BuildManager(models.Manager):
         docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)  
         image_name = build.image_name
         docker_client.pull(repository=image_name, insecure_registry=True)
-        container = docker_client.create_container(
-            image=image_name,
-            name = team_name+"_"+build.tag,
-            detach=True,
-            ports = [ 8080 ]
-        )
-        build.container = container.get('Id')
-        build.port = 10000 + build.project.id
+
         try:
             Build.objects.get(project = build.project, is_active = True)
         except ObjectDoesNotExist:
@@ -84,6 +77,16 @@ class BuildManager(models.Manager):
             old_build.is_active = False
             old_build.save()
             docker_client.remove_container(container = old_build.container, force=True)
+
+        container = docker_client.create_container(
+            image=image_name,
+            name = team_name+"_"+build.project.name,
+            detach=True,
+            ports = [ 8080 ]
+        )
+
+        build.container = container.get('Id')
+        build.port = 10000 + build.project.id
 
         response = docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
         build.is_active = True

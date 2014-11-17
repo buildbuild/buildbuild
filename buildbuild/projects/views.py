@@ -26,13 +26,32 @@ from django.core.validators import URLValidator
 
 from influxdb import client as influxdb
 
+import re
+
 
 # when User click a project in team page,
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html
 # with the fields of project
 def project_page(request, team_id, project_id):
-    print(request.META["REMOTE_ADDR"])
+    # Get Client IP
+    client_ip = request.META["REMOTE_ADDR"]
+
+    # Access influxdb
+    # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
+    # external                     to  61.43.139.143
+
+    is_internal = re.match(
+        "172.*",
+        client_ip,
+        re.I,
+    )
+
+    if is_internal:
+        print("INTERNAL")
+    else:
+        print("EXTERNAL")
+
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
                                 database='cadvisor')
 

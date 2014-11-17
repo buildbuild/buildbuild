@@ -18,6 +18,7 @@ def migrating_set():
             "users",
             "teams",
             "projects",
+            "dockerbuild",
         ]
     )
    

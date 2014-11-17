@@ -22,6 +22,12 @@ class TestUserManager(TestCase):
         self.new_invalid_name = "NewName1234!@#$"
         self.new_over_length_name = "a" * 31
 
+        # The following email is not sign-in yet
+        self.available_email = "available_email@example.com"
+        self.valid_name = "Available_-123User-Name"
+        self.invalid_name_exceed_the_maximum = "a" * 31
+        self.invalid_name = "invalid_name!@#"
+
         self.user = User.objects.create_user(
             email = self.valid_email,
             password = self.valid_password,
@@ -187,4 +193,32 @@ class TestUserManager(TestCase):
 
     def test_get_short_name_should_be_same_as_email(self):
         self.assertEqual(self.user.email, self.user.get_short_name())
+
+    def test_create_user_with_available_user_name(self):
+        user = User.objects.create_user(
+                   email = self.available_email,
+                   password = self.valid_password,
+                   name = self.valid_name,
+               )
+
+        self.assertEqual(user.name, self.valid_name)
+
+    def test_create_user_with_invalid_user_name(self):
+        self.assertRaises(
+            ValidationError,
+            User.objects.create_user,
+            email = self.available_email,
+            password = self.valid_password,
+            name = self.invalid_name,
+        )
+
+    def test_create_user_with_invalid_user_name_exceed_the_maximum(self):
+        self.assertRaises(
+            ValidationError,
+            User.objects.create_user,
+            email = self.available_email,
+            password = self.valid_password,
+            name = self.invalid_name_exceed_the_maximum,
+        )
+
 

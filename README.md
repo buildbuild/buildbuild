@@ -33,3 +33,8 @@ $ python manage.py bower install
 $ python manage.py collectstatic --noinput
 ```
 it makes every static files copied to STATIC_ROOT folder ( `/static` )
+
+Project Initializing
+---
+1. $ python migrating.py
+2. $ python loadfixtures.py

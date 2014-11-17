@@ -31,7 +31,7 @@ from influxdb import client as influxdb
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html 
 # with the fields of project
-def project_page(request, project_id, team_id):
+def project_page(request, team_id, project_id):
     db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
                                 database='cadvisor')
 
@@ -123,14 +123,16 @@ class MakeProjectView(FormView):
         try:
             team = Team.objects.get_team(team_id)
         except ObjectDoesNotExist:
-            messages.error(self.request, custom_msg.project_non_exist_team)
+            messages.error(self.request, custom_msg.project_make_project_error)
+            messages.info(self.request, custom_msg.project_non_exist_team)
             return HttpResponseRedirect(reverse("home"))
 
         # Check valid project name
         try:
             Project.objects.validate_name(project_name)
         except ValidationError:
-            messages.error(self.request, custom_msg.project_invalid)
+            messages.error(self.request, custom_msg.project_make_project_error)
+            messages.info(self.request, custom_msg.project_invalid)
             return HttpResponseRedirect(reverse("home"))
         
         # Check unique project name        
@@ -141,14 +143,16 @@ class MakeProjectView(FormView):
                 team_name = team.name,
             )
         except IntegrityError:
-            messages.error(self.request, custom_msg.project_already_exist)
+            messages.error(self.request, custom_msg.project_make_project_error)
+            messages.info(self.request, custom_msg.project_already_exist)
             return HttpResponseRedirect(reverse("home"))
         
         # Check valid team name
         try:
             Team.objects.validate_name(team.name)
         except ValidationError:
-            messages.error(self.request, custom_msg.project_invalid_team_name)
+            messages.error(self.request, custom_msg.project_make_project_error)
+            messages.info(self.request, custom_msg.project_invalid_team_name)
             return HttpResponseRedirect(reverse("home"))
 
         # Login check is programmed in buildbuild/urls.py
@@ -157,7 +161,8 @@ class MakeProjectView(FormView):
         try:
             team.members.get_member(id = user.id)
         except ObjectDoesNotExist:
-            messages.error(self.request, custom_msg.project_user_does_not_belong_team)
+            messages.error(self.request, custom_msg.project_make_project_error)
+            messages.info(self.request, custom_msg.project_user_does_not_belong_team)
             return HttpResponseRedirect(reverse("home"))
        
         # Both Language & Version form is needed
@@ -168,17 +173,20 @@ class MakeProjectView(FormView):
             try:
                 VersionList.objects.validate_lang(language)
             except ObjectDoesNotExist:
-                messages.error(self.request, custom_msg.project_lang_invalid)
+                messages.error(self.request, custom_msg.project_make_project_error)
+                messages.info(self.request, custom_msg.project_lang_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
             try:
                 Project.objects.validate_version_of_language(language, version)
             except ObjectDoesNotExist:
-                messages.error(self.request, custom_msg.project_ver_invalid)
+                messages.error(self.request, custom_msg.project_make_project_error)
+                messages.info(self.request, custom_msg.project_ver_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
         elif ("language" in self.request.POST) or ("version" in self.request.POST):
-            messages.error(self.request, custom_msg.project_both_lang_and_ver_is_needed)
+            messages.error(self.request, custom_msg.project_make_project_error)
+            messages.info(self.request, custom_msg.project_both_lang_and_ver_is_needed)
             return HttpResponseRedirect(reverse("home"))
 
         # Both Git & Branch name form is needed
@@ -190,10 +198,12 @@ class MakeProjectView(FormView):
                 validate_git_url = URLValidator()
                 validate_git_url(git_url)
             except ValidationError:
-                messages.error(self.request, custom_msg.url_invalid)
+                messages.error(self.request, custom_msg.project_make_project_error)
+                messages.info(self.request, custom_msg.url_invalid)
                 return HttpResponseRedirect(reverse("home"))
             except UnicodeError:
-                messages.error(self.request, custom_msg.url_unicode_invalid)
+                messages.error(self.request, custom_msg.project_make_project_error)
+                messages.info(self.request, custom_msg.url_unicode_invalid)
                 return HttpResponseRedirect(reverse("home"))
 
             # it's empty validator for branch name, needed to more test for this.
@@ -218,8 +228,8 @@ class MakeProjectView(FormView):
                       team_name = team.name,
                       properties = properties,
                   )
-        
-        messages.success(self.request, custom_msg.project_make_success)
+        messages.success(self.request, custom_msg.project_make_project_success)
+        messages.info(self.request, custom_msg.project_make_success)
 
         # redirect url should be changed later
         return HttpResponseRedirect(reverse("home")) 

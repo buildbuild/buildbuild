@@ -11,8 +11,8 @@ class ProjectWaitList_test(TestCase):
     def setUp(self):
         self.first_team_name = "Team1"
         self.second_team_name = "Second_Team1234"
-        self.project_name = "Project1"
-        self.second_project_name = "Second_Project1234"
+        self.project_name = "project1"
+        self.second_project_name = "second_project1234"
 
         self.team = Team.objects.create_team(
             name = self.first_team_name

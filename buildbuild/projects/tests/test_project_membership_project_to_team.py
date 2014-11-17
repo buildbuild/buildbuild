@@ -10,8 +10,8 @@ class project_membership_test(TestCase):
         self.team_name = "Team1"
         self.second_team = "Team2"
 
-        self.project_name = "Project1"
-        self.second_project = "Project2"
+        self.project_name = "project1"
+        self.second_project = "project2"
 
         self.team = Team.objects.create_team(
             name = self.team_name

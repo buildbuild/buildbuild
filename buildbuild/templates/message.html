@@ -1,0 +1,20 @@
+{% if messages %}
+<div id="gritter-notice-wrapper">
+  <div id="gritter-item" class="gritter-item-wrapper">
+    <div class="gritter-top"></div>
+    <div class="gritter-item">
+      <div class="gritter-close"></div>
+      <img class="gritter-image" src="" alt="" />
+      <div class="gritter-with-image">
+        {# 1. what message(success? error? or warning?) 2. message info #}   
+        {% for message in messages %}
+          <span class="gritter-title">{{ message }}</span>
+        {% endfor %}  
+      </div>
+      <div style="clear:both"></div>
+    </div>
+    <div class="gritter-botton"></div>
+  </div>
+</div>
+{% endif %}
+

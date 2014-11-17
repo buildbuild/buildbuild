@@ -1,0 +1,3 @@
+<h1>{{ project.name }}'s Deploy Page</h1>
+<h2>{{ build.tag }} - Deploy Success</h2>
+<a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">Go to my project page</a>

@@ -270,6 +270,11 @@
 
       RUN /usr/bin/git clone <git_url> --branch <branch_name> /opt/apps/<project_name>/
 
+      RUN pip install -r $(find /opt/apps/<project_name> -name requirements.txt)
+
+      CMD /usr/bin/python $(find /opt/apps/<project_name> -name manage.py) runserver
+      0.0.0.0:8080
+
       ', lang: Python}
   model: properties.dockertext
   pk: 1

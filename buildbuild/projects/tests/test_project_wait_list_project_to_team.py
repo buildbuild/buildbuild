@@ -11,8 +11,8 @@ class project_manager_test(TestCase):
         self.team_name = "Team1"
         self.team_name_2 = "Team2"
 
-        self.project_name = "Project1"
-        self.second_project_name = "Project2"
+        self.project_name = "project1"
+        self.second_project_name = "project2"
 
         self.team = Team.objects.create_team(
             name = self.team_name

@@ -59,9 +59,10 @@ def project_page(request, team_id, project_id):
     #     influxdb_host = "buildbuild.io"
 
     db = influxdb.InfluxDBClient(
-        host="soma.buildbuild.io",
+        host="buildbuild.io",
         # host="soma.buildbuild.io",
         database='cadvisor',
+        timeout=2,
     )
 
     cpu_index = 0
@@ -69,7 +70,7 @@ def project_page(request, team_id, project_id):
     rx_index = 0
     tx_index = 0
     try:
-        query = db.query("select * from /.*/ where container_name =  " + "docker/registry" + "limit 2")
+        query = db.query("select * from /.*/ where container_name =  '" + "/docker/registry" + "'limit 2")
         for index, item in enumerate(query[0]['columns']):
             if item == 'cpu_cumulative_usage':
                 cpu_index = index

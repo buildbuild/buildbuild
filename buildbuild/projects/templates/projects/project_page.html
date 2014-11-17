@@ -3,6 +3,48 @@
 {% block content %}
     <div id="content" class="col-lg-10 col-sm-11">
 <!-- PROJECT SUMMARY -->
+			<div class="row">
+				
+				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+					<div class="smallstat box">
+						<div class="boxchart-overlay blue">
+							<div class="boxchart">5,6,7,2,0,4,2,4,8,2,3,3,2</div>
+						</div>	
+						<span class="title">CPU Usage</span>
+						<span class="value">{{ cpu_usage }}</span>
+					</div>
+				</div><!--/col-->
+				
+				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+					<div class="smallstat box">
+						<div class="boxchart-overlay red">
+							<div class="boxchart">1,2,6,4,0,8,2,4,5,3,1,7,5</div>
+						</div>	
+						<span class="title">Memory Usage</span>
+						<span class="value">{{ memory_usage }}</span>
+					</div>
+				</div><!--/col-->
+				
+				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+					<div class="smallstat box">
+						<i class="fa fa-download green"></i>
+						<span class="title">Network Input</span>
+						<span class="value">{{ requested_bytes }}</span>
+					</div>
+				</div><!--/col-->
+				
+				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+					<div class="smallstat box">
+						<i class="fa fa-upload yellow"></i>
+						<span class="title">Network Output</span>
+						<span class="value">{{ transferred_bytes }}</span>
+					</div>
+				</div><!--/col-->
+			
+			</div><!--/row-->
+<!-- PROJECT SUMMARY -->
+
+<!-- PROJECT SUMMARY -->
 			<div class="circleStats row hideInIE8">
 
 				<div class="col-md-3 col-sm-3">
@@ -10,17 +52,17 @@
 						<div class="header">CPU Usage</div>
 						<span class="percent">percent</span>
                     	<div class="circleStat">
-                    		<input type="text" value="100" class="whiteCircle" />
+                        <input type="text" value="30" class="whiteCircle" />
 						</div>
 						<div class="footer">
 							<span class="count">
-								<span class="number">64</span>
-								<span class="unit">GB</span>
+                <span class="">0.84</span>
+								<span class="unit">GHz</span>
 							</span>
 							<span class="sep"> / </span>
 							<span class="value">
-								<span class="number">64</span>
-								<span class="unit">GB</span>
+								<span class="number">2.8</span>
+								<span class="unit">GHz</span>
 							</span>	
 						</div>
                 	</div>
@@ -92,52 +134,11 @@
             </div><!--/row-->	
 <!-- PROJECT SUMMARY -->
 
-<!-- PROJECT SUMMARY -->
-			<div class="row">
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<div class="boxchart-overlay blue">
-							<div class="boxchart">5,6,7,2,0,4,2,4,8,2,3,3,2</div>
-						</div>	
-						<span class="title">CPU Usage</span>
-						<span class="value">{{ cpu_usage }}</span>
-					</div>
-				</div><!--/col-->
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<div class="boxchart-overlay red">
-							<div class="boxchart">1,2,6,4,0,8,2,4,5,3,1,7,5</div>
-						</div>	
-						<span class="title">Memory Usage</span>
-						<span class="value">{{ memory_usage }}</span>
-					</div>
-				</div><!--/col-->
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<i class="fa fa-download green"></i>
-						<span class="title">Network Input</span>
-						<span class="value">{{ requested_bytes }}</span>
-					</div>
-				</div><!--/col-->
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<i class="fa fa-upload yellow"></i>
-						<span class="title">Network Output</span>
-						<span class="value">{{ transferred_bytes }}</span>
-					</div>
-				</div><!--/col-->
-			
-			</div><!--/row-->
 
       <div class="row">
         <iframe class="grafana" src="http://soma.buildbuild.io/docker_grafana/#/dashboard/db/dockerproject" style="width:100%;" height="900px" ></iframe>
       </div>
 
-<!-- PROJECT SUMMARY -->
 <h1>{{ project.name }}'s Page</h1>
   <p><a href="{% url 'home' %}">Go back</a></p>
   <h1>Configuraion</h1>

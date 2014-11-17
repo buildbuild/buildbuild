@@ -8,8 +8,8 @@ class TestVersion(TestCase):
     def setUp(self):
         self.non_exist_lang = "never_exist_lang"
        
-        self.lang_python = "python"
-        self.lang_ruby = "ruby"
+        self.lang_python = "Python"
+        self.lang_ruby = "Ruby"
 
     def test_get_python_docker_text(self):
         self.assertIsNotNone(DockerText.objects.get(lang=self.lang_python))

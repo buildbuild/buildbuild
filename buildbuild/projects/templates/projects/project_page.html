@@ -11,7 +11,7 @@
 							<div class="boxchart">5,6,7,2,0,4,2,4,8,2,3,3,2</div>
 						</div>	
 						<span class="title">CPU Usage</span>
-						<span class="value">4 589</span>
+						<span class="value">{{ cpu_usage }}</span>
 					</div>
 				</div><!--/col-->
 				
@@ -21,7 +21,7 @@
 							<div class="boxchart">1,2,6,4,0,8,2,4,5,3,1,7,5</div>
 						</div>	
 						<span class="title">Memory Usage</span>
-						<span class="value">789</span>
+						<span class="value">{{ memory_usage }}</span>
 					</div>
 				</div><!--/col-->
 				
@@ -29,7 +29,7 @@
 					<div class="smallstat box">
 						<i class="fa fa-download green"></i>
 						<span class="title">Network Input</span>
-						<span class="value">1 999,99</span>
+						<span class="value">{{ requested_bytes }}</span>
 					</div>
 				</div><!--/col-->
 				
@@ -37,28 +37,46 @@
 					<div class="smallstat box">
 						<i class="fa fa-upload yellow"></i>
 						<span class="title">Network Output</span>
-						<span class="value">19 999,99</span>
+						<span class="value">{{ transferred_bytes }}</span>
 					</div>
 				</div><!--/col-->
 			
 			</div><!--/row-->
+
 <!-- PROJECT SUMMARY -->
 <h1>{{ project.name }}'s Page</h1>
   <p><a href="{% url 'home' %}">Go back</a></p>
-  <h1>{{ project.name }}</h1>
-  {% for key, value in project.properties.items %}
-    {{ key }} : {{ value }} 
-  <br>
-  {% endfor %}
+  <h1>Configuraion</h1>
+    <ul>
+        <li>Language : {{ language }}</li>
+        <li>Version : {{ version }}</li>
+        <li>Git URL : {{ git_url }}</li>
+        <li>Git branch : {{ branch_name }}</li>
+    </ul>
 
-<p><a href="{% url 'dockerbuild:build_page' project.id %}">Build Page</a></p>
-<ul>
-    <li>cpu : {{ cpu_usage }}</li>
-    <li>memory : {{ memory_usage }}</li>
-    <li>rx : {{ requested_bytes }}</li>
-    <li>tx : {{ transferred_bytes }}</li>
-</ul>
-
+<p><a href="{% url 'dockerbuild:build_page' project.id %}"><h1>Build Page</h1></a></p>
 
   </div>
+=======
+<h1>{{ project.name }}'s Build Page</h1>
+<h2>Make a new version</h2>
+<form action="{% url 'dockerbuild:build_new' project.id %}" method="get">
+  Version Name</br>
+  <input type = "text" name="tag"></input>
+  <input type = "submit" value="Build"></input>
+</form>
+<h2>Versions List</h2>
+{% for build in project.build_set.all reversed %}
+  {{ build.tag }} 
+  ( {{ build.created_time }} )
+  {% if build.is_active %}
+    <a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">Now Running</a>
+  {% else %}
+    <a href = "{% url 'dockerbuild:deploy' build.id %}">Deploy</a>
+  {% endif %}
+  </br>
+{% endfor %}
+<h2><a target="_blank" href = "{% url 'dockerbuild:my_project' project.id %}">My Project Page</a></h2>
+
+</div>
 {% endblock %}

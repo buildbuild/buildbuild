@@ -33,6 +33,16 @@
     <!-- start: Favicon and Touch Icons -->
     <!-- should implemnet later -->
     <!-- end: Favicon and Touch Icons -->	
+    
+  {# for self disappearing message #}
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script>  
+    $(document).ready(function(){  
+      setTimeout(function() {  
+        $('.gritter-item-wrapper').fadeOut('slow');  
+      }, 5000); // <-- time in milliseconds  
+    });  
+  </script>  
 
   </head>
   <body>
@@ -77,17 +87,10 @@
   </ul>
   <!-- test purpose : showing all informations -->
 
+  {% include 'message.html' %}
+
   <!-- for passing test purpose -->
   <div class="container">
-    <div class="messages">
-    {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    </div>
 
   <nav>
     {% if user.is_authenticated %}

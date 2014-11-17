@@ -2,6 +2,34 @@
 
 {% block content %}
 <div id="content" class="col-lg-10 col-sm-11">
+
+  <div class="row">
+				<div class="col-lg-12">
+					<div class="box">
+						<div class="box-header">
+							<h2><i class="fa fa-hand-o-up"></i>Team Summary</h2>
+						</div>
+						<div class="box-content">
+							
+							
+							<div class="col-sm-6">
+								<a class="quick-button">
+									<i class="fa fa-search"></i>
+									<p>Search a Team</p>
+								</a>
+							</div>
+							<div class="col-sm-6">
+                <a class="quick-button blue" href="{% url 'teams:maketeam' %}">
+									<i class="fa fa-users"></i>
+									<p>Create a Team</p>
+								</a>
+							</div>
+							<div class="clearfix"></div>
+						</div>	
+					</div>	
+				</div><!--/col-->
+  </div>
+
   <div class="row">
     <div class="col-lg-12">
       <div class="box">
@@ -31,9 +59,11 @@
       </div>
     </div><!--/col-->
   </div>
+
   <div class="row">
     <a href="{% url 'teams:maketeam' %}">make a team</a>
   </div>
+
 </div>
 {% endblock %}
 

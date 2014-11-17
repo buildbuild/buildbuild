@@ -31,19 +31,37 @@ import pprint
 from elasticsearch import Elasticsearch
 from copy import deepcopy
 
+import re
+
+
 # when User click a project in team page,
 # team_page.html links to project_page url denoted in projects' urlconf
 # and project_page method in view render project_page.html
 # with the fields of project
 def project_page(request, team_id, project_id):
-    db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
-                                database='cadvisor',
-                                timeout=2)
+    db = influxdb.InfluxDBClient(
+        host="buildbulid.io",
+        database='cadvisor',
+    )
 
     project_name = Project.objects.get_project(id=project_id).name
     team_name = Team.objects.get_team(id=team_id).name
 
     container_name = "'/docker/"+team_name + "_" + project_name + "'"
+
+    # Get Client IP
+    # client_ip = request.META["REMOTE_ADDR"]
+
+    # Access influxdb
+    # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
+    # external                     to  61.43.139.143
+
+    # is_internal = re.match( "172.*", client_ip, re.I,)
+
+    # if is_internal:
+    #     influxdb_host = "soma.buildbuild.io"
+    # else:
+    #    influxdb_host = "buildbuild.io"
 
     cpu_index = 0
     memory_index = 0
@@ -255,7 +273,6 @@ class MakeProjectView(FormView):
         name = '/docker/' + pr # As a query language
         project_name = "container_name = '" + name + "'"
         uni_name = unicode(project_name, 'unicode-escape')
-        print uni_name
         _doc = deepcopy(doc)
 
         _doc['_id'] = pr

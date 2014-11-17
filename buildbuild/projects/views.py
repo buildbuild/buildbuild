@@ -48,12 +48,15 @@ def project_page(request, team_id, project_id):
     )
 
     if is_internal:
-        print("INTERNAL")
+        influxdb_host = "soma.buildbuild.io"
     else:
-        print("EXTERNAL")
+        influxdb_host = "buildbuild.io"
 
-    db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
-                                database='cadvisor')
+    db = influxdb.InfluxDBClient(
+        host=influxdb_host,
+        database='cadvisor',
+    )
+
 
     query = db.query("select * from /.*/ where container_name = '/docker/registry'  limit 2")
     cpu_index = 0

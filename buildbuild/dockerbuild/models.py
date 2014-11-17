@@ -36,19 +36,10 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             docker_client.stop(container = old_build.container)
 
-
 #        build.response = "".join([json.loads(line)["stream"] for line in 
         build.response = ([ line for line in 
 #          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
            docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name) ])
-        container = docker_client.create_container(
-            image=image_name,
-            name= build.project.name+"_"+build.tag,
-            detach=True,
-            ports = [ 8080 ]
-        )
-        build.container = container.get('Id')
-        build.port = 10000 + build.project.id
  
         try:
             Build.objects.get(project = build.project, is_active = True)
@@ -58,11 +49,14 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             docker_client.start(container = old_build.container , port_bindings = { 8080: old_build.port })
 
+        build.image_name = image_name
+        docker_client.push(repository=image_name, insecure_registry=True)
         build.save(using = self.db)
         return build
 
     def deploy_project(self, build_id, **kwargs):
         build = Build.objects.get(id=build_id)
+        team_name = build.project.project_teams.all()[0].name
         DOCKER_HOST = os.environ['DOCKER_HOST']
         DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
         DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
@@ -71,7 +65,16 @@ class BuildManager(models.Manager):
             client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
         )
         docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)  
- 
+        image_name = build.image_name
+        docker_client.pull(repository=image_name, insecure_registry=True)
+        container = docker_client.create_container(
+            image=image_name,
+            name = team_name+"_"+build.tag,
+            detach=True,
+            ports = [ 8080 ]
+        )
+        build.container = container.get('Id')
+        build.port = 10000 + build.project.id
         try:
             Build.objects.get(project = build.project, is_active = True)
         except ObjectDoesNotExist:
@@ -80,7 +83,7 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             old_build.is_active = False
             old_build.save()
-            docker_client.stop(container = old_build.container)
+            docker_client.remove_container(container = old_build.container, force=True)
 
         response = docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
         build.is_active = True
@@ -125,7 +128,8 @@ class BuildManager(models.Manager):
             raise OperationalError("delete build failed")
 
 class Build(models.Model):
-    tag = models.CharField(max_length = 15, unique = True)
+    tag = models.CharField(max_length = 15)
+    image_name = models.CharField(default = "", max_length = 200, unique = True)
     objects = BuildManager()
     project = models.ForeignKey(Project)
     is_active = models.BooleanField(default=True)

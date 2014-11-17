@@ -7,7 +7,7 @@
           <span class="icon-bar"></span>
     </button>
     <a id="main-menu-toggle" class="hidden-xs open"><i class="fa fa-bars"></i></a>		
-      <a class="navbar-brand col-lg-2 col-sm-1 col-xs-12" href="index.html"><span>SimpliQ</span></a>
+    <a class="navbar-brand col-lg-2 col-sm-1 col-xs-12" href="{% url 'home' %}"><span>BuildBuild</span></a>
     <!-- start: Header Menu -->
     <div class="nav-no-collapse header-nav">
       <ul class="nav navbar-nav pull-right">
@@ -17,7 +17,7 @@
           </a>
           <ul class="dropdown-menu notifications">
             <li class="dropdown-menu-title">
-              <span>You have 11 notifications</span>
+              <span>NOT IMPLEMENTED</span>
             </li>	
                         <li>
                               <a href="index.html#">
@@ -101,7 +101,7 @@
           </a>
           <ul class="dropdown-menu tasks">
             <li>
-              <span class="dropdown-menu-title">You have 17 tasks in progress</span>
+              <span class="dropdown-menu-title">NOT IMPLEMENTED</span>
                         </li>
             <li>
                               <a href="index.html#">
@@ -161,7 +161,7 @@
           </a>
           <ul class="dropdown-menu messages">
             <li>
-              <span class="dropdown-menu-title">You have 9 messages</span>
+              <span class="dropdown-menu-title">NOT IMPLEMENTED</span>
             </li>	
                         <li>
                               <a href="index.html#">
@@ -250,7 +250,7 @@
         </li>
         <!-- end: Message Dropdown -->
         <li>
-          <a class="btn" href="index.html#">
+          <a class="btn" href="{% url 'home' %}">
             <i class="fa fa-wrench"></i>
           </a>
         </li>
@@ -260,17 +260,17 @@
             <div class="avatar"><img src="assets/img/avatar.jpg" alt="Avatar"></div>
             <div class="user">
               <span class="hello">Welcome!</span>
-              <span class="name">Łukasz Holeczek</span>
+              <span class="name">{{ user.email }}</span>
             </div>
           </a>
           <ul class="dropdown-menu">
             <li class="dropdown-menu-title">
               
             </li>
-            <li><a href="index.html#"><i class="fa fa-user"></i> Profile</a></li>
-            <li><a href="index.html#"><i class="fa fa-cog"></i> Settings</a></li>
-            <li><a href="index.html#"><i class="fa fa-envelope"></i> Messages</a></li>
-            <li><a href="login.html"><i class="fa fa-off"></i> Logout</a></li>
+            <li><a href="{% url 'users:account' %}"><i class="fa fa-user"></i> Profile</a></li>
+            <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
+            <li><a href="#"><i class="fa fa-envelope"></i> Messages</a></li>
+            <li><a href="{% url 'logout' %}"><i class="fa fa-off"></i> Logout</a></li>
           </ul>
         </li>
         <!-- end: User Dropdown -->

@@ -66,72 +66,72 @@ class MakeTeamPageTest(TestCase):
     def test_post_make_team_set(self):
         self.post_make_team_set(self.team_name)
 
-    def post_search_team(self, pattern, follow = False):
+    def post_search(self, pattern, follow = False):
         response = self.client.post(
-                       "/teams/search_team/?search_team=" + pattern,
+                       "/teams/search/?search_team=" + pattern,
                        follow = follow,
                    )
         return response
 
-    def post_join_team(self, id, follow = False):
+    def post_join(self, id, follow = False):
         response = self.client.post(
-                       "/teams/join_team/" + str(id) + "/",
+                       "/teams/" + str(id) + "/join/",
                        follow = follow,
                    )
         return response
 
 
-    def test_post_search_team(self):
+    def test_post_search(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
-        self.post_search_team(self.team_name)
+        self.post_search(self.team_name)
 
-    def test_post_join_team(self):
+    def test_post_join(self):
         self.post_login_set(self.user_email, self.user_password)
         Team.objects.create_team(name = self.team_name)
-        self.post_join_team(id = 1)
+        self.post_join(id = 1)
 
     def test_search_exist_team_should_contain_that_team(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
-        response = self.post_search_team(self.team_name)
+        response = self.post_search(self.team_name)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.team_name)
 
-    def test_search_team_but_already_team_member_should_not_link_to_href(self):
+    def test_search_but_already_team_member_should_not_link_to_href(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
-        response = self.post_search_team(self.team_name)
+        response = self.post_search(self.team_name)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, custom_msg.already_team_member)
 
-    def test_search_teams_that_have_same_patterns_should_be_contained_all(self):
+    def test_searchs_that_have_same_patterns_should_be_contained_all(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.abc_pattern_first_team)
         self.post_make_team_set(self.abc_pattern_second_team)
 
-        response = self.post_search_team(self.abc_pattern)
+        response = self.post_search(self.abc_pattern)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self.abc_pattern_first_team)
         self.assertContains(response, self.abc_pattern_second_team)
    
     def test_search_not_exist_team_should_redirect_to_main_page(self):
         self.post_login_set(self.user_email, self.user_password)
-        response = self.post_search_team(self.never_exist_team,)
+        response = self.post_search(self.never_exist_team,)
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, self.never_exist_team)
 
-    def test_join_team_should_redirect_to_home(self):
+    def test_join_should_redirect_to_home(self):
         self.post_login_set(self.user_email, self.user_password)
         Team.objects.create_team(name = self.team_name)
-        response = self.post_join_team(id = 1, follow = True)
+        response = self.post_join(id = 1, follow = True)
         self.assertRedirects(response, "/")
 
     
-    def test_join_team_should_make_MtoM_WaitList_between_user_and_team(self):
+    def test_join_should_make_MtoM_WaitList_between_user_and_team(self):
         self.post_login_set(self.user_email, self.user_password)
         Team.objects.create_team(name = self.team_name)
-        response = self.post_join_team(id = 1)
+        response = self.post_join(id = 1)
         team = Team.objects.get(name = self.team_name)
         wait_member = User.objects.get(email = self.user_email)
         self.assertTrue(WaitList.objects.get(team = team, wait_member = wait_member))
@@ -140,18 +140,18 @@ class MakeTeamPageTest(TestCase):
 
     # The team member cannot link to join the team, 
     # but if it was possible, then redirected to main with messages
-    def test_join_team_already_member_should_be_redirected_to_main_with_message(self):
+    def test_join_already_member_should_be_redirected_to_main_with_message(self):
         self.post_login_set(self.user_email, self.user_password)
         self.post_make_team_set(self.team_name)
-        response = self.post_join_team(id = 1, follow = True)
+        response = self.post_join(id = 1, follow = True)
         self.assertRedirects(response, "/")
         self.assertContains(response, custom_msg.already_member)
  
-    def test_join_team_already_wait_member_should_be_redirected_to_main_with_message(self):
+    def test_join_already_wait_member_should_be_redirected_to_main_with_message(self):
         self.post_login_set(self.user_email, self.user_password)
         Team.objects.create_team(name = self.team_name)
-        self.post_join_team(id = 1, follow = True)
-        response = self.post_join_team(id = 1, follow = True)
+        self.post_join(id = 1, follow = True)
+        response = self.post_join(id = 1, follow = True)
         self.assertRedirects(response, "/")
         self.assertContains(response, custom_msg.already_wait_member)
  

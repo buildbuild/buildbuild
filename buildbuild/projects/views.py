@@ -31,26 +31,45 @@ import pprint
 from elasticsearch import Elasticsearch
 from copy import deepcopy
 
-# when User click a project in team page, 
+import re
+
+
+# when User click a project in team page,
 # team_page.html links to project_page url denoted in projects' urlconf
-# and project_page method in view render project_page.html 
+# and project_page method in view render project_page.html
 # with the fields of project
 def project_page(request, team_id, project_id):
-    db = influxdb.InfluxDBClient(host='soma.buildbuild.io',
-                                database='cadvisor',
-                                timeout=2)
-
     project_name = Project.objects.get_project(id=project_id).name
     team_name = Team.objects.get_team(id=team_id).name
 
     container_name = "'/docker/"+team_name + "_" + project_name + "'"
+
+    # Get Client IP
+    client_ip = request.META["REMOTE_ADDR"]
+
+    # Access influxdb
+    # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
+    # external                     to  61.43.139.143
+
+    is_internal = re.match( "172.*", client_ip, re.I,)
+
+    if is_internal:
+        influxdb_host = "soma.buildbuild.io"
+    else:
+        influxdb_host = "buildbuild.io"
+
+    db = influxdb.InfluxDBClient(
+        host=influxdb_host,
+        database='cadvisor',
+        timeout=2,
+    )
 
     cpu_index = 0
     memory_index = 0
     rx_index = 0
     tx_index = 0
     try:
-        query = db.query("select * from /.*/ where container_name =  " + container_name + "limit 2")
+        query = db.query("select * from /.*/ where container_name =  '" + "/docker/registry" + "'limit 2")
         for index, item in enumerate(query[0]['columns']):
             if item == 'cpu_cumulative_usage':
                 cpu_index = index
@@ -65,14 +84,27 @@ def project_page(request, team_id, project_id):
         tx_used = (query[0]['points'][0][tx_index])
         cpu_usage = (query[0]['points'][0][cpu_index] - query[0]['points'][1][cpu_index])
     except:
-        memory_usage = 'N/A'
-        rx_used = 'N/A'
-        tx_used = 'N/A'
-        cpu_usage = 'N/A'
+        memory_usage = 0
+        rx_used = 0
+        tx_used = 0
+        cpu_usage = 0
+
+    # Calculate Values
+    cpu_usage_in_Ghz = cpu_usage * 1.0 / (10**6)
+    cpu_usage_percent = cpu_usage_in_Ghz / 2.8 * 100
+
+    memory_usage_in_GB = memory_usage * 1.0 / (10**9)
+    memory_usage_percent = memory_usage_in_GB / 1.0 * 100
+
+    rx_used_in_GB = rx_used * 1.0 / (10**9)
+    rx_used_percent = rx_used_in_GB / 1.0 * 100
+
+    tx_used_in_GB = tx_used * 1.0 / (10**9)
+    tx_used_percent = tx_used_in_GB / 1.0 * 100
 
     project = Project.objects.get_project(project_id)
     team = Team.objects.get_team(team_id)
- 
+
     return render(
                request,
                "projects/project_page.html",
@@ -84,11 +116,19 @@ def project_page(request, team_id, project_id):
                    "git_url" : project.properties['git_url'],
                    "branch_name" : project.properties['branch_name'],
                    "memory_usage" : memory_usage,
+                   "memory_usage_percent" : memory_usage_percent,
+                   "memory_usage_in_GB" : memory_usage_in_GB,
                    "requested_bytes" : rx_used,
+                   "requested_bytes_percent" : rx_used_percent,
+                   "requested_bytes_in_GB" : rx_used_in_GB,
                    "transferred_bytes" : tx_used,
+                   "transferred_bytes_percent" : tx_used_percent,
+                   "transferred_bytes_in_GB" : tx_used_in_GB,
                    "cpu_usage" : cpu_usage,
+                   "cpu_usage_percent" : cpu_usage_percent,
+                   "cpu_usage_in_Ghz" : cpu_usage_in_Ghz,
                },
-           )            
+           )
 
 
 class MakeProjectView(FormView):
@@ -112,7 +152,7 @@ class MakeProjectView(FormView):
             context['is_team_member'] = False
         else:
             context['is_team_member'] = True
- 
+
         return context
 
     def form_valid(self, form):
@@ -144,8 +184,8 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_make_project_error)
             messages.info(self.request, custom_msg.project_invalid)
             return HttpResponseRedirect(reverse("home"))
-        
-        # Check unique project name        
+
+        # Check unique project name
         # Notice : project name must be unique in one team, not all teams
         try:
             Project.objects.check_uniqueness_project_name(
@@ -156,7 +196,7 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_make_project_error)
             messages.info(self.request, custom_msg.project_already_exist)
             return HttpResponseRedirect(reverse("home"))
-        
+
         # Check valid team name
         try:
             Team.objects.validate_name(team.name)
@@ -174,7 +214,7 @@ class MakeProjectView(FormView):
             messages.error(self.request, custom_msg.project_make_project_error)
             messages.info(self.request, custom_msg.project_user_does_not_belong_team)
             return HttpResponseRedirect(reverse("home"))
-       
+
         # Both Language & Version form is needed
         if ("language" in self.request.POST) and ("version" in self.request.POST):
             language = self.request.POST["language"]
@@ -249,7 +289,6 @@ class MakeProjectView(FormView):
         name = '/docker/' + pr # As a query language
         project_name = "container_name = '" + name + "'"
         uni_name = unicode(project_name, 'unicode-escape')
-        print uni_name
         _doc = deepcopy(doc)
 
         _doc['_id'] = pr
@@ -281,5 +320,5 @@ class MakeProjectView(FormView):
         messages.info(self.request, custom_msg.project_make_success)
 
         # redirect url should be changed later
-        return HttpResponseRedirect(reverse("home")) 
+        return HttpResponseRedirect(reverse("home"))
 

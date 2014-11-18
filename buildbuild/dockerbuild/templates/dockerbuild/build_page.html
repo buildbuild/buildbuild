@@ -1,6 +1,6 @@
 <h1>{{ project.name }}'s Build Page</h1>
 <h2>Make a new version</h2>
-<form action="{% url 'builds:build_new' project.id %}" method="get">
+<form action="{% url 'builds:new' project.id %}" method="get">
   Version Name</br>
   <input type = "text" name="tag"></input>
   <input type = "submit" value="Build"></input>

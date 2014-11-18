@@ -150,7 +150,7 @@
   <h3>Wait list</h3>
   {% for wait_member in team.wait_members.all %}
     <a href="{% url 'users:user_page' wait_member.id %}">{{ wait_member.email }}</a>
-    <a href="{% url 'teams:accept_request_to_join_team' team.id wait_member.id %}"> Accept</a>
+    <a href="{% url 'teams:accept' team.id wait_member.id %}"> Accept</a>
     <br>
     {% endfor %}
 

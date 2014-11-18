@@ -22,11 +22,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     
     # users' urls
-    url(r'^users/', include('users.urls', namespace='users')),
-    url(r'^login/', Login.as_view(), name="login"),
-    url(r'^logout/', Logout.as_view(), name="logout"),
-    url(r'^signup/', SignUp.as_view(), name="signup"),
-
+    url(r'^', include('users.urls', namespace='users')),
     
     # teams' urls
     url(r'^teams/', include('teams.urls', namespace='teams')),

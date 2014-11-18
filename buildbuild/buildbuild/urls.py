@@ -44,10 +44,11 @@ urlpatterns = patterns('',
         r'^teams/(?P<team_id>[0-9]+)/projects/new/$',
         login_required(MakeProjectView.as_view()),
         name="makeproject"
-    ),    
+    ),  
+
     # dockerbuild's urls
     url(
-        r'^dockerbuild/', 
-        include('dockerbuild.urls', namespace='dockerbuild')
+        r'^builds/', 
+        include('dockerbuild.urls', namespace='builds')
     ),
 )

@@ -57,7 +57,7 @@ class Login(FormView):
         except ValidationError:
             messages.error(self.request, custom_msg.user_signup_error)
             messages.info(self.request, custom_msg.user_email_not_exist)
-            return HttpResponseRedirect(reverse("login"))
+            return HttpResponseRedirect(reverse("users:login"))
         else:
             next = ""
 
@@ -83,11 +83,11 @@ class Login(FormView):
                 else:
                     messages.error(self.request, custom_msg.user_signup_error)
                     messages.info(self.request, custom_msg.user_deactivated)
-                    return HttpResponseRedirect(reverse("login"))
+                    return HttpResponseRedirect(reverse("users:login"))
             else:
                 messages.error(self.request, custom_msg.user_signup_error)
                 messages.info(self.request, custom_msg.user_invalid)
-                return HttpResponseRedirect(reverse("login"))
+                return HttpResponseRedirect(reverse("users:login"))
 
 class Logout(RedirectView):
     def get_redirect_url(self):
@@ -130,7 +130,7 @@ class SignUp(FormView):
                 self.request, 
                 custom_msg.user_password_confirmation_error,
             )
-            return HttpResponseRedirect(reverse("signup"))
+            return HttpResponseRedirect(reverse("users:signup"))
 
         # Validate email
         try:
@@ -138,7 +138,7 @@ class SignUp(FormView):
         except ValidationError:
             messages.error(self.request, custom_msg.user_signup_error)
             messages.info(self.request, custom_msg.user_invalid_email)
-            return HttpResponseRedirect(reverse("signup"))
+            return HttpResponseRedirect(reverse("users:signup"))
 
         # Check Uniqueness of User
         try:
@@ -148,7 +148,7 @@ class SignUp(FormView):
         else:
             messages.error(self.request, custom_msg.user_signup_error)
             messages.info(self.request, custom_msg.user_already_exist)
-            return HttpResponseRedirect(reverse("signup"))
+            return HttpResponseRedirect(reverse("users:signup"))
 
         # Validate password
         try:
@@ -156,7 +156,7 @@ class SignUp(FormView):
         except ValidationError:
             messages.error(self.request, custom_msg.user_signup_error)
             messages.info(self.request, custom_msg.user_invalid_password)
-            return HttpResponseRedirect(reverse("signup"))
+            return HttpResponseRedirect(reverse("users:signup"))
 
         # Validate user name
         if 'user_name' in self.request.POST:
@@ -170,7 +170,7 @@ class SignUp(FormView):
                     self.request, 
                     custom_msg.user_name_max_length_error
                 )
-                return HttpResponseRedirect(reverse("signup"))
+                return HttpResponseRedirect(reverse("users:signup"))
 
         # Create new user
         user = User.objects.create_user(
@@ -190,5 +190,5 @@ class SignUp(FormView):
         
         # send Email, test should be programmed in tasks.py
         tasks.send_mail_to_new_user.delay(user)
-        return HttpResponseRedirect(reverse("login"))
+        return HttpResponseRedirect(reverse("users:login"))
 

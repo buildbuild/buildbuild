@@ -24,17 +24,7 @@ urlpatterns = patterns('',
     url(r'^teams/([0-9]+)/$', 'teams.views.team_page', name='team_page'),
     
     # projects' urls
-    url(r'^projects/', include('projects.urls', namespace='projects')),
-    url(
-        r'^teams/([0-9]+)/projects/([0-9]+)/$', 
-        'projects.views.project_page', 
-        name='project_page',
-    ),
-    url(
-        r'^teams/(?P<team_id>[0-9]+)/projects/new/$',
-        login_required(MakeProjectView.as_view()),
-        name="makeproject"
-    ),  
+    url(r'^', include('projects.urls', namespace='projects')),
 
     # dockerbuild's urls
     url(

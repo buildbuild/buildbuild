@@ -119,6 +119,7 @@ class SignUp(FormView):
         email = self.request.POST["email"]
         password = self.request.POST["password"]
         password_confirmation = self.request.POST["password_confirmation"]
+        is_available_user_name = False
 
         # Password confirmation
         if password != password_confirmation:
@@ -171,6 +172,8 @@ class SignUp(FormView):
                     custom_msg.user_name_max_length_error
                 )
                 return HttpResponseRedirect(reverse("users:signup"))
+            else:
+                is_available_user_name = True 
 
         # Create new user
         user = User.objects.create_user(
@@ -179,7 +182,7 @@ class SignUp(FormView):
                )
         
         # User name update
-        if 'user_name' in self.request.POST:
+        if is_available_user_name:
             User.objects.update_user(
                 id = user.id,
                 name = self.request.POST['user_name'],

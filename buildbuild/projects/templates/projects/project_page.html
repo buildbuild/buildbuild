@@ -164,11 +164,8 @@
         <li>Git branch : {{ branch_name }}</li>
     </ul>
 
-<p><a href="{% url 'builds:build_page' project.id %}"><h1>Build Page</h1></a></p>
 
-  </div>
-=======
-<h1>{{ project.name }}'s Build Page</h1>
+<h1> Build Page</h1>
 <h2>Make a new version</h2>
 <form action="{% url 'builds:new' project.id %}" method="get">
   Version Name</br>
@@ -187,6 +184,6 @@
   </br>
 {% endfor %}
 <h2><a target="_blank" href = "{% url 'builds:my_project' project.id %}">My Project Page</a></h2>
-
+  </div>
 </div>
 {% endblock %}

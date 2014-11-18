@@ -5,6 +5,16 @@
 
   <div class="row">
 				<div class="col-lg-12">
+          {% if user.member.all.count == 0 %}
+						<div class="box-content alerts">
+							<div class="alert alert-danger">
+								<button type="button" class="close" data-dismiss="alert">×</button>
+                  Welcome, <strong>{{ user.email }} <br/></strong>
+                  But, you don't have any team yet so you can Search or Create a Team
+							</div>
+						</div>
+          {% endif %}
+
 					<div class="box">
 						<div class="box-header">
 							<h2><i class="fa fa-hand-o-up"></i>Team Summary</h2>
@@ -60,16 +70,11 @@
     </div><!--/col-->
   </div>
 
+</div>
+{% endblock %}
 
 <!--
 The block (search_team) can make user finds teams
 And This is allowed to the user who is  user.authenticated, 
 so only login user can access this search text form
 -->
-  <div class="row">
-    <a href="{% url 'teams:new' %}">make a team</a>
-  </div>
-
-</div>
-{% endblock %}
-

@@ -50,12 +50,12 @@ def accept_request_to_join_team(request, team_id, wait_member_id):
     wait_list.delete()
     Membership.objects.create_membership(team = team, user = user)
     messages.success(request, custom_msg.team_accept_member_success)
-    messages.info(request, custom_msg.accept_member_success_info) 
+    messages.info(request, custom_msg.accept_member_success_info)
     return HttpResponseRedirect(reverse("home"))
 
 
 # when User click a team, team_page method will render team_page.html
-# with the team argument 
+# with the team argument
 def team_page(request, team_id):
     team = Team.objects.get_team(team_id)
 
@@ -74,7 +74,7 @@ def team_page(request, team_id):
                    "team" : team,
                    "project_list" : project_list,
                },
-           )            
+           )
 
 def join_team(request, team_id):
     wait_member = request.user
@@ -107,32 +107,33 @@ def search_team(request):
         return HttpResponseRedirect(reverse("home"))
 
     # Case insensitive filtering
-    teams = Team.objects.filter(name__icontains = search_team) 
-   
+    teams = Team.objects.filter(name__icontains = search_team)
+
     return render(
                request,
                "teams/search_team_result.html",
                {
                    "teams" : teams,
                    "already_team_member" : custom_msg.already_team_member,
+                   "search_query" : search_team,
                },
-           )            
+           )
 
 class MakeTeamView(FormView):
     template_name = "teams/maketeam.html"
     form_class = MakeTeamForm
 
     def form_valid(self, form):
-        # name field required 
+        # name field required
         name = self.request.POST["teams_team_name"]
-        
+
         # valid team name test
         try:
             Team.objects.validate_name(name)
         except ValidationError:
             messages.error(self.request, custom_msg.team_make_team_error)
             messages.info(self.request, custom_msg.team_invalid)
-            return HttpResponseRedirect(reverse("teams:new")) 
+            return HttpResponseRedirect(reverse("teams:new"))
 
         # unique team test
         try:
@@ -142,22 +143,22 @@ class MakeTeamView(FormView):
         else:
             messages.error(self.request, custom_msg.team_make_team_error)
             messages.info(self.request, custom_msg.team_already_exist)
-            return HttpResponseRedirect(reverse("teams:new"))          
- 
+            return HttpResponseRedirect(reverse("teams:new"))
+
         # Login check is programmed in buildbuild/urls.py
-        # link user to team using Membership  
+        # link user to team using Membership
         user = self.request.user
         team = Team.objects.create_team(name)
 
         membership = Membership.objects.create_membership(
-            team = team, 
-            user = user, 
+            team = team,
+            user = user,
         )
         membership.is_admin = True
         membership.save()
 
         messages.success(self.request, custom_msg.team_make_team_success)
         messages.info(self.request, custom_msg.team_make_team_success_info)
- 
+
         return HttpResponseRedirect(reverse("home"))
 

@@ -13,6 +13,21 @@
             </div>
           </div>
           <div class="box-content">
+            <form class="form-horizontal" action="{% url 'teams:search' %}" method="GET">
+                <div class="form-group">
+                <label class="control-label" for="focusedInput">Team Name</label>
+                <div class="controls">
+                  <input id="" name="search_team" class="form-control focused" id="focusedInput" type="text" value="{{ search_query }}">
+                </div>
+                </div>
+                <div class="form-actions">
+                <input type="submit" class="btn btn-primary" value="Search a Team"></input>
+                <button class="btn">Cancel</button>
+                </div>
+              </form>
+
+              <div style="margin-bottom:40px;"></div>
+
             <table class="table table-striped bootstrap-datatable datatable">
               <thead>
                 <tr>

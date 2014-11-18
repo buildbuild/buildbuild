@@ -127,7 +127,7 @@ class MakeTeamView(FormView):
         except ValidationError:
             messages.error(self.request, custom_msg.team_make_team_error)
             messages.info(self.request, custom_msg.team_invalid)
-            return HttpResponseRedirect(reverse("teams:maketeam")) 
+            return HttpResponseRedirect(reverse("teams:new")) 
 
         # unique team test
         try:
@@ -137,7 +137,7 @@ class MakeTeamView(FormView):
         else:
             messages.error(self.request, custom_msg.team_make_team_error)
             messages.info(self.request, custom_msg.team_already_exist)
-            return HttpResponseRedirect(reverse("teams:maketeam"))          
+            return HttpResponseRedirect(reverse("teams:new"))          
  
         # Login check is programmed in buildbuild/urls.py
         # link user to team using Membership  

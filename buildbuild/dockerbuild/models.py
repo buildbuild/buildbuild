@@ -21,7 +21,7 @@ class BuildManager(models.Manager):
 #           client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
 #       )
 #       docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)
-        docker-client = Client(base_url='unix://var/run/docker.sock')
+        docker_client = Client(base_url='unix://var/run/docker.sock')
 
         build = self.model()
         self.validate_tag(tag)

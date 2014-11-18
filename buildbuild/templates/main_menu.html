@@ -9,13 +9,13 @@
 
       {% for team in user.member.all %}
         <li>
-          <a class="dropmenu" href="{% url 'team_page' team.id %}"><i class="fa fa-users"></i><span class="hidden-sm">{{ team.name }}</span> <span class="label">{{ team.project_teams.all.count }}</span></a>
+          <a class="dropmenu" href="{% url 'teams:team_page' team.id %}"><i class="fa fa-users"></i><span class="hidden-sm">{{ team.name }}</span> <span class="label">{{ team.project_teams.all.count }}</span></a>
           <ul>
             {% for project in team.project_teams.all %}
             <li><a class="submenu" href="{% url 'projects:project_page' team.id project.id %}"><i class="fa fa-github"></i><span class="hidden-sm">{{ project.name }}</span></a></li>
             {% endfor %}
 
-            <li><a class="submenu" href="{% url 'team_page' team.id %}"><i class="fa fa-gear"></i><span class="hidden-sm">Manage Team</span></a></li>
+            <li><a class="submenu" href="{% url 'teams:team_page' team.id %}"><i class="fa fa-gear"></i><span class="hidden-sm">Manage Team</span></a></li>
           </ul>
         </li>
       {% endfor %}

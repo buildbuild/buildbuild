@@ -74,44 +74,6 @@
 
     {% include 'javascript.html' %}
 
-
-  <!-- test purpose : showing all informations -->
-  {{ user.email }}
-  <ul>
-  {% for team in user.member.all %}
-  <li>{{ team.name }}</li>
-    {% for project in team.project_teams.all %}
-      ${{ project.name }}
-    {% endfor %}
-  {% endfor %}
-  </ul>
-  <!-- test purpose : showing all informations -->
-
   {% include 'message.html' %}
-
-  <!-- for passing test purpose -->
-  <div class="container">
-
-  <nav>
-    {% if user.is_authenticated %}
-    <div>Welcome, {{ user.email }}</div>
-      <a href="{% url 'logout' %}">Logout</a>
-      <a href="{% url 'users:account' %}">Account info</a>
-      <a href="{% url 'teams:maketeam' %}">Make a Team</a>
-      <p>
-      {% block search_team %}
-      {% endblock %}
-      </p>
-      <p>
-      {% block team_list %}
-      {% endblock %}
-      </p>
-    {% else %}
-      <a href="{% url 'login' %}">Login</a>
-      <a href="{% url 'signup' %}">SignUp</a>
-    {% endif %}
-  </nav>
-
-  </div>
   </body>
 </html>

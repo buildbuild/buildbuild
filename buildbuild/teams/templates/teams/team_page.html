@@ -103,6 +103,58 @@
 			</div><!--/row-->
 <!-- TABLE -->
 
+<!-- TABLE -->
+			<div class="row">		
+				<div class="col-lg-12">
+					<div class="box">
+						<div class="box-header" data-original-title>
+							<h2><i class="fa fa-user"></i><span class="break"></span>Members - Wait List</h2>
+							<div class="box-icon">
+								<a href="table.html#" class="btn-setting"><i class="fa fa-wrench"></i></a>
+								<a href="table.html#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+								<a href="table.html#" class="btn-close"><i class="fa fa-times"></i></a>
+							</div>
+						</div>
+						<div class="box-content">
+							<table class="table table-striped bootstrap-datatable datatable">
+							  <thead>
+								  <tr>
+									  <th>#</th>
+									  <th>Email</th>
+									  <th>Status</th>
+									  <th>Actions</th>
+								  </tr>
+							  </thead>   
+							  <tbody>
+                  {% for wait_member in team.wait_members.all %}
+                  <tr>
+                    <td class="center">{{ wait_member.id }}</td>
+                    <td class="center">{{ wait_member.email }}</td>
+                    <td class="center">
+                      <span class="label label-warning">Waiting</span>
+                    </td>
+                    <td class="center">
+                      <a class="btn btn-success" href="{% url 'users:user_page' wait_member.id %}">
+                        <i class="fa fa-search-plus "></i>  
+                      </a>
+                      <a class="btn btn-info" href="{% url 'teams:accept' team.id wait_member.id %}>
+                        <i class="">Accept</i>  
+                      </a>
+                      <a class="btn btn-danger" href="#">
+                        <i class="">Decline</i> 
+                      </a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+							  </tbody>
+						  </table>            
+						</div>
+					</div>
+				</div><!--/col-->
+			
+			</div><!--/row-->
+<!-- TABLE -->
+
 <!-- PROJECTS -->
 			<div class="row">		
 				<div class="col-lg-6">
@@ -147,12 +199,6 @@
 
     <p><a href="{% url 'home' %}">Go back</a></p>
 
-  <h3>Wait list</h3>
-  {% for wait_member in team.wait_members.all %}
-    <a href="{% url 'users:user_page' wait_member.id %}">{{ wait_member.email }}</a>
-    <a href="{% url 'teams:accept' team.id wait_member.id %}"> Accept</a>
-    <br>
-    {% endfor %}
 
 </div>
 {% endblock %}

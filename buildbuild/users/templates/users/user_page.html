@@ -1,9 +1,34 @@
-<a href="/"><- go back</a>
-  
-<h1> {{ user.email }}'s Page</h1> 
-  <ul>
-      <li>Email : {{user.email }}</li>
-      <li>Name : {{ user.name }}</li>
-      <li>Phone number : {{ user.phonenumber }}</li>
-  </ul>
+{% extends "base.html" %}
 
+{% block content %}
+<div id="content" class="col-lg-10 col-sm-11">
+  
+  <div class="row">
+      <div class="box-content alerts">
+        <div class="alert alert-info">
+          <button type="button" class="close" data-dismiss="alert">×</button>
+          <strong>Sorry!</strong> We are currently developing user account page. Please wait for update
+        </div>
+      </div>
+  </div>
+
+  <div class="row">
+      <div class="col-lg-12">
+        <div class="box">
+          <div class="box-header">
+            <h2><i class="fa fa-edit"></i>User Account</h2>
+            <div class="box-icon">
+              <a href="form-elements.html#" class="btn-setting"><i class="fa fa-wrench"></i></a>
+              <a href="form-elements.html#" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+              <a href="form-elements.html#" class="btn-close"><i class="fa fa-times"></i></a>
+            </div>
+          </div>
+          <div class="box-content">
+            Email : {{ user.email }} <br/>
+            Name : {{ user.name }}
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock %}

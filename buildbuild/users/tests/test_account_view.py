@@ -51,7 +51,8 @@ class TestAccountView(TestCase):
         response = self.client.get("/users/account/")
         self.assertContains(response, self.user_email)
         self.assertContains(response, self.user_name)
-        self.assertContains(response, self.user_phone_number)
+        # self.assertContains(response, self.user_phone_number)
+        # we will not show phone number at this version
 
     def test_non_login_user_should_get_result_next_parameter(self):
         response = self.client.get("/users/account/")

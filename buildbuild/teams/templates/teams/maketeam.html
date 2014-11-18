@@ -1,10 +1,15 @@
 {% extends "base.html" %}
+  {% block content %}
+  <div class="row">
+    <div class="login-box">
+    <h1>Make Team Page</h1>
+        <fieldset>
+          <form class="form-horizontal" method="POST">{% csrf_token %}
+        {{ form.as_p }}
+            <div class="clearfix"></div>
+      <input class="btn btn-primary col-xs-12" type="submit" value="MakeTeam" />
+    </form>
 
-{% block content %}
-  <h1>Make Team Page</h1>
+        </fieldset>	
 
-  <form method="POST">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="MakeTeam" />
-  </form>
-{% endblock %}
+  {% endblock %}

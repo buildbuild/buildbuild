@@ -5,7 +5,7 @@
     {% if user in team.members.all %}
       :  {{ already_team_member }}
     {% else %}
-      <a href="{% url 'teams:join_team' team.id %}"> Join</a>
+      <a href="{% url 'teams:join' team.id %}"> Join</a>
     {% endif %}
     <br>
   {% endfor %}

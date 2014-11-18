@@ -101,6 +101,11 @@ def join_team(request, team_id):
 def search_team(request):
     search_team = request.GET['search_team']
 
+    # If GET data is "", icontains option will find all data
+    # So in this case, redirect to home
+    if search_team == "":
+        return HttpResponseRedirect(reverse("home"))
+
     # Case insensitive filtering
     teams = Team.objects.filter(name__icontains = search_team) 
    
@@ -127,7 +132,7 @@ class MakeTeamView(FormView):
         except ValidationError:
             messages.error(self.request, custom_msg.team_make_team_error)
             messages.info(self.request, custom_msg.team_invalid)
-            return HttpResponseRedirect(reverse("teams:maketeam")) 
+            return HttpResponseRedirect(reverse("teams:new")) 
 
         # unique team test
         try:
@@ -137,7 +142,7 @@ class MakeTeamView(FormView):
         else:
             messages.error(self.request, custom_msg.team_make_team_error)
             messages.info(self.request, custom_msg.team_already_exist)
-            return HttpResponseRedirect(reverse("teams:maketeam"))          
+            return HttpResponseRedirect(reverse("teams:new"))          
  
         # Login check is programmed in buildbuild/urls.py
         # link user to team using Membership  

@@ -7,11 +7,8 @@
 
 {% if teams %}
         <div class="box">
-
-            result About <strong>{{search_query }}</strong>
-
           <div class="box-header">
-            <h2><i class="fa fa-list"></i>Search Result ( {{ teams.all.count }} )</h2>
+            <h2><i class="fa fa-list"></i>Search Result ( {{ teams.all.count }} ) - "{{search_query}}"</h2>
             <div class="box-icon">
             </div>
           </div>

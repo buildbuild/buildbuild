@@ -13,16 +13,45 @@
             <div class="box-icon">
             </div>
           </div>
-    {% for team in teams %}
-      {{ team.name }}
-      {% if user in team.members.all %}
-        :  {{ already_team_member }}
-      {% else %}
-        <a href="{% url 'teams:join' team.id %}"> Join</a>
-      {% endif %}
-      <br>
-    {% endfor %}
-
+          <div class="box-content">
+            <table class="table table-striped bootstrap-datatable datatable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Team Name</th>
+                  <th>Status</th>
+                </tr>
+              </thead>   
+              <tbody>
+                {% for team in teams %}
+                <tr>
+                  <td class="center">{{ team.id }}</td>
+                  <td class="center">{{ team.name }}</td>
+                  <td class="center">
+                    <span class="label label-success">Active</span>
+                    {% if user in team.members.all %}
+                      <span class="label label-info">Member</span>
+                    {% endif %}
+                  </td>
+                  <td class="center">
+                    <a class="btn btn-success" href="">
+                      <i class="fa fa-search-plus "> Team Information</i>  
+                    </a>
+                    {% if user in team.members.all %}
+                      <a class="btn btn-danger" href="#">
+                        <i class="fa fa-trash-o "> Leave</i> 
+                      </a>
+                    {% else %}
+                      <a class="btn btn-info" href="{% url 'teams:join' team.id %}">
+                        <i class="fa fa-users"> Join Request</i> 
+                      </a>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>            
+          </div>
         </div>
 
 {% else %}

@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <a href="/"><- go back</a>
-
-        <h2>{{ user_account }} 's Account page </h2>
-        <ul>
-            <li>Email : {{user_account.email }}</li>
-            <li>Name : {{ user_account.name }}</li>
-            <li>Phone number : {{ user_account.phonenumber }}</li>
-        </ul>
+<div id="content" class="col-lg-10 col-sm-11">
+  <div class="row">
+      <div class="col-lg-12">
+            Email : {{user_account.email }}
+            Name : {{ user_account.name }}
+            Phone number : {{ user_account.phonenumber }}
+      </div>
+  </div>
+</div>
 {% endblock %}

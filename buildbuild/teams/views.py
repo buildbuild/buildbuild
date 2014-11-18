@@ -101,6 +101,11 @@ def join_team(request, team_id):
 def search_team(request):
     search_team = request.GET['search_team']
 
+    # If GET data is "", icontains option will find all data
+    # So in this case, redirect to home
+    if search_team == "":
+        return HttpResponseRedirect(reverse("home"))
+
     # Case insensitive filtering
     teams = Team.objects.filter(name__icontains = search_team) 
    

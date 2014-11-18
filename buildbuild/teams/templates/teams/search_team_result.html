@@ -39,7 +39,7 @@
                     </a>
                     {% if user in team.members.all %}
                       <a class="btn btn-danger" href="#">
-                        <i class="fa fa-trash-o "> Leave</i> 
+                        <i class="fa fa-unlink "> Leave</i> 
                       </a>
                     {% else %}
                       <a class="btn btn-info" href="{% url 'teams:join' team.id %}">

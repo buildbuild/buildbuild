@@ -160,10 +160,10 @@ class SignUp(FormView):
             return HttpResponseRedirect(reverse("users:signup"))
 
         # Validate user name
-        if 'user_name' in self.request.GET:
+        if 'user_name' in self.request.POST:
             try:
                 User.objects.validate_name(
-                    self.request.GET['user_name']
+                    self.request.POST['user_name']
                 )
             except ValidationError:
                 messages.error(self.request, custom_msg.user_signup_error)
@@ -173,7 +173,7 @@ class SignUp(FormView):
                 )
                 return HttpResponseRedirect(reverse("users:signup"))
             else:
-                is_available_name = True
+                is_available_user_name = True 
 
         # Create new user
         user = User.objects.create_user(
@@ -185,7 +185,7 @@ class SignUp(FormView):
         if is_available_user_name:
             User.objects.update_user(
                 id = user.id,
-                name = self.request.GET['user_name'],
+                name = self.request.POST['user_name'],
             )
 
         messages.success(self.request, custom_msg.user_signup_success)

@@ -38,7 +38,7 @@
 								</a>
 							</div>
 							<div class="col-sm-3">
-                <a class="quick-button blue" href="{% url 'makeproject' team.id %}">
+                <a class="quick-button blue" href="{% url 'projects:makeproject' team.id %}">
 									<i class="fa fa-github"></i>
 									<p>Create a Project</p>
 								</a>
@@ -129,7 +129,7 @@
                   <tr>
                     <td class="center">{{ project.id }}</td>
                     <td class="center">
-                      <a href="{% url 'project_page' team.id project.id %}">{{ project.name }}</a>
+                      <a href="{% url 'projects:project_page' team.id project.id %}">{{ project.name }}</a>
                     </td>
 										<td class="center">
 											<span class="label label-success">Active</span>

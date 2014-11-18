@@ -9,19 +9,19 @@
         <div class="box">
 
           <div class="box-header">
-            <h2><i class="fa fa-list"></i>Search Result</h2>
+            <h2><i class="fa fa-list"></i>Search Result ( {{ teams.all.count }} )</h2>
             <div class="box-icon">
             </div>
           </div>
-  {% for team in teams %}
-    {{ team.name }}
-    {% if user in team.members.all %}
-      :  {{ already_team_member }}
-    {% else %}
-      <a href="{% url 'teams:join' team.id %}"> Join</a>
-    {% endif %}
-    <br>
-  {% endfor %}
+    {% for team in teams %}
+      {{ team.name }}
+      {% if user in team.members.all %}
+        :  {{ already_team_member }}
+      {% else %}
+        <a href="{% url 'teams:join' team.id %}"> Join</a>
+      {% endif %}
+      <br>
+    {% endfor %}
 
         </div>
 

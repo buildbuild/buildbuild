@@ -3,6 +3,7 @@ from projects.models import Project, ProjectManager
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from properties.models import DockerText
 import os
+import platform
 
 from docker import Client
 from docker.tls import TLSConfig
@@ -12,16 +13,18 @@ import json
 
 class BuildManager(models.Manager):
     def build_project(self, project_id, tag, **kwargs):
-#       This setting is for OS X
-#       DOCKER_HOST = os.environ['DOCKER_HOST']
-#       DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
-#       DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
-#       cert_dir = os.environ['DOCKER_CERT_PATH'] + '/'
-#       tls_config = TLSConfig(
-#           client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
-#       )
-#       docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)
-        docker_client = Client(base_url='unix://var/run/docker.sock')
+#       Darwin is OS X
+        if platform.system() == 'Darwin':
+            DOCKER_HOST = os.environ['DOCKER_HOST']
+            DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
+            DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
+            cert_dir = os.environ['DOCKER_CERT_PATH'] + '/'
+            tls_config = TLSConfig(
+                 client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
+            )
+            docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)
+        if platform.system() == 'Linux':
+            docker_client = Client(base_url='unix://var/run/docker.sock')
 
         build = self.model()
         self.validate_tag(tag)
@@ -59,16 +62,18 @@ class BuildManager(models.Manager):
     def deploy_project(self, build_id, **kwargs):
         build = Build.objects.get(id=build_id)
         team_name = build.project.project_teams.all()[0].name
-#       This setting is for OS X
-#       DOCKER_HOST = os.environ['DOCKER_HOST']
-#       DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
-#       DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
-#       cert_dir = os.environ['DOCKER_CERT_PATH'] + '/'
-#       tls_config = TLSConfig(
-#           client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
-#       )
-#       docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)  
-        docker_client = Client(base_url='unix://var/run/docker.sock')
+#       Darwin is OS X
+        if platform.system() == 'Darwin':
+            DOCKER_HOST = os.environ['DOCKER_HOST']
+            DOCKER_HOST = DOCKER_HOST.replace('tcp', 'https')
+            DOCKER_CERT_PATH = os.environ['DOCKER_CERT_PATH']
+            cert_dir = os.environ['DOCKER_CERT_PATH'] + '/'
+            tls_config = TLSConfig(
+                 client_cert=(cert_dir + 'cert.pem', cert_dir + 'key.pem'), verify=False
+            )
+            docker_client = Client(base_url=DOCKER_HOST, tls = tls_config)
+        if platform.system() == 'Linux':
+            docker_client = Client(base_url='unix://var/run/docker.sock')
         image_name = build.image_name
         docker_client.pull(repository=image_name, insecure_registry=True)
 

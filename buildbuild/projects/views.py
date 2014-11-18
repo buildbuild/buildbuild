@@ -46,6 +46,7 @@ def project_page(request, team_id, project_id):
 
     # Get Client IP
     client_ip = request.META["REMOTE_ADDR"]
+    print(client_ip)
 
     # Access influxdb
     # internal ( 172.xxx.xxx.xxx ) to 172.16.100.169
@@ -56,7 +57,8 @@ def project_page(request, team_id, project_id):
     if is_internal:
         influxdb_host = "soma.buildbuild.io"
     else:
-        influxdb_host = "buildbuild.io"
+        # influxdb_host = "buildbuild.io"
+        influxdb_host = "soma.buildbuild.io"
 
     db = influxdb.InfluxDBClient(
         host=influxdb_host,

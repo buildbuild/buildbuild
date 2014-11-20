@@ -1,189 +1,265 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div id="content" class="col-lg-10 col-sm-11">
-<!-- PROJECT SUMMARY -->
-			<div class="row">
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<div class="boxchart-overlay blue">
-							<div class="boxchart">5,6,7,2,0,4,2,4,8,2,3,3,2</div>
-						</div>	
-						<span class="title">CPU Usage</span>
-						<span class="value">{{ cpu_usage }}</span>
-					</div>
-				</div><!--/col-->
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<div class="boxchart-overlay red">
-							<div class="boxchart">1,2,6,4,0,8,2,4,5,3,1,7,5</div>
-						</div>	
-						<span class="title">Memory Usage</span>
-						<span class="value">{{ memory_usage }}</span>
-					</div>
-				</div><!--/col-->
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<i class="fa fa-download green"></i>
-						<span class="title">Network Input</span>
-						<span class="value">{{ requested_bytes }}</span>
-					</div>
-				</div><!--/col-->
-				
-				<div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
-					<div class="smallstat box">
-						<i class="fa fa-upload yellow"></i>
-						<span class="title">Network Output</span>
-						<span class="value">{{ transferred_bytes }}</span>
-					</div>
-				</div><!--/col-->
-			
-			</div><!--/row-->
-<!-- PROJECT SUMMARY -->
+<div id="content" class="col-lg-10 col-sm-11">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="box">
+        <div class="box-header">
+          <h2><i class="fa fa-bar-chart-o"></i>{{ project.project_teams.first.name }} - {{ project.name }}</h2>
+          <div class="box-icon">
+            <a href="" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+            <a href="widgets.html" class="btn-close"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+        <div class="box-content">
+<ul>
+    <li>Language : {{ language }}</li>
+    <li>Version : {{ version }}</li>
+    <li>Git URL : {{ git_url }}</li>
+    <li>Git branch : {{ branch_name }}</li>
+</ul>
 
-<!-- PROJECT SUMMARY -->
-			<div class="circleStats row hideInIE8">
-
-				<div class="col-md-3 col-sm-3">
-                	<div class="circleStatsItemBox">
-						<div class="header">CPU Usage</div>
-						<span class="percent">percent</span>
-                    	<div class="circleStat">
-                        <input type="text" value="{{ cpu_usage_percent }}" class="whiteCircle" />
-						</div>
-						<div class="footer">
-							<span class="count">
-                <span class="">{{ cpu_usage_in_Ghz }}</span>
-								<span class="unit">GHz</span>
-							</span>
-							<span class="sep"> / </span>
-							<span class="value">
-								<span class="number">2.8</span>
-								<span class="unit">GHz</span>
-							</span>	
-						</div>
-                	</div>
-				</div><!--/col-->
-
-				<div class="col-md-3 col-sm-3 noMargin">
-                	<div class="circleStatsItemBox">
-						<div class="header">Memory Usage</div>
-						<span class="percent">percent</span>
-                    	<div class="circleStat">
-                        <input type="text" value="{{ memory_usage_percent }}" class="whiteCircle" />
-						</div>
-						<div class="footer">
-							<span class="count">
-                <span class="">{{ memory_usage_in_GB }}</span>
-								<span class="unit">GB</span>
-							</span>
-							<span class="sep"> / </span>
-							<span class="value">
-                <span class="number">1.0</span>
-								<span class="unit">GB</span>
-							</span>	
-						</div>
-                	</div>
-				</div><!--/col-->
-
-				<div class="col-md-3 col-sm-3">
-                	<div class="circleStatsItemBox">
-						<div class="header">Network Input</div>
-						<span class="percent">percent</span>
-                    	<div class="circleStat">
-                        <input type="text" value="{{ requested_bytes_percent }}" class="whiteCircle" />
-						</div>
-						<div class="footer">
-							<span class="count">
-                <span class="">{{ requested_bytes_in_GB }}</span>
-								<span class="unit">GB</span>
-							</span>
-							<span class="sep"> / </span>
-							<span class="value">
-								<span class="number">1.0</span>
-								<span class="unit">GB</span>
-							</span>	
-						</div>
-                	</div>
-				</div><!--/col-->
-
-				<div class="col-md-3 col-sm-3">
-                	<div class="circleStatsItemBox">
-						<div class="header">Network Output</div>
-						<span class="percent">percent</span>
-                    	<div class="circleStat">
-                        <input type="text" value="{{ transferred_bytes_percent }}" class="whiteCircle" />
-						</div>
-						<div class="footer">
-							<span class="count">
-                <span class="">{{ transferred_bytes_in_GB }}</span>
-								<span class="unit">GB</span>
-							</span>
-							<span class="sep"> / </span>
-							<span class="value">
-								<span class="number">1.0</span>
-								<span class="unit">GB</span>
-							</span>	
-						</div>
-                	</div>
-				</div><!--/col-->
-
-            </div><!--/row-->	
-<!-- PROJECT SUMMARY -->
-  <div style="margin-bottom:40px;">
+          <div class="clearfix"></div>
+        </div>	
+      </div>	
+    </div><!--/col-->
   </div>
 
-      <div class="row">
-				<div class="col-lg-12">
-					<div class="box">
-						<div class="box-header">
-							<h2><i class="fa fa-bar-chart-o"></i>Monitoring</h2>
-							<div class="box-icon">
-								<a href="" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
-								<a href="widgets.html" class="btn-close"><i class="fa fa-times"></i></a>
-							</div>
-						</div>
-						<div class="box-content">
-              <iframe class="grafana" src="http://soma.buildbuild.io:7000/docker_grafana/#/dashboard/db/dockerproject" style="width:100%;" height="900px" frameBorder="0px" ></iframe>
-							<div class="clearfix"></div>
-						</div>	
-					</div>	
-				</div><!--/col-->
+<!-- PROJECT SUMMARY -->
+  <div class="row">
+    
+    <div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+      <div class="smallstat box">
+        <div class="boxchart-overlay blue">
+          <div class="boxchart">5,6,7,2,0,4,2,4,8,2,3,3,2</div>
+        </div>	
+        <span class="title">CPU Usage</span>
+        <span class="value">{{ cpu_usage }}</span>
       </div>
+    </div><!--/col-->
+    
+    <div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+      <div class="smallstat box">
+        <div class="boxchart-overlay red">
+          <div class="boxchart">1,2,6,4,0,8,2,4,5,3,1,7,5</div>
+        </div>	
+        <span class="title">Memory Usage</span>
+        <span class="value">{{ memory_usage }}</span>
+      </div>
+    </div><!--/col-->
+    
+    <div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+      <div class="smallstat box">
+        <i class="fa fa-download green"></i>
+        <span class="title">Network Input</span>
+        <span class="value">{{ requested_bytes }}</span>
+      </div>
+    </div><!--/col-->
+    
+    <div class="col-lg-3 col-sm-6 col-xs-6 col-xxs-12">
+      <div class="smallstat box">
+        <i class="fa fa-upload yellow"></i>
+        <span class="title">Network Output</span>
+        <span class="value">{{ transferred_bytes }}</span>
+      </div>
+    </div><!--/col-->
+  
+  </div><!--/row-->
+<!-- PROJECT SUMMARY -->
 
-<h1>{{ project.name }}'s Page</h1>
-  <p><a href="{% url 'home' %}">Go back</a></p>
-  <h1>Configuraion</h1>
-    <ul>
-        <li>Language : {{ language }}</li>
-        <li>Version : {{ version }}</li>
-        <li>Git URL : {{ git_url }}</li>
-        <li>Git branch : {{ branch_name }}</li>
-    </ul>
+<!-- PROJECT SUMMARY -->
+  <div class="circleStats row hideInIE8">
 
+    <div class="col-md-3 col-sm-3">
+              <div class="circleStatsItemBox">
+        <div class="header">CPU Usage</div>
+        <span class="percent">percent</span>
+                  <div class="circleStat">
+                    <input type="text" value="{{ cpu_usage_percent }}" class="whiteCircle" />
+        </div>
+        <div class="footer">
+          <span class="count">
+            <span class="">{{ cpu_usage_in_Ghz }}</span>
+            <span class="unit">GHz</span>
+          </span>
+          <span class="sep"> / </span>
+          <span class="value">
+            <span class="number">2.8</span>
+            <span class="unit">GHz</span>
+          </span>	
+        </div>
+              </div>
+    </div><!--/col-->
 
-<h1> Build Page</h1>
-<h2>Make a new version</h2>
-<form action="{% url 'builds:new' project.id %}" method="get">
-  Version Name</br>
-  <input type = "text" name="tag"></input>
-  <input type = "submit" value="Build"></input>
-</form>
-<h2>Versions List</h2>
-{% for build in project.build_set.all reversed %}
-  {{ build.tag }} 
-  ( {{ build.created_time }} )
-  {% if build.is_active %}
-    <a target="_blank" href = "{% url 'builds:my_project' project.id %}">Now Running</a>
-  {% else %}
-    <a href = "{% url 'builds:deploy' build.id %}">Deploy</a>
-  {% endif %}
-  </br>
-{% endfor %}
-<h2><a target="_blank" href = "{% url 'builds:my_project' project.id %}">My Project Page</a></h2>
+    <div class="col-md-3 col-sm-3 noMargin">
+              <div class="circleStatsItemBox">
+        <div class="header">Memory Usage</div>
+        <span class="percent">percent</span>
+                  <div class="circleStat">
+                    <input type="text" value="{{ memory_usage_percent }}" class="whiteCircle" />
+        </div>
+        <div class="footer">
+          <span class="count">
+            <span class="">{{ memory_usage_in_GB }}</span>
+            <span class="unit">GB</span>
+          </span>
+          <span class="sep"> / </span>
+          <span class="value">
+            <span class="number">1.0</span>
+            <span class="unit">GB</span>
+          </span>	
+        </div>
+              </div>
+    </div><!--/col-->
+
+    <div class="col-md-3 col-sm-3">
+              <div class="circleStatsItemBox">
+        <div class="header">Network Input</div>
+        <span class="percent">percent</span>
+                  <div class="circleStat">
+                    <input type="text" value="{{ requested_bytes_percent }}" class="whiteCircle" />
+        </div>
+        <div class="footer">
+          <span class="count">
+            <span class="">{{ requested_bytes_in_GB }}</span>
+            <span class="unit">GB</span>
+          </span>
+          <span class="sep"> / </span>
+          <span class="value">
+            <span class="number">1.0</span>
+            <span class="unit">GB</span>
+          </span>	
+        </div>
+              </div>
+    </div><!--/col-->
+
+    <div class="col-md-3 col-sm-3">
+              <div class="circleStatsItemBox">
+        <div class="header">Network Output</div>
+        <span class="percent">percent</span>
+                  <div class="circleStat">
+                    <input type="text" value="{{ transferred_bytes_percent }}" class="whiteCircle" />
+        </div>
+        <div class="footer">
+          <span class="count">
+            <span class="">{{ transferred_bytes_in_GB }}</span>
+            <span class="unit">GB</span>
+          </span>
+          <span class="sep"> / </span>
+          <span class="value">
+            <span class="number">1.0</span>
+            <span class="unit">GB</span>
+          </span>	
+        </div>
+              </div>
+    </div><!--/col-->
+
+        </div><!--/row-->	
+<!-- PROJECT SUMMARY -->
+<div style="margin-bottom:40px;">
+</div>
+
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="box">
+        <div class="box-header">
+          <h2><i class="fa fa-bar-chart-o"></i>Monitoring</h2>
+          <div class="box-icon">
+            <a href="" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+            <a href="widgets.html" class="btn-close"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+        <div class="box-content">
+          <iframe class="grafana" src="http://soma.buildbuild.io:7000/docker_grafana/#/dashboard/db/dockerproject" style="width:100%;" height="900px" frameBorder="0px" ></iframe>
+          <div class="clearfix"></div>
+        </div>	
+      </div>	
+    </div><!--/col-->
+    <div class="col-lg-6">
+      <div class="box">
+        <div class="box-header">
+          <h2><i class="fa fa-bar-chart-o"></i>Build</h2>
+          <div class="box-icon">
+            <a href="" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+            <a href="widgets.html" class="btn-close"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+        <div class="box-content">
+          {% if project.build_set.all.count == 0 %}
+            <div class="alert alert-danger">
+              Currently not found any build.
+              <button type="button" class="close" data-dismiss="alert">×</button>
+            </div>
+          {% else %}
+            <div class="alert alert-success">
+              Currently Running ... <span class="label label-success">success</span> <span class="label label-info">bulid</span>
+              <a target="_blank" href = "{% url 'builds:my_project' project.id %}">Go to Project Page</a>
+              <button type="button" class="close" data-dismiss="alert">×</button>
+            </div>
+          {% endif %}
+
+          <form action="{% url 'builds:new' project.id %}" class="form-horizontal form-actions" method="get">
+            <div class="form-group">
+              <label class="control-label" for="focusedInput" style="margin-bottom: 3px;">Version</label>
+              <input type = "text" name="tag" class="form-control" style="margin-bottom: 3px;"></input>
+              <input type = "submit" value="Build" class="btn-primary btn"></input>
+            </div>
+          </form>
+          <div class="clearfix"></div>
+        </div>	
+      </div>	
+    </div><!--/col-->
+    <div class="col-lg-6">
+      <div class="box">
+        <div class="box-header">
+          <h2><i class="fa fa-bar-chart-o"></i>Build History</h2>
+          <div class="box-icon">
+            <a href="" class="btn-minimize"><i class="fa fa-chevron-up"></i></a>
+            <a href="widgets.html" class="btn-close"><i class="fa fa-times"></i></a>
+          </div>
+        </div>
+        <div class="box-content">
+          <h2><a target="_blank" href = "{% url 'builds:my_project' project.id %}">My Project Page</a></h2>
+          <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Build Version</th>
+                  <th>Created at</th>
+                  <th>Status</th>
+                </tr>
+              </thead>   
+              <tbody>
+              {% for build in project.build_set.all reversed %}
+              <tr>
+                <td class="center">{{ build.id }}</td>
+                <td class="center">
+                  {{ build.tag }}
+                </td>
+                <td class="center">
+                  {{ build.created_time }}
+                </td>
+                <td class="center">
+                  {% if build.is_active %}
+                    <a target="_blank" href = "{% url 'builds:my_project' project.id %}">
+                      <button class="btn btn-warning">Running</button>
+                    </a>
+                  {% else %}
+                    <a href = "{% url 'builds:deploy' build.id %}">
+                      <button class="btn btn-success">Deploy</button>
+                    </a>
+                  {% endif %}
+                </td>
+                <br>
+              </tr>
+              {% endfor %}
+              </tbody>
+           </table>  
+          <div class="clearfix"></div>
+        </div>	
+      </div>	
+    </div><!--/col-->
   </div>
 </div>
 {% endblock %}

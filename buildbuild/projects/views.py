@@ -297,16 +297,16 @@ class MakeProjectView(FormView):
 
         loads['title'] = pr
         loads['originalTitle'] = pr
-        loads['rows'][0]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][0]['panels'][0]['targets'][0]['condition'] = project_name
         loads['rows'][0]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
 
-        loads['rows'][1]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][1]['panels'][0]['targets'][0]['condition'] = project_name
         loads['rows'][1]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
 
-        loads['rows'][2]['panels'][0]['targets'][0]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][0]['condition'] = project_name
         loads['rows'][2]['panels'][0]['targets'][0]['query'] = loads['rows'][0]['panels'][0]['targets'][0]['query'].replace('/docker/registry',name)
 
-        loads['rows'][2]['panels'][0]['targets'][1]['condition'] = uni_name
+        loads['rows'][2]['panels'][0]['targets'][1]['condition'] = project_name
         loads['rows'][2]['panels'][0]['targets'][1]['query'] = loads['rows'][0]['panels'][0]['targets'][1]['query'].replace('/docker/registry',name)
 
         dumps = json.dumps(loads)

@@ -47,13 +47,20 @@ class TeamList(TemplateView):
 def accept_request_to_join_team(request, team_id, wait_member_id):
     team = Team.objects.get_team(team_id)
     user = User.objects.get_user(wait_member_id)
+    project_list = team.project_teams.all()
     wait_list = WaitList.objects.get(team = team, wait_member = user)
     wait_list.delete()
     Membership.objects.create_membership(team = team, user = user)
     messages.success(request, custom_msg.team_accept_member_success)
-    messages.info(request, custom_msg.accept_member_success_info)
-    return HttpResponseRedirect(reverse("home"))
-
+    messages.info(request, custom_msg.team_accept_member_success_info)
+    return render(
+               request,
+               "teams/team_page.html",
+               {
+                   "team" : team,
+                   "project_list" : project_list,
+               },
+           )
 
 # when User click a team, team_page method will render team_page.html
 # with the team argument

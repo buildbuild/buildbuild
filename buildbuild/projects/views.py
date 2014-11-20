@@ -290,7 +290,6 @@ class MakeProjectView(FormView):
         pr = team.name + "_" + project_name
         name = '/docker/' + pr # As a query language
         project_name = "container_name = '" + name + "'"
-        uni_name = unicode(project_name, 'unicode-escape')
         _doc = deepcopy(doc)
 
         _doc['_id'] = pr

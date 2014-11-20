@@ -160,7 +160,9 @@ class SignUp(FormView):
             return HttpResponseRedirect(reverse("users:signup"))
 
         # Validate user name
-        if 'user_name' in self.request.POST:
+        if 'user_name' in self.request.POST and \
+            len(self.request.POST['user_name']) != 0:
+
             try:
                 User.objects.validate_name(
                     self.request.POST['user_name']

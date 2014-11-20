@@ -55,7 +55,7 @@ class BuildManager(models.Manager):
             docker_client.start(container = old_build.container , port_bindings = { 8080: old_build.port })
 
         build.image_name = image_name
-#-      docker_client.push(repository=image_name, insecure_registry=True)
+        docker_client.push(repository=image_name, insecure_registry=True)
         build.save(using = self.db)
         return build
 
@@ -75,7 +75,7 @@ class BuildManager(models.Manager):
         if platform.system() == 'Linux':
             docker_client = Client(base_url='unix://var/run/docker.sock')
         image_name = build.image_name
-#-      docker_client.pull(repository=image_name, insecure_registry=True)
+        docker_client.pull(repository=image_name, insecure_registry=True)
 
         try:
             Build.objects.get(project = build.project, is_active = True)
@@ -85,16 +85,16 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             old_build.is_active = False
             old_build.save()
-#-          docker_client.remove_container(container = old_build.container, force=True)
+            docker_client.remove_container(container = old_build.container, force=True)
+        if build.container == "empty":
+            container = docker_client.create_container(
+                image=image_name,
+                name = team_name+"_"+build.project.name+"_"+build.tag,
+                detach=True,
+                ports = [ 8080 ]
+            )
+            build.container = container.get('Id')
 
-        container = docker_client.create_container(
-            image=image_name,
-            name = team_name+"_"+build.project.name,
-            detach=True,
-            ports = [ 8080 ]
-        )
-
-        build.container = container.get('Id')
         build.port = 10000 + build.project.id
 
         response = docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
@@ -147,6 +147,6 @@ class Build(models.Model):
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
     response = models.TextField(default="")
-    container = models.CharField(default="", max_length = 50)
+    container = models.CharField(default="empty", max_length = 50)
     port = models.IntegerField(default=10000)
     is_active = models.BooleanField(default=False)

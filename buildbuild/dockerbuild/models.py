@@ -44,7 +44,7 @@ class BuildManager(models.Manager):
 #       build.response = "".join([json.loads(line)["stream"] for line in 
         build.response = ([ line for line in 
 #          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
-           docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name) ])
+           docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name, nocache=True) ])
  
         try:
             Build.objects.get(project = build.project, is_active = True)

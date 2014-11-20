@@ -41,7 +41,7 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             docker_client.stop(container = old_build.container)
 
-#        build.response = "".join([json.loads(line)["stream"] for line in 
+#       build.response = "".join([json.loads(line)["stream"] for line in 
         build.response = ([ line for line in 
 #          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
            docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name) ])
@@ -55,7 +55,7 @@ class BuildManager(models.Manager):
             docker_client.start(container = old_build.container , port_bindings = { 8080: old_build.port })
 
         build.image_name = image_name
-        docker_client.push(repository=image_name, insecure_registry=True)
+#-      docker_client.push(repository=image_name, insecure_registry=True)
         build.save(using = self.db)
         return build
 
@@ -75,7 +75,7 @@ class BuildManager(models.Manager):
         if platform.system() == 'Linux':
             docker_client = Client(base_url='unix://var/run/docker.sock')
         image_name = build.image_name
-        docker_client.pull(repository=image_name, insecure_registry=True)
+#-      docker_client.pull(repository=image_name, insecure_registry=True)
 
         try:
             Build.objects.get(project = build.project, is_active = True)
@@ -85,7 +85,7 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             old_build.is_active = False
             old_build.save()
-            docker_client.remove_container(container = old_build.container, force=True)
+#-          docker_client.remove_container(container = old_build.container, force=True)
 
         container = docker_client.create_container(
             image=image_name,

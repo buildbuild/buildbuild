@@ -91,12 +91,27 @@ class TeamManager(models.Manager):
         else:
             return wait_team
 
+    def update_team(self, id, **kwargs):
+        team = Team.objects.get_team(id)
+
+        if 'contact_number' in kwargs:
+            self.validate_contact_number(kwargs['contact_number'])
+            team.contact_number = kwargs['contact_number']
+        
+        if 'team_url' in kwargs:
+            validate_team_url = URLValidator()
+            validate_team_url(kwargs['team_url'])
+            team.team_url = kwargs['team_url']
+        
+        team.save(using = self._db)
+
 class Team(models.Model):
     name = models.CharField(
         help_text = "Team name",
         max_length = 64,
         unique=True,
     )
+    
     contact_number = models.CharField(
                         help_text = "Team contact_number to inform something or contact",
                         max_length = 20,

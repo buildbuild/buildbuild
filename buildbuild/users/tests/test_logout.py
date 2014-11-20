@@ -35,9 +35,10 @@ class LoginPageTest(TestCase):
 
     def test_logout(self):
         self.post_login_set(self.user_email, self.user_password)
+        response = self.client.post("/logout/", follow=True)
         self.assertRedirects(
-            self.client.post("/logout/"),
-            "/",
+            response,
+            "/login/?next=/",
             301,
         )
-
+        

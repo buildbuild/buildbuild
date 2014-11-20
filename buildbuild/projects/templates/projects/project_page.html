@@ -200,6 +200,38 @@
 							</div>
 						</div>
 						<div class="box-content">
+              <h2><a target="_blank" href = "{% url 'builds:my_project' project.id %}">My Project Page</a></h2>
+							<table class="table table-striped">
+								  <thead>
+									  <tr>
+										  <th>#</th>
+										  <th>Build Version</th>
+										  <th>Created at</th>
+										  <th>Status</th>
+									  </tr>
+								  </thead>   
+								  <tbody>
+                  {% for build in project.build_set.all reversed %}
+                  <tr>
+                    <td class="center">{{ build.id }}</td>
+                    <td class="center">
+                      {{ build.tag }}
+                    </td>
+										<td class="center">
+                      {{ build.created_time }}
+										</td>
+										<td class="center">
+                      {% if build.is_active %}
+                        <a target="_blank" href = "{% url 'builds:my_project' project.id %}">Now Running</a>
+                      {% else %}
+                        <a href = "{% url 'builds:deploy' build.id %}">Deploy</a>
+                      {% endif %}
+										</td>
+                    <br>
+                  </tr>
+                  {% endfor %}
+								  </tbody>
+							 </table>  
 							<div class="clearfix"></div>
 						</div>	
 					</div>	
@@ -207,26 +239,13 @@
       </div>
 
 
-<h1> Build Page</h1>
-<h2>Make a new version</h2>
 <form action="{% url 'builds:new' project.id %}" method="get">
   Version Name</br>
   <input type = "text" name="tag"></input>
   <input type = "submit" value="Build"></input>
 </form>
 
-<h2>Versions List</h2>
-{% for build in project.build_set.all reversed %}
-  {{ build.tag }} 
-  ( {{ build.created_time }} )
-  {% if build.is_active %}
-    <a target="_blank" href = "{% url 'builds:my_project' project.id %}">Now Running</a>
-  {% else %}
-    <a href = "{% url 'builds:deploy' build.id %}">Deploy</a>
-  {% endif %}
   </br>
-{% endfor %}
-<h2><a target="_blank" href = "{% url 'builds:my_project' project.id %}">My Project Page</a></h2>
   </div>
 </div>
 {% endblock %}

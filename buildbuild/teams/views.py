@@ -25,6 +25,7 @@ from teams.models import AlreadyMemberError, AlreadyWaitMemberError
 from buildbuild import custom_msg
 from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView
+from django.core.validators import URLValidator
 
 class TeamList(TemplateView):
     template_name = "teams/team_list.html"
@@ -126,6 +127,8 @@ class MakeTeamView(FormView):
     def form_valid(self, form):
         # name field required
         name = self.request.POST["teams_team_name"]
+        is_available_contact_number = False
+        is_available_team_url = False
 
         # valid team name test
         try:
@@ -145,10 +148,57 @@ class MakeTeamView(FormView):
             messages.info(self.request, custom_msg.team_already_exist)
             return HttpResponseRedirect(reverse("teams:new"))
 
+        # Validate user name
+        if 'teams_contact_number' in self.request.POST and \
+            len(self.request.POST['teams_contact_number']) != 0:
+        
+            try:
+               Team.objects.validate_contact_number(
+                   self.request.POST['teams_contact_number']
+                ) 
+            except ValidationError:
+                messages.error(self.request, custom_msg.team_make_team_error)
+                messages.info(
+                    self.request, 
+                    custom_msg.team_invalid_contact_number
+                )
+                return HttpResponseRedirect(reverse("teams:new"))
+            else:
+                is_available_contact_number = True
+        
+        if 'teams_team_url' in self.request.POST and \
+            len(self.request.POST['teams_team_url']) != 0:
+                
+            try:
+                validate_team_url = URLValidator()
+                validate_team_url(self.request.POST['teams_team_url'])
+            except ValidationError:
+                messages.error(self.request, custom_msg.team_make_team_error)
+                messages.info(self.request, custom_msg.url_invalid)
+                return HttpResponseRedirect(reverse("teams:new"))
+            except UnicodeError:
+                messages.error(self.request, custom_msg.team_make_team_error)
+                messages.info(self.request, custom_msg.url_unicode_invalid)
+                return HttpResponseRedirect(reverse("teams:new"))
+            else:
+                is_available_team_url = True
+        
         # Login check is programmed in buildbuild/urls.py
         # link user to team using Membership
         user = self.request.user
         team = Team.objects.create_team(name)
+
+        if is_available_contact_number:
+            Team.objects.update_team(
+                id = team.id,
+                contact_number = self.request.POST['teams_contact_number'],
+            )
+
+        if is_available_team_url:
+            Team.objects.update_team(
+                id = team.id,
+                team_url = self.request.POST['teams_team_url']
+            )
 
         membership = Membership.objects.create_membership(
             team = team,

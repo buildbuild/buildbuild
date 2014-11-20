@@ -1,28 +1,80 @@
-- fields: {contact_number: '', name: buildbuildteam, team_url: ''}
+- fields: {contact_number: 010-0000-0000, name: Memberbook, team_url: 'http://memberbook.welldonecom.com/'}
   model: teams.team
-  pk: 8
-- fields: {contact_number: '', name: buildbuildteam2, team_url: ''}
+  pk: 28
+- fields: {contact_number: 010-0000-0000, name: buildbuild, team_url: 'http://buildbuild.io'}
   model: teams.team
-  pk: 9
-- fields: {contact_number: '', name: buildbuildteam3, team_url: ''}
+  pk: 29
+- fields: {contact_number: 010-1111-2222, name: SmartHomeTV, team_url: 'http://smarthometv.com'}
   model: teams.team
-  pk: 10
-- fields: {contact_number: '', name: buildbuildteam4, team_url: ''}
+  pk: 30
+- fields: {contact_number: 010-0000-0000, name: haru, team_url: 'http://haru.io'}
   model: teams.team
+  pk: 31
+- fields: {date_joined: !!timestamp '2014-11-20 18:05:00.000256+00:00', is_admin: true,
+    member: 8, team: 28}
+  model: teams.membership
+  pk: 24
+- fields: {date_joined: !!timestamp '2014-11-20 18:05:49.233619+00:00', is_admin: true,
+    member: 8, team: 29}
+  model: teams.membership
+  pk: 25
+- fields: {date_joined: !!timestamp '2014-11-20 18:15:28.431181+00:00', is_admin: false,
+    member: 10, team: 29}
+  model: teams.membership
+  pk: 26
+- fields: {date_joined: !!timestamp '2014-11-20 18:18:20.359048+00:00', is_admin: false,
+    member: 9, team: 29}
+  model: teams.membership
+  pk: 27
+- fields: {date_joined: !!timestamp '2014-11-20 18:21:03.618655+00:00', is_admin: false,
+    member: 11, team: 29}
+  model: teams.membership
+  pk: 28
+- fields: {date_joined: !!timestamp '2014-11-20 18:44:17.253770+00:00', is_admin: true,
+    member: 13, team: 30}
+  model: teams.membership
+  pk: 29
+- fields: {date_joined: !!timestamp '2014-11-20 18:45:58.746613+00:00', is_admin: false,
+    member: 12, team: 30}
+  model: teams.membership
+  pk: 30
+- fields: {date_joined: !!timestamp '2014-11-20 18:46:01.619085+00:00', is_admin: false,
+    member: 14, team: 30}
+  model: teams.membership
+  pk: 31
+- fields: {date_joined: !!timestamp '2014-11-20 18:46:07.971450+00:00', is_admin: false,
+    member: 15, team: 30}
+  model: teams.membership
+  pk: 32
+- fields: {date_joined: !!timestamp '2014-11-20 18:50:34.398405+00:00', is_admin: true,
+    member: 16, team: 31}
+  model: teams.membership
+  pk: 33
+- fields: {date_joined: !!timestamp '2014-11-20 18:51:53.486337+00:00', is_admin: false,
+    member: 17, team: 31}
+  model: teams.membership
+  pk: 34
+- fields: {date_joined: !!timestamp '2014-11-20 18:51:55.793078+00:00', is_admin: false,
+    member: 19, team: 31}
+  model: teams.membership
+  pk: 35
+- fields: {date_joined: !!timestamp '2014-11-20 18:52:41.715475+00:00', is_admin: false,
+    member: 18, team: 31}
+  model: teams.membership
+  pk: 36
+- fields: {date_requested: !!timestamp '2014-11-20 18:55:20.697941+00:00', team: 29,
+    wait_member: 20}
+  model: teams.waitlist
   pk: 11
-- fields: {date_joined: !!timestamp '2014-11-03 23:16:05.078534+00:00', is_admin: true,
-    member: 1, team: 8}
-  model: teams.membership
-  pk: 8
-- fields: {date_joined: !!timestamp '2014-11-03 23:16:08.863335+00:00', is_admin: true,
-    member: 1, team: 9}
-  model: teams.membership
-  pk: 9
-- fields: {date_joined: !!timestamp '2014-11-03 23:16:15.579041+00:00', is_admin: true,
-    member: 1, team: 10}
-  model: teams.membership
-  pk: 10
-- fields: {date_joined: !!timestamp '2014-11-03 23:16:30.584293+00:00', is_admin: true,
-    member: 2, team: 11}
-  model: teams.membership
-  pk: 11
+- fields: {date_requested: !!timestamp '2014-11-20 18:55:36.217549+00:00', team: 28,
+    wait_member: 20}
+  model: teams.waitlist
+  pk: 12
+- fields: {date_requested: !!timestamp '2014-11-20 18:56:30.916468+00:00', team: 29,
+    wait_member: 21}
+  model: teams.waitlist
+  pk: 13
+- fields: {date_requested: !!timestamp '2014-11-20 18:58:10.528024+00:00', team: 28,
+    wait_member: 21}
+  model: teams.waitlist
+  pk: 14

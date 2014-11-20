@@ -86,14 +86,13 @@ class BuildManager(models.Manager):
             old_build.is_active = False
             old_build.save()
             docker_client.remove_container(container = old_build.container, force=True)
-        if build.container == "empty":
-            container = docker_client.create_container(
-                image=image_name,
-                name = team_name+"_"+build.project.name+"_"+build.tag,
-                detach=True,
-                ports = [ 8080 ]
-            )
-            build.container = container.get('Id')
+        container = docker_client.create_container(
+            image=image_name,
+            name = team_name+"_"+build.project.name+"_",
+            detach=True,
+            ports = [ 8080 ]
+        )
+        build.container = container.get('Id')
 
         build.port = 10000 + build.project.id
 

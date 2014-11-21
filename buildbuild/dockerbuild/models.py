@@ -41,10 +41,10 @@ class BuildManager(models.Manager):
             old_build = Build.objects.get(project = build.project, is_active = True)
             docker_client.stop(container = old_build.container)
 
-#        build.response = "".join([json.loads(line)["stream"] for line in 
+#       build.response = "".join([json.loads(line)["stream"] for line in 
         build.response = ([ line for line in 
 #          docker_client.build(fileobj=open("/Users/Korniste/Developments/abc/Dockerfile"), tag=tag) ])
-           docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name) ])
+           docker_client.build(fileobj=Dockerfile, rm=True, tag=image_name, nocache=True) ])
  
         try:
             Build.objects.get(project = build.project, is_active = True)
@@ -86,15 +86,14 @@ class BuildManager(models.Manager):
             old_build.is_active = False
             old_build.save()
             docker_client.remove_container(container = old_build.container, force=True)
-
         container = docker_client.create_container(
             image=image_name,
-            name = team_name+"_"+build.project.name,
+            name = team_name+"_"+build.project.name+"_",
             detach=True,
             ports = [ 8080 ]
         )
-
         build.container = container.get('Id')
+
         build.port = 10000 + build.project.id
 
         response = docker_client.start(container = build.container, port_bindings = { 8080 : build.port }) 
@@ -147,6 +146,6 @@ class Build(models.Model):
     is_active = models.BooleanField(default=True)
     created_time = models.DateField(auto_now_add=True)
     response = models.TextField(default="")
-    container = models.CharField(default="", max_length = 50)
+    container = models.CharField(default="empty", max_length = 50)
     port = models.IntegerField(default=10000)
     is_active = models.BooleanField(default=False)

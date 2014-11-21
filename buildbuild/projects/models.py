@@ -139,10 +139,14 @@ class ProjectManager(models.Manager):
     def update_project(self, id, **kwargs):
         project = Project.objects.get_project(id)
         if "properties" in kwargs:
-            project.properties = kwargs['properties']
+           self.validate_properties(properties)
+           self.check_keys_in_properties(properties)
+           project.properties = kwargs['properties']
 
         if "git_url" in kwargs:
-            project.git_url = kwargs['git_url']
+           validate_git_url = URLValidator()
+           validate_git_url(kwargs['git_url'])    
+           project.git_url = kwargs['git_url']
 
         if "branch_name" in kwargs:
             project.branch_name = kwargs['branch_name']

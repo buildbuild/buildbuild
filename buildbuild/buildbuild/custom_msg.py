@@ -45,6 +45,7 @@ team_make_team_success = "SUCCESS : Make Team"
 team_invalid = "Invalid team name"
 team_already_exist = "The team name already exists"
 team_make_team_success_info = "Team created successfully"
+team_invalid_contact_number = "Contact number cannot contain more than 20 digits"
 
 ## team page
 not_belonged_team = "You are not the team member"

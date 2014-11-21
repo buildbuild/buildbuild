@@ -1,10 +1,30 @@
 - fields:
     name: buildbuildproject
     properties: {branch_name: master, git_url: 'https://github.com/buildbuild/buildbuild.git',
-      language: ruby, version: 2.0.0}
-    swift_container: buildbuildteam__buildbuildproject
+      language: Python, version: 2.7.8}
+    swift_container: buildbuild__buildbuildproject
   model: projects.project
-  pk: 8
-- fields: {date_joined: 2014-11-14, is_admin: true, project: 8, project_team: 8}
+  pk: 10
+- fields:
+    name: second_buildbuild_project
+    properties: {branch_name: master, git_url: 'https://github.com/buildbuild/buildbuild.git',
+      language: Python, version: 2.7.8}
+    swift_container: buildbuild__second_buildbuild_project
+  model: projects.project
+  pk: 11
+- fields:
+    name: third_buildbuild_project
+    properties: {branch_name: master, git_url: 'https://github.com/buildbuild/buildbuild.git',
+      language: Python, version: 2.7.8}
+    swift_container: buildbuild__third_buildbuild_project
+  model: projects.project
+  pk: 12
+- fields: {date_joined: 2014-11-20, is_admin: true, project: 10, project_team: 29}
   model: projects.projectmembership
-  pk: 9
+  pk: 11
+- fields: {date_joined: 2014-11-20, is_admin: true, project: 11, project_team: 29}
+  model: projects.projectmembership
+  pk: 12
+- fields: {date_joined: 2014-11-20, is_admin: true, project: 12, project_team: 29}
+  model: projects.projectmembership
+  pk: 13

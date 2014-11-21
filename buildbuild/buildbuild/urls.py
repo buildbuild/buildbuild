@@ -7,7 +7,7 @@ from buildbuild.views import Home
 from django.contrib.auth.decorators import login_required
 
 urlpatterns = patterns('',
-    url(r'^$', Home.as_view(), name='home'),
+    url(r'^$', login_required(Home.as_view()), name='home'),
     url(r'^admin/', include(admin.site.urls)),
    
     # api's urls

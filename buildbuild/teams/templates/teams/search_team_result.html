@@ -51,11 +51,7 @@
                     <a class="btn btn-success" href="">
                       <i class="fa fa-search-plus "> Team Information</i>  
                     </a>
-                    {% if user in team.members.all %}
-                      <a class="btn btn-danger" href="#">
-                        <i class="fa fa-unlink "> Leave</i> 
-                      </a>
-                    {% else %}
+                    {% if user not in team.members.all %}
                       <a class="btn btn-info" href="{% url 'teams:join' team.id %}">
                         <i class="fa fa-users"> Join Request</i> 
                       </a>

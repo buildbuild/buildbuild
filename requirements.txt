@@ -45,6 +45,6 @@ sh==1.09
 simplejson==3.6.5
 six==1.8.0
 stevedore==1.1.0
-urllib3==1.9.1
+urllib3==1.26.5
 websocket-client==0.21.0
 wsgiref==0.1.2
